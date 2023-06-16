@@ -1,0 +1,22 @@
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "tempus-fugit-minecraft"
+version = "0.1.0"
+description = ""
+authors = ["Mahmoud Elbasiouny <elbasiouny.mahmoud@gmail.com>"]
+readme = "README.md"
+packages = [{include = "tempus_fugit_minecraft"}]
+
+[tool.poetry.scripts]
+minecraft = "tempus_fugit_minecraft.main:main"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pyglet = "1.5.27"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.3.1"
+pytest-cov = "^4.1.0"
