@@ -681,7 +681,7 @@ class Window(pyglet.window.Window):
             mouse button was clicked.
 
         """
-        if self.exclusive:
+        if self.exclusive and not self.paused:
             vector = self.get_sight_vector()
             block, previous = self.model.hit_test(self.position, vector)
             if (button == mouse.RIGHT) or \
@@ -708,7 +708,7 @@ class Window(pyglet.window.Window):
             The movement of the mouse.
 
         """
-        if self.exclusive:
+        if self.exclusive and not self.paused:
             m = 0.15
             x, y = self.rotation
             x, y = x + dx * m, y + dy * m
@@ -744,9 +744,9 @@ class Window(pyglet.window.Window):
             else:
                 self.resume_game()
             self.paused = not self.paused
-        elif symbol == key.TAB:
+        elif symbol == key.TAB and not self.paused:
             self.flying = not self.flying
-        elif symbol in self.num_keys:
+        elif symbol in self.num_keys and not self.paused:
             index = (symbol - self.num_keys[0]) % len(self.inventory)
             self.block = self.inventory[index]
 
