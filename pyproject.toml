@@ -14,7 +14,7 @@ packages = [{include = "tempus_fugit_minecraft"}]
 minecraft = "tempus_fugit_minecraft.main:main"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.7"
 pyglet = "1.5.27"
 
 [tool.poetry.group.dev.dependencies]
