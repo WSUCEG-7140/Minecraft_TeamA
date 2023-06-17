@@ -81,6 +81,8 @@ GRASS = tex_coords((1, 0), (0, 1), (0, 0))
 SAND = tex_coords((1, 1), (1, 1), (1, 1))
 BRICK = tex_coords((2, 0), (2, 0), (2, 0))
 STONE = tex_coords((2, 1), (2, 1), (2, 1))
+LIGHT_CLOUD = tex_coords((3, 0), (3, 0), (3, 0)) 
+DARK_CLOUD = tex_coords((3, 1), (3, 1), (3, 1))
 
 FACES = [
     (0, 1, 0),
@@ -192,6 +194,8 @@ class Model(object):
                             continue
                         self.add_block((x, y, z), t, immediate=False)
                 s -= d  # decrement side length so hills taper off
+
+        self.generate_clouds(n,100)
 
     def hit_test(self, position, vector, max_distance=8):
         """ Line of sight search from current position. If a block is
@@ -430,6 +434,27 @@ class Model(object):
         """
         while self.queue:
             self._dequeue()
+    
+    
+    def generate_clouds(self,n,num_of_clouds = 250):
+        """
+        Generate clouds on the sky.
+        """
+        o = n - 10
+        
+        for _ in xrange(num_of_clouds):  # adjust this value for the number of clouds you want
+            a = random.randint(-o, o)  # x position of the cloud
+            b = random.randint(-o, o)  # z position of the cloud
+            c = 20 #random.randint(20, 50)  # y position of the cloud, adjust this for cloud height
+            s = random.randint(3, 6)  # 2 * s is the side length of the cloud
+            # for y in xrange(c, c + s):
+            # for y in [c]:
+            for x in xrange(a - s, a + s + 1):
+                for z in xrange(b - s, b + s + 1):
+                    # if (x - a) ** 2 + (z - b) ** 2 > (s + 1) ** 2:
+                    if (x - 0) ** 2 + (z - 0) ** 2 < 5 ** 2:
+                        continue
+                    self.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
 
 
 class Window(pyglet.window.Window):
