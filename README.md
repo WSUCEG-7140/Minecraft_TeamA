@@ -38,10 +38,11 @@ The API could contain functionality for the following:
 ## How to Run
 
 ```shell
-pip install pyglet
-git clone https://github.com/fogleman/Minecraft.git
-cd Minecraft
-python main.py
+pip install poetry
+git clone https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft.git
+cd Tempus_Fugit_Minecraft
+poetry install
+poetry run minecraft
 ```
 
 ### Mac
