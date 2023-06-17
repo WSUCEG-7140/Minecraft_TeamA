@@ -11,6 +11,10 @@ from pyglet.gl import *
 from pyglet.graphics import TextureGroup
 from pyglet.window import key, mouse
 
+
+window_width = 800
+window_height = 600
+
 TICKS_PER_SEC = 60
 
 # Size of sectors used to ease block loading.
@@ -486,10 +490,13 @@ class Window(pyglet.window.Window):
         # Instance of the model that handles the world.
         self.model = Model()
 
+        self.paused = False
+
         # The label that is displayed in the top left of the canvas.
         self.label = pyglet.text.Label('', font_name='Arial', font_size=18,
                                        x=10, y=self.height - 10, anchor_x='left', anchor_y='top',
                                        color=(0, 0, 0, 255))
+        self.pause_label = None
 
         # This call schedules the `update()` method to be called
         # TICKS_PER_SEC. This is the main game event loop.
@@ -569,17 +576,18 @@ class Window(pyglet.window.Window):
             The change in time since the last call.
 
         """
-        self.model.process_queue()
-        sector = sectorize(self.position)
-        if sector != self.sector:
-            self.model.change_sectors(self.sector, sector)
-            if self.sector is None:
-                self.model.process_entire_queue()
-            self.sector = sector
-        m = 8
-        dt = min(dt, 0.2)
-        for _ in xrange(m):
-            self._update(dt / m)
+        if not self.paused:
+            self.model.process_queue()
+            sector = sectorize(self.position)
+            if sector != self.sector:
+                self.model.change_sectors(self.sector, sector)
+                if self.sector is None:
+                    self.model.process_entire_queue()
+                self.sector = sector
+            m = 8
+            dt = min(dt, 0.2)
+            for _ in xrange(m):
+                self._update(dt / m)
 
     def _update(self, dt):
         """ Private implementation of the `update()` method. This is where most
@@ -731,7 +739,11 @@ class Window(pyglet.window.Window):
             if self.dy == 0:
                 self.dy = JUMP_SPEED
         elif symbol == key.ESCAPE:
-            self.set_exclusive_mouse(False)
+            if not self.paused:
+                self.pause_game()
+            else:
+                self.resume_game()
+            self.paused = not self.paused
         elif symbol == key.TAB:
             self.flying = not self.flying
         elif symbol in self.num_keys:
@@ -774,6 +786,11 @@ class Window(pyglet.window.Window):
             4,
             ('v2i', (x - n, y, x + n, y, x, y - n, x, y + n))
         )
+
+        # Recenter pause menu
+        if self.paused:
+            self.pause_label.x = width // 2
+            self.pause_label.y = height // 2 + 50
 
     def set_2d(self):
         """ Configure OpenGL to draw in 2d.
@@ -821,6 +838,9 @@ class Window(pyglet.window.Window):
         self.draw_label()
         self.draw_reticle()
 
+        if self.paused:
+            self.draw_pause_menu()
+
     def draw_focused_block(self):
         """ Draw black edges around the block that is currently under the
         crosshairs.
@@ -852,6 +872,63 @@ class Window(pyglet.window.Window):
         """
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
+
+    def pause_game(self):
+        """ Pauses the game and bring up the pause menu.
+
+        """
+        self.pause_label = pyglet.text.Label(
+            "Paused",
+            font_name="Arial",
+            font_size=36,
+            x=self.width // 2,
+            y=self.height // 2,
+            anchor_x="center",
+            anchor_y="center"
+        )
+        self.set_mouse_visible(False)
+        self.set_exclusive_mouse(False)
+
+    def resume_game(self):
+        """Resumes the game by restoring the game window to its original state.
+
+        """
+        self.pause_label = None
+        self.resume_label = None
+        self.quit_label = None
+        self.set_exclusive_mouse(True)
+
+    def draw_pause_menu(self):
+        """Draws the components of the pause menu, including the background, the pause text, and the resume and
+        quit buttons.
+
+        """
+        glPushMatrix()
+        glLoadIdentity()
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+        glOrtho(0, window_width, 0, window_height, -1, 1)
+        glDisable(GL_DEPTH_TEST)
+
+        # Allow transparency
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+        background_color = (0, 0, 0, 0.8)
+        pyglet.graphics.draw(
+            4,
+            GL_QUADS,
+            ('v2i', (0, 0, window_width, 0, window_width, window_height, 0, window_height)),
+            ('c4f', background_color * 4)
+        )
+
+        glEnable(GL_DEPTH_TEST)
+        glPopMatrix()
+        glMatrixMode(GL_MODELVIEW)
+        glPopMatrix()
+
+        self.pause_label.draw()
 
 
 def setup_fog():
@@ -893,7 +970,7 @@ def setup():
 
 
 def main():
-    window = Window(width=800, height=600, caption='Pyglet', resizable=True)
+    window = Window(width=window_width, height=window_height, caption='Tempus Fugit Minecraft', resizable=True)
     # Hide the mouse cursor and prevent the mouse from leaving the window.
     window.set_exclusive_mouse(True)
     setup()
