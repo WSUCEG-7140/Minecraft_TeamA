@@ -673,20 +673,28 @@ class Window(pyglet.window.Window):
             mouse button was clicked.
 
         """
-        if self.exclusive:
-            vector = self.get_sight_vector()
-            block, previous = self.model.hit_test(self.position, vector)
-            if (button == mouse.RIGHT) or \
-                    ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
-                # ON OSX, control + left click = right click.
-                if previous:
-                    self.model.add_block(previous, self.block)
-            elif button == pyglet.window.mouse.LEFT and block:
-                texture = self.model.world[block]
-                if texture != STONE:
-                    self.model.remove_block(block)
-        else:
+        if not self.exclusive:
             self.set_exclusive_mouse(True)
+            return
+            
+        def can_place_block(button, modifiers, block):
+            return ((button == mouse.RIGHT) or ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL))) and block
+
+        def can_break_block(button, modifiers, block):
+            return button == mouse.LEFT and block and self.model.world[block] != STONE
+
+        sight_vector = self.get_sight_vector()
+        block, previous = self.model.hit_test(self.position, sight_vector)
+        if can_place_block(button, modifiers, previous):
+            self.handle_place_block(previous)
+        elif can_break_block(button, modifiers, block):
+            self.handle_break_block(block)
+    
+    def handle_place_block(self, block):
+        self.model.add_block(block, self.block)
+
+    def handle_break_block(self, block):
+        self.model.remove_block(block)
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Called when the player moves the mouse.
