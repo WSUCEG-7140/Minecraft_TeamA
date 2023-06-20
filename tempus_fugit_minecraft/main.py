@@ -194,8 +194,12 @@ class Model(object):
                             continue
                         self.add_block((x, y, z), t, immediate=False)
                 s -= d  # decrement side length so hills taper off
-
-        self.generate_clouds(n,100)
+        
+        #generate_clouds was here.
+        clouds = self.generate_clouds(n,150)
+        for cloud in clouds:
+            for x,c,z in cloud:
+                self.add_block((x,c,z), LIGHT_CLOUD, immediate=True)
 
     def hit_test(self, position, vector, max_distance=8):
         """ Line of sight search from current position. If a block is
@@ -438,23 +442,30 @@ class Model(object):
     
     def generate_clouds(self,n,num_of_clouds = 250):
         """
-        Generate clouds on the sky.
+        Generate the position of the clouds on the sky.
+        
+        Inputs: n = 1/2 size of the world.
+                num_of_clouds = default clouds to be generated =250
+        
+        Output: return a list of lists; each inner list represents a set of cloud blocks.
         """
         o = n - 10
-        
-        for _ in xrange(num_of_clouds):  # adjust this value for the number of clouds you want
+        clouds = list()
+        for _ in xrange(num_of_clouds):
             a = random.randint(-o, o)  # x position of the cloud
             b = random.randint(-o, o)  # z position of the cloud
-            c = 20 #random.randint(20, 50)  # y position of the cloud, adjust this for cloud height
-            s = random.randint(3, 6)  # 2 * s is the side length of the cloud
+            c = 20                     # y position of the cloud (height)
+            s = random.randint(3, 6)   # 2 * s is the side length of the cloud
             # for y in xrange(c, c + s):
             # for y in [c]:
+            single_cloud = []
             for x in xrange(a - s, a + s + 1):
                 for z in xrange(b - s, b + s + 1):
-                    # if (x - a) ** 2 + (z - b) ** 2 > (s + 1) ** 2:
-                    if (x - 0) ** 2 + (z - 0) ** 2 < 5 ** 2:
+                    if (x - a) ** 2 + (z - b) ** 2 > (s + 1) ** 2:
                         continue
-                    self.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
+                    single_cloud.append((x,c,z))
+            clouds.append(single_cloud)
+        return clouds
 
 
 class Window(pyglet.window.Window):
@@ -510,7 +521,7 @@ class Window(pyglet.window.Window):
 
         # Instance of the model that handles the world.
         self.model = Model()
-
+        
         # The label that is displayed in the top left of the canvas.
         self.label = pyglet.text.Label('', font_name='Arial', font_size=18,
                                        x=10, y=self.height - 10, anchor_x='left', anchor_y='top',
