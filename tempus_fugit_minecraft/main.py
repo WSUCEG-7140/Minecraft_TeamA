@@ -452,18 +452,17 @@ class Model(object):
         o = n - 10
         clouds = list()
         for _ in xrange(num_of_clouds):
-            a = random.randint(-o, o)  # x position of the cloud
-            b = random.randint(-o, o)  # z position of the cloud
-            c = 20                     # y position of the cloud (height)
+            cloud_center_x = random.randint(-o, o)  # x position of the cloud
+            cloud_center_z = random.randint(-o, o)  # z position of the cloud
+            cloud_center_y = 20                     # y position of the cloud (height)
             s = random.randint(3, 6)   # 2 * s is the side length of the cloud
-            # for y in xrange(c, c + s):
-            # for y in [c]:
+            
             single_cloud = []
-            for x in xrange(a - s, a + s + 1):
-                for z in xrange(b - s, b + s + 1):
-                    if (x - a) ** 2 + (z - b) ** 2 > (s + 1) ** 2:
+            for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
+                for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
+                    if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
                         continue
-                    single_cloud.append((x,c,z))
+                    single_cloud.append((x,cloud_center_y,z))
             clouds.append(single_cloud)
         return clouds
 
