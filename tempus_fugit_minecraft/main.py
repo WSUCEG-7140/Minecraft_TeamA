@@ -31,9 +31,6 @@ class Model(object):
         # This defines all the blocks that are currently in the world.
         self.world = {}
 
-        # Same mapping as `world` but only contains blocks that are shown.
-        self.shown = {}
-
         # Mapping from position to a pyglet `VertexList` for all shown blocks.
         self._shown = {}
 
@@ -158,7 +155,7 @@ class Model(object):
         del self.world[position]
         self.sectors[sectorize(position)].remove(position)
         if immediate:
-            if position in self.shown:
+            if position in self._shown:
                 self.hide_block(position)
             self.check_neighbors(position)
 
@@ -175,10 +172,10 @@ class Model(object):
             if key not in self.world:
                 continue
             if self.exposed(key):
-                if key not in self.shown:
+                if key not in self._shown:
                     self.show_block(key)
             else:
-                if key in self.shown:
+                if key in self._shown:
                     self.hide_block(key)
 
     def show_block(self, position, immediate=True):
@@ -194,7 +191,6 @@ class Model(object):
 
         """
         texture = self.world[position]
-        self.shown[position] = texture
         if immediate:
             self._show_block(position, texture)
         else:
@@ -233,7 +229,6 @@ class Model(object):
             Whether or not to immediately remove the block from the canvas.
 
         """
-        self.shown.pop(position)
         if immediate:
             self._hide_block(position)
         else:
@@ -251,7 +246,7 @@ class Model(object):
 
         """
         for position in self.sectors.get(sector, []):
-            if position not in self.shown and self.exposed(position):
+            if position not in self._shown and self.exposed(position):
                 self.show_block(position, False)
 
     def hide_sector(self, sector):
@@ -260,7 +255,7 @@ class Model(object):
 
         """
         for position in self.sectors.get(sector, []):
-            if position in self.shown:
+            if position in self._shown:
                 self.hide_block(position, False)
 
     def change_sectors(self, before, after):
