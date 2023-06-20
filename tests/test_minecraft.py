@@ -3,10 +3,6 @@ from tempus_fugit_minecraft.main import Model,Window
 from tempus_fugit_minecraft.main import SAND, GRASS, BRICK, LIGHT_CLOUD, DARK_CLOUD
 
 
-
-
-
-
 def test_light_clouds_created_dynamically():
     model = Model()
     model.generate_clouds(80, 100)
