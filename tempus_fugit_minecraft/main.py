@@ -81,6 +81,8 @@ GRASS = tex_coords((1, 0), (0, 1), (0, 0))
 SAND = tex_coords((1, 1), (1, 1), (1, 1))
 BRICK = tex_coords((2, 0), (2, 0), (2, 0))
 STONE = tex_coords((2, 1), (2, 1), (2, 1))
+LIGHT_CLOUD = tex_coords((3, 0), (3, 0), (3, 0)) 
+DARK_CLOUD = tex_coords((3, 1), (3, 1), (3, 1))
 
 FACES = [
     (0, 1, 0),
@@ -192,6 +194,12 @@ class Model(object):
                             continue
                         self.add_block((x, y, z), t, immediate=False)
                 s -= d  # decrement side length so hills taper off
+        
+        #generate_clouds was here.
+        clouds = self.generate_clouds(n,150)
+        for cloud in clouds:
+            for x,c,z in cloud:
+                self.add_block((x,c,z), LIGHT_CLOUD, immediate=True)
 
     def hit_test(self, position, vector, max_distance=8):
         """ Line of sight search from current position. If a block is
@@ -430,6 +438,33 @@ class Model(object):
         """
         while self.queue:
             self._dequeue()
+    
+    
+    def generate_clouds(self,n,num_of_clouds = 250):
+        """
+        Generate the position of the clouds on the sky.
+        
+        Inputs: n = 1/2 size of the world.
+                num_of_clouds = default clouds to be generated =250
+        
+        Output: return a list of lists; each inner list represents a set of cloud blocks.
+        """
+        o = n - 10
+        clouds = list()
+        for _ in xrange(num_of_clouds):
+            cloud_center_x = random.randint(-o, o)  # x position of the cloud
+            cloud_center_z = random.randint(-o, o)  # z position of the cloud
+            cloud_center_y = 20                     # y position of the cloud (height)
+            s = random.randint(3, 6)   # 2 * s is the side length of the cloud
+            
+            single_cloud = []
+            for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
+                for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
+                    if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
+                        continue
+                    single_cloud.append((x,cloud_center_y,z))
+            clouds.append(single_cloud)
+        return clouds
 
 
 class Window(pyglet.window.Window):
@@ -485,7 +520,7 @@ class Window(pyglet.window.Window):
 
         # Instance of the model that handles the world.
         self.model = Model()
-
+        
         # The label that is displayed in the top left of the canvas.
         self.label = pyglet.text.Label('', font_name='Arial', font_size=18,
                                        x=10, y=self.height - 10, anchor_x='left', anchor_y='top',

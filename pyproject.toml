@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 name = "tempus-fugit-minecraft"
 version = "0.1.0"
 description = ""
-authors = ["Mahmoud Elbasiouny <elbasiouny.mahmoud@gmail.com>"]
+authors = ["Mahmoud Elbasiouny <elbasiouny.mahmoud@gmail.com>","Abubakur Sait <bakursait@gmail.com>"]
 readme = "README.md"
 packages = [{include = "tempus_fugit_minecraft"}]
 
@@ -14,8 +14,9 @@ packages = [{include = "tempus_fugit_minecraft"}]
 minecraft = "tempus_fugit_minecraft.main:main"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.7"
 pyglet = "1.5.27"
+exceptiongroup = "^1.1.1"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.1"
