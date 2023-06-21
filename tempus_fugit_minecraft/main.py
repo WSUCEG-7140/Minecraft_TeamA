@@ -16,23 +16,6 @@ TICKS_PER_SEC = 60
 # Size of sectors used to ease block loading.
 SECTOR_SIZE = 16
 
-WALKING_SPEED = 5
-FLYING_SPEED = 15
-
-GRAVITY = 20.0
-MAX_JUMP_HEIGHT = 1.0  # About the height of a block.
-# To derive the formula for calculating jump speed, first solve
-#    v_t = v_0 + a * t
-# for the time at which you achieve maximum height, where a is the acceleration
-# due to gravity and v_t = 0. This gives:
-#    t = - v_0 / a
-# Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in
-#    s = s_0 + v_0 * t + (a * t^2) / 2
-JUMP_SPEED = math.sqrt(2 * GRAVITY * MAX_JUMP_HEIGHT)
-TERMINAL_VELOCITY = 50
-
-PLAYER_HEIGHT = 2
-
 if sys.version_info[0] >= 3:
     xrange = range
 
@@ -127,14 +110,6 @@ def sectorize(position):
     x, y, z = normalize(position)
     x, y, z = x // SECTOR_SIZE, y // SECTOR_SIZE, z // SECTOR_SIZE
     return x, 0, z
-
-
-def speed_up():
-        global WALKING_SPEED
-
-        if WALKING_SPEED <= 15:
-                WALKING_SPEED += 5
-        return WALKING_SPEED
 
 
 class Model(object):
@@ -483,6 +458,23 @@ class Window(pyglet.window.Window):
         # Whether or not the window exclusively captures the mouse.
         self.exclusive = False
 
+        self.walking_speed = 5
+        self.FLYING_SPEED = 15
+
+        self.GRAVITY = 20.0
+        self.MAX_JUMP_HEIGHT = 1.0  # About the height of a block.
+        # To derive the formula for calculating jump speed, first solve
+        #    v_t = v_0 + a * t
+        # for the time at which you achieve maximum height, where a is the acceleration
+        # due to gravity and v_t = 0. This gives:
+        #    t = - v_0 / a
+        # Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in
+        #    s = s_0 + v_0 * t + (a * t^2) / 2
+        self.JUMP_SPEED = math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT)
+        self.TERMINAL_VELOCITY = 50
+
+        self.PLAYER_HEIGHT = 2
+
         # When flying gravity has no effect and speed is increased.
         self.flying = False
 
@@ -635,7 +627,7 @@ class Window(pyglet.window.Window):
 
         """
         # walking
-        speed = FLYING_SPEED if self.flying else WALKING_SPEED
+        speed = self.FLYING_SPEED if self.flying else self.walking_speed
         d = dt * speed  # distance covered this tick.
         dx, dy, dz = self.get_motion_vector()
         # New position in space, before accounting for gravity.
@@ -645,12 +637,12 @@ class Window(pyglet.window.Window):
             # Update your vertical speed: if you are falling, speed up until you
             # hit terminal velocity; if you are jumping, slow down until you
             # start falling.
-            self.dy -= dt * GRAVITY
-            self.dy = max(self.dy, -TERMINAL_VELOCITY)
+            self.dy -= dt * self.GRAVITY
+            self.dy = max(self.dy, -self.TERMINAL_VELOCITY)
             dy += self.dy * dt
         # collisions
         x, y, z = self.position
-        x, y, z = self.collide((x + dx, y + dy, z + dz), PLAYER_HEIGHT)
+        x, y, z = self.collide((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
         self.position = (x, y, z)
 
     def collide(self, position, height):
@@ -772,7 +764,7 @@ class Window(pyglet.window.Window):
             self.strafe[1] += 1
         elif symbol == key.SPACE:
             if self.dy == 0:
-                self.dy = JUMP_SPEED
+                self.dy = self.JUMP_SPEED
         elif symbol == key.ESCAPE:
             self.set_exclusive_mouse(False)
         elif symbol == key.TAB:
@@ -781,8 +773,11 @@ class Window(pyglet.window.Window):
             index = (symbol - self.num_keys[0]) % len(self.inventory)
             self.block = self.inventory[index]
         elif symbol == key.UP:
-            speed_up()
+            self.speed_up()
 
+    def speed_up(self):
+        if self.walking_speed <= 15:
+            self.walking_speed += 5
 
     def on_key_release(self, symbol, modifiers):
         """ Called when the player releases a key. See pyglet docs for key
