@@ -129,6 +129,14 @@ def sectorize(position):
     return x, 0, z
 
 
+def speed_up():
+        global WALKING_SPEED
+
+        if WALKING_SPEED <= 15:
+                WALKING_SPEED += 5
+        return WALKING_SPEED
+
+
 class Model(object):
 
     def __init__(self):
@@ -772,6 +780,9 @@ class Window(pyglet.window.Window):
         elif symbol in self.num_keys:
             index = (symbol - self.num_keys[0]) % len(self.inventory)
             self.block = self.inventory[index]
+        elif symbol == key.UP:
+            speed_up()
+
 
     def on_key_release(self, symbol, modifiers):
         """ Called when the player releases a key. See pyglet docs for key
