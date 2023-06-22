@@ -768,6 +768,19 @@ class Window(pyglet.window.Window):
             The movement of the mouse.
 
         """
+        if self.paused:
+            if self.within_label(x, y, self.resume_label) or self.within_label(x, y, self.quit_label):
+                self.set_mouse_cursor(self.get_system_mouse_cursor(self.CURSOR_HAND))
+            else:
+                self.set_mouse_cursor(self.get_system_mouse_cursor(self.CURSOR_DEFAULT))
+
+            for label in [self.resume_label, self.quit_label]:
+                if self.within_label(x, y, label):
+                    label.color = (150, 150, 150, 255)  # grey
+                else:
+                    label.color = (255, 255, 255, 255)  # white
+                label.draw()
+
         if self.exclusive and not self.paused:
             m = 0.15
             x, y = self.rotation
