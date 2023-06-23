@@ -423,7 +423,7 @@ class Model(object):
             self._dequeue()
 
     @staticmethod
-    def generate_clouds(self, n, num_of_clouds=250):
+    def generate_clouds(n, num_of_clouds=250):
         """
         Generate the position of the clouds on the sky.
 
@@ -643,18 +643,20 @@ class Window(pyglet.window.Window):
             The change in time since the last call.
 
         """
-        if not self.paused:
-            self.model.process_queue()
-            sector = sectorize(self.position)
-            if sector != self.sector:
-                self.model.change_sectors(self.sector, sector)
-                if self.sector is None:
-                    self.model.process_entire_queue()
-                self.sector = sector
-            m = 8
-            dt = min(dt, 0.2)
-            for _ in xrange(m):
-                self._update(dt / m)
+        if self.paused:
+            return
+
+        self.model.process_queue()
+        sector = sectorize(self.position)
+        if sector != self.sector:
+            self.model.change_sectors(self.sector, sector)
+            if self.sector is None:
+                self.model.process_entire_queue()
+            self.sector = sector
+        m = 8
+        dt = min(dt, 0.2)
+        for _ in xrange(m):
+            self._update(dt / m)
 
     def _update(self, dt):
         """ Private implementation of the `update()` method. This is where most
@@ -753,12 +755,10 @@ class Window(pyglet.window.Window):
                 self.resume_game()
             elif self.within_label(x, y, self.quit_label):
                 self.close()
-
-        if self.exclusive and not self.paused:
+        elif self.exclusive:
             vector = self.get_sight_vector()
             block, previous = self.model.hit_test(self.position, vector)
-            if (button == mouse.RIGHT) or \
-                    ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
+            if (button == mouse.RIGHT) or ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
                 # ON OSX, control + left click = right click.
                 if previous:
                     self.model.add_block(previous, self.block)
@@ -766,9 +766,6 @@ class Window(pyglet.window.Window):
                 texture = self.model.world[block]
                 if texture != STONE:
                     self.model.remove_block(block)
-        else:
-            if not self.paused:
-                self.set_exclusive_mouse(True)
 
     @staticmethod
     def within_label(x, y, label):
@@ -813,12 +810,15 @@ class Window(pyglet.window.Window):
                     label.color = (255, 255, 255, 255)  # white
                 label.draw()
 
-        if self.exclusive and not self.paused:
-            m = 0.15
-            x, y = self.rotation
-            x, y = x + dx * m, y + dy * m
-            y = max(-90, min(90, y))
-            self.rotation = (x, y)
+        # Only rotate the camera if the mouse is captured.
+        if not self.exclusive or self.paused:
+            return
+
+        m = 0.15
+        x, y = self.rotation
+        x, y = x + dx * m, y + dy * m
+        y = max(-90, min(90, y))
+        self.rotation = (x, y)
 
     def on_key_press(self, symbol, modifiers):
         """ Called when the player presses a key. See pyglet docs for key
@@ -832,6 +832,15 @@ class Window(pyglet.window.Window):
             Number representing any modifying keys that were pressed.
 
         """
+        if symbol == key.ESCAPE:
+            if self.paused:
+                self.resume_game()
+            else:
+                self.pause_game()
+
+        if self.paused:
+            return
+
         if symbol == key.W:
             self.strafe[0] -= 1
         elif symbol == key.S:
@@ -843,14 +852,9 @@ class Window(pyglet.window.Window):
         elif symbol == key.SPACE:
             if self.dy == 0:
                 self.dy = self.JUMP_SPEED
-        elif symbol == key.ESCAPE:
-            if not self.paused:
-                self.pause_game()
-            else:
-                self.resume_game()
-        elif symbol == key.TAB and not self.paused:
+        elif symbol == key.TAB:
             self.flying = not self.flying
-        elif symbol in self.num_keys and not self.paused:
+        elif symbol in self.num_keys:
             index = (symbol - self.num_keys[0]) % len(self.inventory)
             self.block = self.inventory[index]
         elif symbol == key.UP:
