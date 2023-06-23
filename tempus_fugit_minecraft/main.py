@@ -19,23 +19,6 @@ TICKS_PER_SEC = 60
 # Size of sectors used to ease block loading.
 SECTOR_SIZE = 16
 
-WALKING_SPEED = 5
-FLYING_SPEED = 15
-
-GRAVITY = 20.0
-MAX_JUMP_HEIGHT = 1.0  # About the height of a block.
-# To derive the formula for calculating jump speed, first solve
-#    v_t = v_0 + a * t
-# for the time at which you achieve maximum height, where a is the acceleration
-# due to gravity and v_t = 0. This gives:
-#    t = - v_0 / a
-# Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in
-#    s = s_0 + v_0 * t + (a * t^2) / 2
-JUMP_SPEED = math.sqrt(2 * GRAVITY * MAX_JUMP_HEIGHT)
-TERMINAL_VELOCITY = 50
-
-PLAYER_HEIGHT = 2
-
 if sys.version_info[0] >= 3:
     xrange = range
 
@@ -84,6 +67,8 @@ GRASS = tex_coords((1, 0), (0, 1), (0, 0))
 SAND = tex_coords((1, 1), (1, 1), (1, 1))
 BRICK = tex_coords((2, 0), (2, 0), (2, 0))
 STONE = tex_coords((2, 1), (2, 1), (2, 1))
+LIGHT_CLOUD = tex_coords((3, 0), (3, 0), (3, 0))
+DARK_CLOUD = tex_coords((3, 1), (3, 1), (3, 1))
 
 FACES = [
     (0, 1, 0),
@@ -195,6 +180,12 @@ class Model(object):
                             continue
                         self.add_block((x, y, z), t, immediate=False)
                 s -= d  # decrement side length so hills taper off
+
+        # generate_clouds was here.
+        clouds = self.generate_clouds(n, 150)
+        for cloud in clouds:
+            for x,c,z in cloud:
+                self.add_block((x,c,z), LIGHT_CLOUD, immediate=True)
 
     def hit_test(self, position, vector, max_distance=8):
         """ Line of sight search from current position. If a block is
@@ -434,6 +425,32 @@ class Model(object):
         while self.queue:
             self._dequeue()
 
+    def generate_clouds(self,n,num_of_clouds = 250):
+        """
+        Generate the position of the clouds on the sky.
+
+        Inputs: n = 1/2 size of the world.
+                num_of_clouds = default clouds to be generated =250
+
+        Output: return a list of lists; each inner list represents a set of cloud blocks.
+        """
+        o = n - 10
+        clouds = list()
+        for _ in xrange(num_of_clouds):
+            cloud_center_x = random.randint(-o, o)  # x position of the cloud
+            cloud_center_z = random.randint(-o, o)  # z position of the cloud
+            cloud_center_y = 20                     # y position of the cloud (height)
+            s = random.randint(3, 6)   # 2 * s is the side length of the cloud
+
+            single_cloud = []
+            for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
+                for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
+                    if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
+                        continue
+                    single_cloud.append((x,cloud_center_y,z))
+            clouds.append(single_cloud)
+        return clouds
+
 
 class Window(pyglet.window.Window):
 
@@ -442,6 +459,23 @@ class Window(pyglet.window.Window):
 
         # Whether or not the window exclusively captures the mouse.
         self.exclusive = False
+
+        self.walking_speed = 5
+        self.FLYING_SPEED = 15
+
+        self.GRAVITY = 20.0
+        self.MAX_JUMP_HEIGHT = 1.0  # About the height of a block.
+        # To derive the formula for calculating jump speed, first solve
+        #    v_t = v_0 + a * t
+        # for the time at which you achieve maximum height, where a is the acceleration
+        # due to gravity and v_t = 0. This gives:
+        #    t = - v_0 / a
+        # Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in
+        #    s = s_0 + v_0 * t + (a * t^2) / 2
+        self.JUMP_SPEED = math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT)
+        self.TERMINAL_VELOCITY = 50
+
+        self.PLAYER_HEIGHT = 2
 
         # When flying gravity has no effect and speed is increased.
         self.flying = False
@@ -635,7 +669,7 @@ class Window(pyglet.window.Window):
 
         """
         # walking
-        speed = FLYING_SPEED if self.flying else WALKING_SPEED
+        speed = self.FLYING_SPEED if self.flying else self.walking_speed
         d = dt * speed  # distance covered this tick.
         dx, dy, dz = self.get_motion_vector()
         # New position in space, before accounting for gravity.
@@ -645,12 +679,12 @@ class Window(pyglet.window.Window):
             # Update your vertical speed: if you are falling, speed up until you
             # hit terminal velocity; if you are jumping, slow down until you
             # start falling.
-            self.dy -= dt * GRAVITY
-            self.dy = max(self.dy, -TERMINAL_VELOCITY)
+            self.dy -= dt * self.GRAVITY
+            self.dy = max(self.dy, -self.TERMINAL_VELOCITY)
             dy += self.dy * dt
         # collisions
         x, y, z = self.position
-        x, y, z = self.collide((x + dx, y + dy, z + dz), PLAYER_HEIGHT)
+        x, y, z = self.collide((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
         self.position = (x, y, z)
 
     def collide(self, position, height):
@@ -809,7 +843,7 @@ class Window(pyglet.window.Window):
             self.strafe[1] += 1
         elif symbol == key.SPACE:
             if self.dy == 0:
-                self.dy = JUMP_SPEED
+                self.dy = self.JUMP_SPEED
         elif symbol == key.ESCAPE:
             if not self.paused:
                 self.pause_game()
@@ -820,6 +854,12 @@ class Window(pyglet.window.Window):
         elif symbol in self.num_keys and not self.paused:
             index = (symbol - self.num_keys[0]) % len(self.inventory)
             self.block = self.inventory[index]
+        elif symbol == key.UP:
+            self.speed_up()
+
+    def speed_up(self):
+        if self.walking_speed <= 15:
+            self.walking_speed += 5
 
     def pause_game(self):
         """ Pauses the game and bring up the pause menu.
