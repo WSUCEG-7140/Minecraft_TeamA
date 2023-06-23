@@ -551,7 +551,7 @@ class Window(pyglet.window.Window):
             width=90,
             height=35,
             x=self.width // 2,
-            y=self.height // 2 - 50,
+            y=self.height // 2 - 45,
             anchor_x="center",
         )
         self.quit_label = pyglet.text.Label(
@@ -561,7 +561,7 @@ class Window(pyglet.window.Window):
             width=50,
             height=35,
             x=self.width // 2,
-            y=self.height // 2 - 85,
+            y=self.height // 2 - 90,
             anchor_x="center",
         )
 
@@ -922,8 +922,8 @@ class Window(pyglet.window.Window):
     def center_labels(self, width, height):
         self.pause_label.x = self.resume_label.x = self.quit_label.x = width // 2
         self.pause_label.y = height // 2
-        self.resume_label.y = height // 2 - 50
-        self.quit_label.y = height // 2 - 85
+        self.resume_label.y = height // 2 - 45
+        self.quit_label.y = height // 2 - 90
 
     def set_2d(self):
         """ Configure OpenGL to draw in 2d.
