@@ -1,20 +1,20 @@
 from __future__ import division
 
-import sys
 import math
 import random
+import sys
 import time
-
 from collections import deque
+
 from pyglet import image
 from pyglet.gl import *
 from pyglet.graphics import TextureGroup
 from pyglet.window import key, mouse
 
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
 TICKS_PER_SEC = 60
-
-# Size of sectors used to ease block loading.
-SECTOR_SIZE = 16
+SECTOR_SIZE = 16  # Size of sectors used to ease block loading.
 
 if sys.version_info[0] >= 3:
     xrange = range
@@ -64,7 +64,7 @@ GRASS = tex_coords((1, 0), (0, 1), (0, 0))
 SAND = tex_coords((1, 1), (1, 1), (1, 1))
 BRICK = tex_coords((2, 0), (2, 0), (2, 0))
 STONE = tex_coords((2, 1), (2, 1), (2, 1))
-LIGHT_CLOUD = tex_coords((3, 0), (3, 0), (3, 0)) 
+LIGHT_CLOUD = tex_coords((3, 0), (3, 0), (3, 0))
 DARK_CLOUD = tex_coords((3, 1), (3, 1), (3, 1))
 
 FACES = [
@@ -177,12 +177,12 @@ class Model(object):
                             continue
                         self.add_block((x, y, z), t, immediate=False)
                 s -= d  # decrement side length so hills taper off
-        
-        #generate_clouds was here.
-        clouds = self.generate_clouds(n,150)
+
+        # generate_clouds was here.
+        clouds = self.generate_clouds(n, 150)
         for cloud in clouds:
-            for x,c,z in cloud:
-                self.add_block((x,c,z), LIGHT_CLOUD, immediate=True)
+            for x, c, z in cloud:
+                self.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
 
     def hit_test(self, position, vector, max_distance=8):
         """ Line of sight search from current position. If a block is
@@ -421,15 +421,15 @@ class Model(object):
         """
         while self.queue:
             self._dequeue()
-    
-    
-    def generate_clouds(self,n,num_of_clouds = 250):
+
+    @staticmethod
+    def generate_clouds(n, num_of_clouds=250):
         """
         Generate the position of the clouds on the sky.
-        
+
         Inputs: n = 1/2 size of the world.
                 num_of_clouds = default clouds to be generated =250
-        
+
         Output: return a list of lists; each inner list represents a set of cloud blocks.
         """
         o = n - 10
@@ -439,7 +439,7 @@ class Model(object):
             cloud_center_z = random.randint(-o, o)  # z position of the cloud
             cloud_center_y = 20                     # y position of the cloud (height)
             s = random.randint(3, 6)   # 2 * s is the side length of the cloud
-            
+
             single_cloud = []
             for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
                 for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
@@ -520,11 +520,50 @@ class Window(pyglet.window.Window):
 
         # Instance of the model that handles the world.
         self.model = Model()
-        
+
+        self.paused = False
+
         # The label that is displayed in the top left of the canvas.
-        self.label = pyglet.text.Label('', font_name='Arial', font_size=18,
-                                       x=10, y=self.height - 10, anchor_x='left', anchor_y='top',
-                                       color=(0, 0, 0, 255))
+        self.label = pyglet.text.Label(
+            text='',
+            font_name='Arial',
+            font_size=18,
+            x=10,
+            y=self.height - 10,
+            anchor_x='left',
+            anchor_y='top',
+            color=(0, 0, 0, 255)
+        )
+        self.pause_label = pyglet.text.Label(
+            text="Paused",
+            font_name="Arial",
+            font_size=36,
+            width=100,
+            height=30,
+            x=self.width // 2,
+            y=self.height // 2,
+            anchor_x="center",
+        )
+        self.resume_label = pyglet.text.Label(
+            text="Resume",
+            font_name="Arial",
+            font_size=18,
+            width=90,
+            height=35,
+            x=self.width // 2,
+            y=self.height // 2 - 45,
+            anchor_x="center",
+        )
+        self.quit_label = pyglet.text.Label(
+            text="Quit",
+            font_name="Arial",
+            font_size=18,
+            width=50,
+            height=35,
+            x=self.width // 2,
+            y=self.height // 2 - 90,
+            anchor_x="center",
+        )
 
         # This call schedules the `update()` method to be called
         # TICKS_PER_SEC. This is the main game event loop.
@@ -604,6 +643,9 @@ class Window(pyglet.window.Window):
             The change in time since the last call.
 
         """
+        if self.paused:
+            return
+
         self.model.process_queue()
         sector = sectorize(self.position)
         if sector != self.sector:
@@ -708,11 +750,15 @@ class Window(pyglet.window.Window):
             mouse button was clicked.
 
         """
-        if self.exclusive:
+        if self.paused:
+            if self.within_label(x, y, self.resume_label):
+                self.resume_game()
+            elif self.within_label(x, y, self.quit_label):
+                self.close()
+        elif self.exclusive:
             vector = self.get_sight_vector()
             block, previous = self.model.hit_test(self.position, vector)
-            if (button == mouse.RIGHT) or \
-                    ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
+            if (button == mouse.RIGHT) or ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
                 # ON OSX, control + left click = right click.
                 if previous:
                     self.model.add_block(previous, self.block)
@@ -720,8 +766,24 @@ class Window(pyglet.window.Window):
                 texture = self.model.world[block]
                 if texture != STONE:
                     self.model.remove_block(block)
-        else:
-            self.set_exclusive_mouse(True)
+
+    @staticmethod
+    def within_label(x, y, label):
+        """ Returns True if the given (x, y) coordinates are within the given
+        label.
+
+        Parameters
+        ----------
+        x, y : int
+            The coordinates of the mouse click.
+
+        label : pyglet.text.Label
+            The label to check against.
+
+        """
+        x_within_range = label.x - label.width // 2 <= x <= label.x + label.width // 2
+        y_within_range = label.y <= y <= label.y + label.height // 2
+        return x_within_range and y_within_range
 
     def on_mouse_motion(self, x, y, dx, dy):
         """ Called when the player moves the mouse.
@@ -735,12 +797,28 @@ class Window(pyglet.window.Window):
             The movement of the mouse.
 
         """
-        if self.exclusive:
-            m = 0.15
-            x, y = self.rotation
-            x, y = x + dx * m, y + dy * m
-            y = max(-90, min(90, y))
-            self.rotation = (x, y)
+        if self.paused:
+            if self.within_label(x, y, self.resume_label) or self.within_label(x, y, self.quit_label):
+                self.set_mouse_cursor(self.get_system_mouse_cursor(self.CURSOR_HAND))
+            else:
+                self.set_mouse_cursor(self.get_system_mouse_cursor(self.CURSOR_DEFAULT))
+
+            for label in [self.resume_label, self.quit_label]:
+                if self.within_label(x, y, label):
+                    label.color = (150, 150, 150, 255)  # grey
+                else:
+                    label.color = (255, 255, 255, 255)  # white
+                label.draw()
+
+        # Only rotate the camera if the mouse is captured.
+        if not self.exclusive or self.paused:
+            return
+
+        m = 0.15
+        x, y = self.rotation
+        x, y = x + dx * m, y + dy * m
+        y = max(-90, min(90, y))
+        self.rotation = (x, y)
 
     def on_key_press(self, symbol, modifiers):
         """ Called when the player presses a key. See pyglet docs for key
@@ -754,6 +832,15 @@ class Window(pyglet.window.Window):
             Number representing any modifying keys that were pressed.
 
         """
+        if symbol == key.ESCAPE:
+            if self.paused:
+                self.resume_game()
+            else:
+                self.pause_game()
+
+        if self.paused:
+            return
+
         if symbol == key.W:
             self.strafe[0] -= 1
         elif symbol == key.S:
@@ -765,8 +852,6 @@ class Window(pyglet.window.Window):
         elif symbol == key.SPACE:
             if self.dy == 0:
                 self.dy = self.JUMP_SPEED
-        elif symbol == key.ESCAPE:
-            self.set_exclusive_mouse(False)
         elif symbol == key.TAB:
             self.flying = not self.flying
         elif symbol in self.num_keys:
@@ -778,6 +863,21 @@ class Window(pyglet.window.Window):
     def speed_up(self):
         if self.walking_speed <= 15:
             self.walking_speed += 5
+
+    def pause_game(self):
+        """ Pauses the game and bring up the pause menu.
+
+        """
+        self.paused = True
+        self.set_mouse_visible(True)
+        self.set_exclusive_mouse(False)
+
+    def resume_game(self):
+        """Resumes the game by restoring the game window to its original state.
+
+        """
+        self.paused = False
+        self.set_exclusive_mouse(True)
 
     def on_key_release(self, symbol, modifiers):
         """ Called when the player releases a key. See pyglet docs for key
@@ -815,6 +915,15 @@ class Window(pyglet.window.Window):
             4,
             ('v2i', (x - n, y, x + n, y, x, y - n, x, y + n))
         )
+
+        if self.paused:
+            self.center_labels(width, height)
+
+    def center_labels(self, width, height):
+        self.pause_label.x = self.resume_label.x = self.quit_label.x = width // 2
+        self.pause_label.y = height // 2
+        self.resume_label.y = height // 2 - 45
+        self.quit_label.y = height // 2 - 90
 
     def set_2d(self):
         """ Configure OpenGL to draw in 2d.
@@ -861,6 +970,43 @@ class Window(pyglet.window.Window):
         self.set_2d()
         self.draw_label()
         self.draw_reticle()
+
+        if self.paused:
+            self.draw_pause_menu()
+
+    def draw_pause_menu(self):
+        """Draws the components of the pause menu, including the background, the pause text, and the resume and
+        quit buttons.
+
+        """
+        glPushMatrix()
+        glLoadIdentity()
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+        glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, -1, 1)
+        glDisable(GL_DEPTH_TEST)
+
+        # Transparency
+        glEnable(GL_BLEND)
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+
+        background_color = (0, 0, 0, 0.8)
+        pyglet.graphics.draw(
+            4,
+            GL_QUADS,
+            ('v2i', (0, 0, WINDOW_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, WINDOW_HEIGHT)),
+            ('c4f', background_color * 4)
+        )
+
+        glEnable(GL_DEPTH_TEST)
+        glPopMatrix()
+        glMatrixMode(GL_MODELVIEW)
+        glPopMatrix()
+
+        self.pause_label.draw()
+        self.resume_label.draw()
+        self.quit_label.draw()
 
     def draw_focused_block(self):
         """ Draw black edges around the block that is currently under the
@@ -934,7 +1080,12 @@ def setup():
 
 
 def main():
-    window = Window(width=800, height=600, caption='Pyglet', resizable=True)
+    window = Window(
+        width=WINDOW_WIDTH,
+        height=WINDOW_HEIGHT,
+        caption='Tempus Fugit Minecraft',
+        resizable=True
+    )
     # Hide the mouse cursor and prevent the mouse from leaving the window.
     window.set_exclusive_mouse(True)
     setup()
