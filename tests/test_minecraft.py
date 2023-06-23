@@ -20,13 +20,26 @@ class TestSpeed:
             window.speed_up()
         assert window.walking_speed == 20  # 20 is the max speed
     
-    def test_up_key(self):
+ #   def test_up_key(self):
         window = Window()
         assert window.walking_speed == 5
 
         window.on_key_press(pyglet.window.key.UP, Mock())
         assert window.walking_speed == 10
+    
+    def test_speed_down(self):
+        window = Window()
+        window.speed_up()
+        
+        assert window.walking_speed == 10
 
+        window.speed_down() 
+        assert window.walking_speed == 5       
+        
+        for _ in range(0,9):
+          window.speed_down()
+
+        assert window.walking_speed > 0 # check player will NOT stop walking   
 
 class TestClouds:
     def test_light_clouds_created_dynamically(self):
