@@ -11,7 +11,6 @@ from pyglet.gl import *
 from pyglet.graphics import TextureGroup
 from pyglet.window import key, mouse
 
-
 window_width = 800
 window_height = 600
 
@@ -494,15 +493,15 @@ class Window(pyglet.window.Window):
 
         # The label that is displayed in the top left of the canvas.
         self.label = pyglet.text.Label(
-            text = '',
+            text='',
             font_name='Arial',
             font_size=18,
             x=10,
             y=self.height - 10,
             anchor_x='left',
             anchor_y='top',
-            color=(0, 0, 0, 255))
-
+            color=(0, 0, 0, 255)
+        )
         self.pause_label = pyglet.text.Label(
             text="Paused",
             font_name="Arial",
