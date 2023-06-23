@@ -11,13 +11,10 @@ from pyglet.gl import *
 from pyglet.graphics import TextureGroup
 from pyglet.window import key, mouse
 
-window_width = 800
-window_height = 600
-
+WINDOW_WIDTH = 800
+WINDOW_HEIGHT = 600
 TICKS_PER_SEC = 60
-
-# Size of sectors used to ease block loading.
-SECTOR_SIZE = 16
+SECTOR_SIZE = 16  # Size of sectors used to ease block loading.
 
 if sys.version_info[0] >= 3:
     xrange = range
@@ -184,8 +181,8 @@ class Model(object):
         # generate_clouds was here.
         clouds = self.generate_clouds(n, 150)
         for cloud in clouds:
-            for x,c,z in cloud:
-                self.add_block((x,c,z), LIGHT_CLOUD, immediate=True)
+            for x, c, z in cloud:
+                self.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
 
     def hit_test(self, position, vector, max_distance=8):
         """ Line of sight search from current position. If a block is
@@ -425,7 +422,8 @@ class Model(object):
         while self.queue:
             self._dequeue()
 
-    def generate_clouds(self,n,num_of_clouds = 250):
+    @staticmethod
+    def generate_clouds(self, n, num_of_clouds=250):
         """
         Generate the position of the clouds on the sky.
 
@@ -772,7 +770,8 @@ class Window(pyglet.window.Window):
             if not self.paused:
                 self.set_exclusive_mouse(True)
 
-    def within_label(self, x, y, label):
+    @staticmethod
+    def within_label(x, y, label):
         """ Returns True if the given (x, y) coordinates are within the given
         label.
 
@@ -981,7 +980,7 @@ class Window(pyglet.window.Window):
         glMatrixMode(GL_PROJECTION)
         glPushMatrix()
         glLoadIdentity()
-        glOrtho(0, window_width, 0, window_height, -1, 1)
+        glOrtho(0, WINDOW_WIDTH, 0, WINDOW_HEIGHT, -1, 1)
         glDisable(GL_DEPTH_TEST)
 
         # Transparency
@@ -992,7 +991,7 @@ class Window(pyglet.window.Window):
         pyglet.graphics.draw(
             4,
             GL_QUADS,
-            ('v2i', (0, 0, window_width, 0, window_width, window_height, 0, window_height)),
+            ('v2i', (0, 0, WINDOW_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, WINDOW_HEIGHT)),
             ('c4f', background_color * 4)
         )
 
@@ -1077,7 +1076,12 @@ def setup():
 
 
 def main():
-    window = Window(width=window_width, height=window_height, caption='Tempus Fugit Minecraft', resizable=True)
+    window = Window(
+        width=WINDOW_WIDTH,
+        height=WINDOW_HEIGHT,
+        caption='Tempus Fugit Minecraft',
+        resizable=True
+    )
     # Hide the mouse cursor and prevent the mouse from leaving the window.
     window.set_exclusive_mouse(True)
     setup()
