@@ -104,3 +104,12 @@ class TestPauseMenu:
         assert window.pause_label.y == RESIZE_HEIGHT // 2
         assert window.resume_label.y == RESIZE_HEIGHT // 2 - 50
         assert window.quit_label.y == RESIZE_HEIGHT // 2 - 85
+
+    def test_on_mouse_motion(self, window):
+        self.mock_pause(window)
+        assert window.resume_label.color == (255, 255, 255, 255)
+        assert isinstance(window._mouse_cursor, type(window.get_system_mouse_cursor(window.CURSOR_DEFAULT)))
+
+        window.on_mouse_motion(window.resume_label.x, window.resume_label.y, 1, 0)
+        assert window.resume_label.color == (150, 150, 150, 255)
+        assert isinstance(window._mouse_cursor, type(window.get_system_mouse_cursor(window.CURSOR_HAND)))
