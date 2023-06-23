@@ -859,10 +859,15 @@ class Window(pyglet.window.Window):
             self.block = self.inventory[index]
         elif symbol == key.UP:
             self.speed_up()
+        elif symbol == key.DOWN:
+            self.speed_down()
 
     def speed_up(self):
         if self.walking_speed <= 15:
             self.walking_speed += 5
+    def speed_down(self):
+        if self.walking_speed > 5:
+            self.walking_speed -= 5
 
     def pause_game(self):
         """ Pauses the game and bring up the pause menu.
