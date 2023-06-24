@@ -3,16 +3,90 @@ from unittest.mock import Mock
 import pyglet
 import pytest
 
-from tempus_fugit_minecraft.main import Window
+from tempus_fugit_minecraft.main import Window, Model, LIGHT_CLOUD
 
 
 @pytest.fixture(scope="class")
 def window():
-    window = Window()
-    return window
+    yield Window()
+
+
+@pytest.fixture(scope="class")
+def model():
+    yield Model()
+
+
+class TestSpeed:
+    @pytest.fixture(autouse=True)
+    def teardown(self, window):
+        window.walking_speed = 5
+
+    def test_speed_up(self, window):
+        assert window.walking_speed == 5
+
+        window.speed_up()
+        assert window.walking_speed == 10
+
+        window.speed_up()
+        assert window.walking_speed == 15
+
+        for _ in range(0, 9):
+            window.speed_up()
+        assert window.walking_speed == 20  # 20 is the max speed
+
+    def test_up_key(self, window):
+        assert window.walking_speed == 5
+
+        window.on_key_press(pyglet.window.key.UP, Mock())
+        assert window.walking_speed == 10
+
+        window.on_key_press(pyglet.window.key.UP, Mock())
+        assert window.walking_speed == 15
+
+        for _ in range(0, 9):
+            window.on_key_press(pyglet.window.key.UP, Mock())
+        assert window.walking_speed == 20
+
+
+class TestClouds:
+    @pytest.fixture(autouse=True)
+    def teardown(self, model):
+        model.world.clear()
+
+    def test_light_clouds_created_dynamically(self, model):
+        clouds = model.generate_clouds(80, 100)
+        for cloud in clouds:
+            for x, c, z in cloud:
+                model.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
+        assert LIGHT_CLOUD in model.world.values()
+
+    def test_cloud_positions(self, model):
+        model.generate_clouds(80, 100)
+        o = 80
+        cloud_blocks = [coord for coord, block in model.world.items() if block == LIGHT_CLOUD]
+        for block in cloud_blocks:
+            assert -o <= block[0] <= o
+            assert -o <= block[2] <= o
+
+    def test_cloud_height(self, model):
+        model.generate_clouds(80, 100)
+        clouds = [coord for coord, block in model.world.items() if block == LIGHT_CLOUD]
+        for cloud_coordinates in clouds:
+            assert cloud_coordinates[1] >= 20
+
+    def test_non_overlapping_clouds(self, model):
+        model.generate_clouds(80, 100)
+        blocks_of_all_clouds = [coordinates for coordinates, block in model.world.items() if block == LIGHT_CLOUD]
+        unique_clouds = set(blocks_of_all_clouds)
+        assert len(blocks_of_all_clouds) == len(unique_clouds)
 
 
 class TestPauseMenu:
+    @pytest.fixture(autouse=True)
+    def teardown(self, window):
+        window.paused = False
+        window.exclusive = True
+
     @staticmethod
     def mock_pause(window):
         if not window.paused:
@@ -46,8 +120,6 @@ class TestPauseMenu:
         assert window.pause_label.x == RESIZE_WIDTH // 2
         assert window.pause_label.y == RESIZE_HEIGHT // 2
 
-        self.mock_resume(window)
-
     def test_pause_and_resume_game(self, window):
         window.pause_game()
         assert window.paused
@@ -66,14 +138,10 @@ class TestPauseMenu:
         assert pyglet.gl.glIsEnabled(pyglet.gl.GL_BLEND)
         assert pyglet.gl.glIsEnabled(pyglet.gl.GL_DEPTH_TEST)
 
-        self.mock_resume(window)
-
     def test_on_mouse_press(self, window):
         self.mock_pause(window)
         window.on_mouse_press(window.resume_label.x, window.resume_label.y, 1, 0)
         assert not window.paused
-
-        self.mock_resume(window)
 
     def test_within_label(self, window):
         test_label = pyglet.text.Label(
@@ -102,8 +170,8 @@ class TestPauseMenu:
 
         assert window.pause_label.x == window.resume_label.x == window.quit_label.x == RESIZE_WIDTH // 2
         assert window.pause_label.y == RESIZE_HEIGHT // 2
-        assert window.resume_label.y == RESIZE_HEIGHT // 2 - 50
-        assert window.quit_label.y == RESIZE_HEIGHT // 2 - 85
+        assert window.resume_label.y == RESIZE_HEIGHT // 2 - 45
+        assert window.quit_label.y == RESIZE_HEIGHT // 2 - 90
 
     def test_on_mouse_motion(self, window):
         self.mock_pause(window)
