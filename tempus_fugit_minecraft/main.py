@@ -179,10 +179,9 @@ class Model(object):
                 s -= d  # decrement side length so hills taper off
 
         # generate_clouds was here.
-        clouds = self.generate_clouds(n, 150)
-        for cloud in clouds:
-            for x, c, z in cloud:
-                self.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
+        clouds = self.generate_clouds_positions(n, 150)
+        self.draw_clouds_in_the_sky(clouds)
+        
 
     def hit_test(self, position, vector, max_distance=8):
         """ Line of sight search from current position. If a block is
@@ -423,20 +422,15 @@ class Model(object):
             self._dequeue()
 
     @staticmethod
-    def generate_clouds(n, num_of_clouds=250):
+    def generate_clouds_positions(world_size, num_of_clouds=250):
         """
         Generate the position of the clouds on the sky.
-
-        Inputs: n = 1/2 size of the world.
-                num_of_clouds = default clouds to be generated =250
-
-        Output: return a list of lists; each inner list represents a set of cloud blocks.
         """
-        o = n - 10
+        game_margin = world_size
         clouds = list()
         for _ in xrange(num_of_clouds):
-            cloud_center_x = random.randint(-o, o)  # x position of the cloud
-            cloud_center_z = random.randint(-o, o)  # z position of the cloud
+            cloud_center_x = random.randint(-game_margin, game_margin)  # x position of the cloud
+            cloud_center_z = random.randint(-game_margin, game_margin)  # z position of the cloud
             cloud_center_y = 20                     # y position of the cloud (height)
             s = random.randint(3, 6)   # 2 * s is the side length of the cloud
 
@@ -448,6 +442,14 @@ class Model(object):
                     single_cloud.append((x,cloud_center_y,z))
             clouds.append(single_cloud)
         return clouds
+    
+    
+    def draw_clouds_in_the_sky(self, clouds):
+        cloud_types = [LIGHT_CLOUD,DARK_CLOUD]
+        for cloud in clouds:
+            cloud_color = random.choice(cloud_types)
+            for x,y,z in cloud:
+                self.add_block((x,y,z) , cloud_color , immediate=False)
 
 
 class Window(pyglet.window.Window):
