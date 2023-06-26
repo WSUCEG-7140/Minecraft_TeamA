@@ -179,8 +179,8 @@ class Model(object):
                 s -= d  # decrement side length so hills taper off
 
         # generate_clouds was here.
-        clouds = self.generate_clouds_positions(n, 150)
-        self.draw_clouds_in_the_sky(clouds)
+        clouds = self.generate_clouds_positions(n, num_of_clouds=150)
+        self.place_cloud_blocks(clouds)
         
 
     def hit_test(self, position, vector, max_distance=8):
@@ -425,6 +425,11 @@ class Model(object):
     def generate_clouds_positions(world_size, num_of_clouds=250):
         """
         Generate the position of the clouds on the sky.
+        
+        Inputs: world_size = 1/2 size of the world.
+                num_of_clouds = default clouds to be generated =250
+                
+        Output: return a list of lists; each inner list represents a set of cloud blocks.
         """
         game_margin = world_size
         clouds = list()
@@ -444,7 +449,14 @@ class Model(object):
         return clouds
     
     
-    def draw_clouds_in_the_sky(self, clouds):
+    def place_cloud_blocks(self, clouds):
+        """
+        represent each cloud block's coordinates with a cloud block in the sky.
+        
+        Input: clouds: list of lists; each inner list is a set of cloud block's coordinates.
+        
+        output: draw a cloud block with its corresponding coordinates.
+        """
         cloud_types = [LIGHT_CLOUD,DARK_CLOUD]
         for cloud in clouds:
             cloud_color = random.choice(cloud_types)

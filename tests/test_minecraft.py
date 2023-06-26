@@ -68,6 +68,6 @@ class TestClouds:
     def test_draw_clouds_in_the_sky_and_count_blocks(self):
         model = Model()
         clouds = model.generate_clouds_positions(80,150)
-        model.draw_clouds_in_the_sky(clouds)
+        model.place_cloud_blocks(clouds)
         cloud_blocks = [coordinates for coordinates , block in model.world.items() if block in [LIGHT_CLOUD , DARK_CLOUD]]
         assert len(cloud_blocks) >= sum(len(cloud) for cloud in clouds), "cloud blocks are not identified"
