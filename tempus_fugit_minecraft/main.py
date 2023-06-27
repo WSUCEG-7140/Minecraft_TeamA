@@ -799,7 +799,7 @@ class Window(pyglet.window.Window):
                     player_currnet_coords[1] -= dy
                     player_currnet_coords[i] += face[i]
                     block_type = self.model.world.get(tuple(player_currnet_coords))
-                    if block_type is None or self.pass_through_clouds(player_current_coords=tuple(player_currnet_coords)):
+                    if block_type is None or self.is_it_cloud_block(player_current_coords=tuple(player_currnet_coords)):
                         continue
                     p[i] -= (d - pad) * face[i]
                     if face == (0, -1, 0) or face == (0, 1, 0):
@@ -1116,7 +1116,7 @@ class Window(pyglet.window.Window):
         self.reticle.draw(GL_LINES)
     
     
-    def pass_through_clouds(self, player_current_coords):
+    def is_it_cloud_block(self, player_current_coords):
         """
         check if the block at the given palyer_current_coords is a cloud block
         
