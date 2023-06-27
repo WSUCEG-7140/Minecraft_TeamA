@@ -3,7 +3,7 @@ from unittest.mock import Mock
 import pyglet
 import pytest
 
-from tempus_fugit_minecraft.main import Window, Model, LIGHT_CLOUD
+from tempus_fugit_minecraft.main import Window, Model, LIGHT_CLOUD, DARK_CLOUD
 
 
 @pytest.fixture(scope="class")
@@ -54,31 +54,45 @@ class TestClouds:
         model.world.clear()
 
     def test_light_clouds_created_dynamically(self, model):
-        clouds = model.generate_clouds(80, 100)
+        clouds = model.generate_clouds_positions(80, 100)
         for cloud in clouds:
             for x, c, z in cloud:
                 model.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
         assert LIGHT_CLOUD in model.world.values()
 
     def test_cloud_positions(self, model):
-        model.generate_clouds(80, 100)
-        o = 80
+        model.generate_clouds_positions(80, 100)
+        o = 80 + 2*6  # + 2*6 to ensure that the test will cover cloud block outside the world
         cloud_blocks = [coord for coord, block in model.world.items() if block == LIGHT_CLOUD]
         for block in cloud_blocks:
             assert -o <= block[0] <= o
             assert -o <= block[2] <= o
 
     def test_cloud_height(self, model):
-        model.generate_clouds(80, 100)
+        model.generate_clouds_positions(80, 100)
         clouds = [coord for coord, block in model.world.items() if block == LIGHT_CLOUD]
         for cloud_coordinates in clouds:
             assert cloud_coordinates[1] >= 20
 
     def test_non_overlapping_clouds(self, model):
-        model.generate_clouds(80, 100)
+        model.generate_clouds_positions(80, 100)
         blocks_of_all_clouds = [coordinates for coordinates, block in model.world.items() if block == LIGHT_CLOUD]
         unique_clouds = set(blocks_of_all_clouds)
         assert len(blocks_of_all_clouds) == len(unique_clouds)
+
+    def test_dark_clouds_created_dynamically(self, model):
+        clouds = model.generate_clouds_positions(80, 200)
+        for cloud in clouds:
+            for x, c, z in cloud:
+                model.add_block((x, c, z), DARK_CLOUD, immediate=True)
+        assert DARK_CLOUD in model.world.values()
+
+    def test_draw_clouds_in_the_sky_and_count_blocks(self):
+        model = Model()
+        clouds = model.generate_clouds_positions(80, 150)
+        model.place_cloud_blocks(clouds)
+        cloud_blocks = [coordinates for coordinates, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
+        assert len(cloud_blocks) >= sum(len(cloud) for cloud in clouds)
 
 
 class TestPauseMenu:

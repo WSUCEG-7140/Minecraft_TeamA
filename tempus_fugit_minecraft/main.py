@@ -205,10 +205,9 @@ class Model(object):
                         self.add_block((x, y, z), t, immediate=False)
                 s -= d  # decrement side length so hills taper off
 
-        clouds = self.generate_clouds(n, 150)
-        for cloud in clouds:
-            for x, c, z in cloud:
-                self.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
+        clouds = self.generate_clouds_positions(n, num_of_clouds=150)
+        self.place_cloud_blocks(clouds)
+
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
         """Line of sight search from current position. If a block is
@@ -477,12 +476,12 @@ class Model(object):
             self._dequeue()
 
     @staticmethod
-    def generate_clouds(n: int, num_of_clouds=250) -> list:
+    def generate_clouds_positions(world_size: int, num_of_clouds=250) -> list:
         """Generate the position of the clouds on the sky.
 
         Parameters
         ----------
-        n : int
+        world_size : int
             1/2 size of the world.
         num_of_clouds : int
             Default clouds to be generated = 250
@@ -492,11 +491,11 @@ class Model(object):
         clouds : list of lists
             Each inner list represents a set of cloud blocks.
         """
-        o = n - 10
+        game_margin = world_size
         clouds = list()
         for _ in xrange(num_of_clouds):
-            cloud_center_x = random.randint(-o, o)  # x position of the cloud
-            cloud_center_z = random.randint(-o, o)  # z position of the cloud
+            cloud_center_x = random.randint(-game_margin, game_margin)  # x position of the cloud
+            cloud_center_z = random.randint(-game_margin, game_margin)  # z position of the cloud
             cloud_center_y = 20                     # y position of the cloud (height)
             s = random.randint(3, 6)   # 2 * s is the side length of the cloud
 
@@ -508,6 +507,21 @@ class Model(object):
                     single_cloud.append((x, cloud_center_y, z))
             clouds.append(single_cloud)
         return clouds
+
+
+    def place_cloud_blocks(self, clouds):
+        """
+        represent each cloud block's coordinates with a cloud block in the sky.
+
+        Input: clouds: list of lists; each inner list is a set of cloud block's coordinates.
+
+        output: draw a cloud block with its corresponding coordinates.
+        """
+        cloud_types = [LIGHT_CLOUD,DARK_CLOUD]
+        for cloud in clouds:
+            cloud_color = random.choice(cloud_types)
+            for x,y,z in cloud:
+                self.add_block((x,y,z) , cloud_color , immediate=False)
 
 
 class Window(pyglet.window.Window):
