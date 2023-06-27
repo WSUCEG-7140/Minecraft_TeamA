@@ -795,10 +795,11 @@ class Window(pyglet.window.Window):
                 if d < pad:
                     continue
                 for dy in xrange(height):  # check each height
-                    op = list(np)
-                    op[1] -= dy
-                    op[i] += face[i]
-                    if tuple(op) not in self.model.world:
+                    player_currnet_coords = list(np)
+                    player_currnet_coords[1] -= dy
+                    player_currnet_coords[i] += face[i]
+                    block_type = self.model.world.get(tuple(player_currnet_coords))
+                    if block_type is None or self.pass_through_clouds(player_current_coords=tuple(player_currnet_coords)):
                         continue
                     p[i] -= (d - pad) * face[i]
                     if face == (0, -1, 0) or face == (0, 1, 0):
@@ -807,6 +808,7 @@ class Window(pyglet.window.Window):
                         self.dy = 0
                     break
         return tuple(p)
+    
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """Called when a mouse button is pressed. See pyglet docs for button
@@ -1112,6 +1114,23 @@ class Window(pyglet.window.Window):
         """Draw the crosshairs in the center of the screen."""
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
+    
+    
+    def pass_through_clouds(self, player_current_coords):
+        """
+        check if the block at the given palyer_current_coords is a cloud block
+        
+        Input
+        -----
+            player_current_coords: current (x,y,z) corrdinates for the player
+        
+        Output
+        ------
+            True: if the coords corresponding to a cloud block.
+            False: otherwise.
+        """
+        block_type = self.model.world.get(player_current_coords)
+        return block_type in [LIGHT_CLOUD,DARK_CLOUD]
 
 
 def setup_fog() -> None:
