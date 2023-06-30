@@ -1,11 +1,17 @@
 import pyglet
 import pytest
 from unittest.mock import Mock
-from tempus_fugit_minecraft.main import Model, DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND
+from tempus_fugit_minecraft.main import Window
+from tempus_fugit_minecraft.model import Model
+from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND
 
 @pytest.fixture(scope="class")
 def model():
     yield Model()
+
+@pytest.fixture(scope="class")
+def window():
+    yield Window()
 
 class TestClouds:
     @pytest.fixture(autouse=True)

@@ -69,7 +69,6 @@ def tex_coords(top: tuple, bottom: tuple, side: tuple) -> list:
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 TICKS_PER_SEC = 60
-TEXTURE_PATH = 'assets/texture.png'
 GRASS = tex_coords((1, 0), (0, 1), (0, 0))
 SAND = tex_coords((1, 1), (1, 1), (1, 1))
 BRICK = tex_coords((2, 0), (2, 0), (2, 0))
@@ -114,7 +113,7 @@ def sectorize(position: tuple) -> tuple:
     sector : tuple of len 3
     """
     SECTOR_SIZE = 16  # Size of sectors used to ease block loading.
-    
+
     x, y, z = normalize(position)
     x, y, z = x // SECTOR_SIZE, y // SECTOR_SIZE, z // SECTOR_SIZE
     return x, 0, z
