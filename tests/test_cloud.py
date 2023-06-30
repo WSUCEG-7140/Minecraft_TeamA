@@ -1,7 +1,7 @@
 import pyglet
 import pytest
 from unittest.mock import Mock
-from tempus_fugit_minecraft.main import Window
+from tempus_fugit_minecraft.window import Window
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND
 

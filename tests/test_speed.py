@@ -1,7 +1,7 @@
 import pyglet
 import pytest
 from unittest.mock import Mock
-from tempus_fugit_minecraft.main import Window
+from tempus_fugit_minecraft.window import Window
 
 @pytest.fixture(scope="class")
 def window():
