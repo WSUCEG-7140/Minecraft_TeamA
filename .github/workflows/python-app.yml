@@ -64,23 +64,15 @@ jobs:
       # ensures this only runs on a cache miss.
       - run: poetry install --no-interaction --no-root
         if: steps.cache-deps.outputs.cache-hit != 'true'
-      
+
       # Now install _your_ project. This isn't necessary for many types of projects -- particularly
       # things like Django apps don't need this. But it's a good idea since it fully-exercises the
       # pyproject.toml and makes that if you add things like console-scripts at some point that
       # they'll be installed and working.
       - run: poetry install --no-interaction
-      
-      - name: cache GLU Library
-        id: cache-GLU
-        uses: actions/cache@v3
-        with:
-          path: .venv
-          key: GLU-${{ hashFiles('**/poetry.lock') }}
-      
+
       - run: sudo apt install freeglut3-dev
-        if: steps.cache-GLU.outputs.cache-hit != 'true'
-      
+
       # And finally run tests. I'm using pytest and all my pytest config is in my `pyproject.toml`
       # so this line is super-simple. But it could be as complex as you need.
       - run: xvfb-run -s "-screen 0 800x600x24" poetry run pytest
