@@ -31,7 +31,7 @@ class TestSpeed:
 
         for _ in range(0, 9):
             window.speed_up()
-        assert window.walking_speed == 20  # 20 is the max speed
+        assert window.walking_speed == 20  # 20 is the maximum speed
 
     def test_speed_down(self, window):
             window = Window()
@@ -45,7 +45,7 @@ class TestSpeed:
             for _ in range(0,9):
                 window.speed_down()
 
-            assert window.walking_speed > 0 # check player will NOT stop walking
+            assert window.walking_speed > 0 # Player will NOT stop walking
 
     def test_up_key(self, window):
         assert window.walking_speed == 5
