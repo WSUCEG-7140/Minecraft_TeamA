@@ -15,7 +15,6 @@ def window():
 def model():
     yield Model()
 
-
 class TestSpeed:
     @pytest.fixture(autouse=True)
     def teardown(self, window):
@@ -34,6 +33,20 @@ class TestSpeed:
             window.speed_up()
         assert window.walking_speed == 20  # 20 is the max speed
 
+    def test_speed_down(self, window):
+            window = Window()
+            window.speed_up()
+            
+            assert window.walking_speed == 10
+
+            window.speed_down() 
+            assert window.walking_speed == 5      
+            
+            for _ in range(0,9):
+                window.speed_down()
+
+            assert window.walking_speed > 0 # check player will NOT stop walking
+
     def test_up_key(self, window):
         assert window.walking_speed == 5
 
@@ -47,6 +60,7 @@ class TestSpeed:
             window.on_key_press(pyglet.window.key.UP, Mock())
         assert window.walking_speed == 20
 
+    
 
 class TestClouds:
     @pytest.fixture(autouse=True)
