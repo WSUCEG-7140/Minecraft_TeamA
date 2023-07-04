@@ -6,7 +6,7 @@ build-backend = "poetry.core.masonry.api"
 name = "tempus-fugit-minecraft"
 version = "0.1.0"
 description = ""
-authors = ["Mahmoud Elbasiouny <elbasiouny.mahmoud@gmail.com>","Abubakur Sait <bakursait@gmail.com>", "Rebecca McCullough <mccullough.55@wright.edu>", "Mark Xie <xie.34@wright.edu"]
+authors = ["Mahmoud Elbasiouny <elbasiouny.mahmoud@gmail.com>","Abubakur Sait <bakursait@gmail.com>", "Rebecca McCullough <mccullough.55@wright.edu>", "Mark Xie <xie.34@wright.edu", "Mohammad Shalash <shalash.21@wright.edu>"]
 readme = "README.md"
 packages = [{include = "tempus_fugit_minecraft"}]
 
