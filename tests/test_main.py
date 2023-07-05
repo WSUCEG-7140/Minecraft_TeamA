@@ -133,7 +133,7 @@ class TestClouds:
         assert window.is_it_cloud_block((0,40,0)) == False
     
     
-    def test_pass_through_clouds_with_different_blocks_added_at_same_position(self, model, window):
+    def test__try_pass_through_different_objects_added_at_same_position(self, model, window):
         block_type = model.world.get((0,100,0))
         assert block_type == None
         
