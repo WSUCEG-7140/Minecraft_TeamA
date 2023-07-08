@@ -288,7 +288,7 @@ class Window(pyglet.window.Window):
                     player_currnet_coords[1] -= dy
                     player_currnet_coords[i] += face[i]
                     block_type = self.model.world.get(tuple(player_currnet_coords))
-                    if block_type is None or self.is_it_cloud_block(player_current_coords=tuple(player_currnet_coords)):
+                    if block_type is None or self.model.can_pass_through_block(player_current_coords=tuple(player_currnet_coords)):
                         continue
                     p[i] -= (d - pad) * face[i]
                     if face == (0, -1, 0) or face == (0, 1, 0):
@@ -604,20 +604,3 @@ class Window(pyglet.window.Window):
         """Draw the crosshairs in the center of the screen."""
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
-    
-    
-    def is_it_cloud_block(self, player_current_coords):
-        """
-        check if the block at the given palyer_current_coords is a cloud block
-        
-        Input
-        -----
-            player_current_coords: current (x,y,z) corrdinates for the player
-        
-        Output
-        ------
-            True: if the coords corresponding to a cloud block.
-            False: otherwise.
-        """
-        block_type = self.model.world.get(player_current_coords)
-        return block_type in [LIGHT_CLOUD,DARK_CLOUD]

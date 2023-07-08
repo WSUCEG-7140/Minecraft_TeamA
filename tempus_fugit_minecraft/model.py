@@ -395,3 +395,19 @@ class Model(object):
             cloud_color = random.choice(cloud_types)
             for x,y,z in cloud:
                 self.add_block((x,y,z) , cloud_color , immediate=False)
+
+    def can_pass_through_block(self, player_current_coords):
+        """
+        check if the block at the given palyer_current_coords is a cloud block
+        
+        Input
+        -----
+            player_current_coords: current (x,y,z) corrdinates for the player
+        
+        Output
+        ------
+            True: if the coords corresponding to a cloud block.
+            False: otherwise.
+        """
+        block_type = self.world.get(player_current_coords)
+        return block_type in [LIGHT_CLOUD,DARK_CLOUD]

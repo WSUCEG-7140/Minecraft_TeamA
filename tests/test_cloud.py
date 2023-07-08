@@ -1,7 +1,6 @@
 import pyglet
 import pytest
 from unittest.mock import Mock
-from tempus_fugit_minecraft.window import Window
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND
 
@@ -9,15 +8,10 @@ from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRI
 def model():
     yield Model()
 
-@pytest.fixture(scope="class")
-def window():
-    yield Window()
-
 class TestClouds:
     @pytest.fixture(autouse=True)
-    def teardown(self, model, window):
+    def teardown(self, model):
         model.world.clear()
-        window.model = model
 
     def test_light_clouds_created_dynamically(self, model):
         clouds = model.generate_clouds_positions(80, 100)
@@ -62,37 +56,37 @@ class TestClouds:
         cloud_blocks = [coordinates for coordinates, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         assert len(cloud_blocks) >= sum(len(cloud) for cloud in clouds)
     
-    def test_pass_through_clouds(self, model, window):
+    def test_pass_through_clouds(self, model):
         model.world[(0,50,0)] = LIGHT_CLOUD
-        assert window.is_it_cloud_block((0,50,0)) == True
+        assert model.can_pass_through_block((0,50,0)) == True
         
         model.world[(0,52,0)] = DARK_CLOUD
-        assert window.is_it_cloud_block((0,52,0)) == True
+        assert model.can_pass_through_block((0,52,0)) == True
     
     
-    def test_no_pass_through_objects_not_of_type_clouds(self, model, window):
+    def test_no_pass_through_objects_not_of_type_clouds(self, model):
         model.world[(0,10,0)] = STONE
-        assert window.is_it_cloud_block((0,10,0)) == False
+        assert model.can_pass_through_block((0,10,0)) == False
         
         model.world[(0,20,0)] = BRICK
-        assert window.is_it_cloud_block((0,20,0)) == False
+        assert model.can_pass_through_block((0,20,0)) == False
         
         model.world[(0,30,0)] = GRASS
-        assert window.is_it_cloud_block((0,30,0)) == False
+        assert model.can_pass_through_block((0,30,0)) == False
         
         model.world[(0,40,0)] = SAND
-        assert window.is_it_cloud_block((0,40,0)) == False
+        assert model.can_pass_through_block((0,40,0)) == False
     
     
-    def test__try_pass_through_different_objects_added_at_same_position(self, model, window):
+    def test__try_pass_through_different_objects_added_at_same_position(self, model):
         block_type = model.world.get((0,100,0))
         assert block_type == None
         
         model.world[(0,100,0)] = STONE
-        assert window.is_it_cloud_block((0,100,0)) == False
+        assert model.can_pass_through_block((0,100,0)) == False
         
         model.world[(0,100,0)] = LIGHT_CLOUD
-        assert window.is_it_cloud_block((0,100,0)) == True
+        assert model.can_pass_through_block((0,100,0)) == True
         
         model.world[(0,100,0)] = DARK_CLOUD
-        assert window.is_it_cloud_block((0,100,0)) == True
+        assert model.can_pass_through_block((0,100,0)) == True
