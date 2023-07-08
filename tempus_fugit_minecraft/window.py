@@ -419,16 +419,17 @@ class Window(pyglet.window.Window):
         elif symbol in self.num_keys:
             index = (symbol - self.num_keys[0]) % len(self.inventory)
             self.block = self.inventory[index]
-        elif symbol == key.UP:
+        elif symbol == key.Q:
             self.speed_up()
-        elif symbol == key.DOWN:
+        elif symbol == key.E:
             self.speed_down()
 
     def speed_up(self) -> None:
-        """Increases the walking speed of the player."""
+        #Increases the walking speed of the players.
         if self.walking_speed <= 15:
             self.walking_speed += 5
     def speed_down(self):
+         #Decrease the walking speed of the players.
         if self.walking_speed > 5:
             self.walking_speed -= 5
 
