@@ -66,6 +66,7 @@ def tex_coords(top: tuple, bottom: tuple, side: tuple) -> list:
     result.extend(side * 4)
     return result
 
+
 TICKS_PER_SEC = 60
 GRASS = tex_coords((1, 0), (0, 1), (0, 0))
 SAND = tex_coords((1, 1), (1, 1), (1, 1))
@@ -82,6 +83,7 @@ FACES = [
     (0, 0, 1),
     (0, 0, -1),
 ]
+
 
 def normalize(position: tuple) -> tuple:
     """Accepts `position` of arbitrary precision and returns the block containing that position.

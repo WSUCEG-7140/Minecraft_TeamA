@@ -12,12 +12,13 @@ from typing import Callable
 if sys.version_info[0] >= 3:
     xrange = range
 
+
 class Model(object):
     """A 3D world model for block-based rendering."""
 
     def __init__(self) -> None:
         TEXTURE_PATH = 'assets/texture.png'
-        
+
         # A Batch is a collection of vertex lists for batched rendering.
         self.batch = Batch()
 
@@ -80,7 +81,6 @@ class Model(object):
 
         clouds = self.generate_clouds_positions(n, num_of_clouds=150)
         self.place_cloud_blocks(clouds)
-
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
         """Line of sight search from current position. If a block is
@@ -381,7 +381,6 @@ class Model(object):
             clouds.append(single_cloud)
         return clouds
 
-
     def place_cloud_blocks(self, clouds):
         """
         represent each cloud block's coordinates with a cloud block in the sky.
@@ -390,8 +389,8 @@ class Model(object):
 
         output: draw a cloud block with its corresponding coordinates.
         """
-        cloud_types = [LIGHT_CLOUD,DARK_CLOUD]
+        cloud_types = [LIGHT_CLOUD, DARK_CLOUD]
         for cloud in clouds:
             cloud_color = random.choice(cloud_types)
-            for x,y,z in cloud:
-                self.add_block((x,y,z) , cloud_color , immediate=False)
+            for x, y, z in cloud:
+                self.add_block((x, y, z), cloud_color, immediate=False)

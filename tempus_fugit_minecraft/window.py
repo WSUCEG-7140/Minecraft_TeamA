@@ -13,6 +13,7 @@ WINDOW_HEIGHT = 600
 if sys.version_info[0] >= 3:
     xrange = range
 
+
 class Window(pyglet.window.Window):
     """A window class for a game environment.
 
@@ -297,7 +298,6 @@ class Window(pyglet.window.Window):
                         self.dy = 0
                     break
         return tuple(p)
-    
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """Called when a mouse button is pressed. See pyglet docs for button
@@ -428,6 +428,7 @@ class Window(pyglet.window.Window):
         """Increases the walking speed of the player."""
         if self.walking_speed <= 15:
             self.walking_speed += 5
+
     def speed_down(self):
         if self.walking_speed > 5:
             self.walking_speed -= 5
@@ -603,20 +604,19 @@ class Window(pyglet.window.Window):
         """Draw the crosshairs in the center of the screen."""
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
-    
-    
+
     def is_it_cloud_block(self, player_current_coords):
         """
         check if the block at the given palyer_current_coords is a cloud block
-        
+
         Input
         -----
             player_current_coords: current (x,y,z) corrdinates for the player
-        
+
         Output
         ------
             True: if the coords corresponding to a cloud block.
             False: otherwise.
         """
         block_type = self.model.world.get(player_current_coords)
-        return block_type in [LIGHT_CLOUD,DARK_CLOUD]
+        return block_type in [LIGHT_CLOUD, DARK_CLOUD]
