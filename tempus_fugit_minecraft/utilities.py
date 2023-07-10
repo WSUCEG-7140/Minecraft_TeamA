@@ -73,6 +73,8 @@ BRICK = tex_coords((2, 0), (2, 0), (2, 0))
 STONE = tex_coords((2, 1), (2, 1), (2, 1))
 LIGHT_CLOUD = tex_coords((3, 0), (3, 0), (3, 0))
 DARK_CLOUD = tex_coords((3, 1), (3, 1), (3, 1))
+CLOUD_TYPE = [LIGHT_CLOUD , DARK_CLOUD]
+
 
 FACES = [
     (0, 1, 0),
