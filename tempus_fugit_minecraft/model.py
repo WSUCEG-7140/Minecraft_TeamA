@@ -78,7 +78,7 @@ class Model(object):
                         self.add_block((x, y, z), t, immediate=False)
                 s -= d  # decrement side length so hills taper off
 
-        clouds = self.generate_clouds_positions(n, num_of_clouds=150)
+        clouds = self.generate_clouds_positions(n, num_of_clouds=random.randint(150,350))
         self.place_cloud_blocks(clouds)
 
 
@@ -348,8 +348,8 @@ class Model(object):
         while self.queue:
             self._dequeue()
 
-    @staticmethod
-    def generate_clouds_positions(world_size: int, num_of_clouds=250) -> list:
+    # @staticmethod
+    def generate_clouds_positions(self, world_size: int, num_of_clouds=250) -> list:
         """Generate the position of the clouds on the sky.
 
         Parameters
@@ -364,25 +364,29 @@ class Model(object):
         clouds : list of lists
             Each inner list represents a set of cloud blocks.
         """
-        game_margin = world_size
         clouds = list()
         for _ in xrange(num_of_clouds):
-            cloud_center_x = random.randint(-game_margin, game_margin)  # x position of the cloud
-            cloud_center_z = random.randint(-game_margin, game_margin)  # z position of the cloud
-            cloud_center_y = 20                     # y position of the cloud (height)
-            s = random.randint(3, 6)   # 2 * s is the side length of the cloud
-
-            single_cloud = []
-            for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
-                for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
-                    if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
-                        continue
-                    single_cloud.append((x, cloud_center_y, z))
+            single_cloud = self.generate_single_cloud(world_size)
             clouds.append(single_cloud)
         return clouds
+    
+    def generate_single_cloud(self,world_size=80) -> list:
+        game_margin = world_size
+        cloud_center_x = random.randint(-game_margin, game_margin)  
+        cloud_center_z = random.randint(-game_margin, game_margin)  
+        cloud_center_y = 20                                             # y = height of cloud from the Ground.
+        s = 3                                                           # 2 * s is the side length of the cloud
+
+        single_cloud = []
+        for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
+            for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
+                if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
+                    continue
+                single_cloud.append((x, cloud_center_y, z))
+        return single_cloud
 
 
-    def place_cloud_blocks(self, clouds):
+    def place_cloud_blocks(self,clouds):
         """
         represent each cloud block's coordinates with a cloud block in the sky.
 
@@ -390,8 +394,8 @@ class Model(object):
 
         output: draw a cloud block with its corresponding coordinates.
         """
-        cloud_types = [LIGHT_CLOUD,DARK_CLOUD]
+        cloud_types = [LIGHT_CLOUD , DARK_CLOUD]
         for cloud in clouds:
             cloud_color = random.choice(cloud_types)
             for x,y,z in cloud:
-                self.add_block((x,y,z) , cloud_color , immediate=False)
+                self.add_block((x,y,z) , cloud_color)
