@@ -1,6 +1,9 @@
+# from pyglet.window.mouse import RIGHT as right_mouse_button
 import pyglet
 import pytest
 from unittest.mock import Mock
+from unittest.mock import patch
+from tempus_fugit_minecraft.window import Window
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND
 
@@ -8,10 +11,18 @@ from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRI
 def model():
     yield Model()
 
+@pytest.fixture(scope="class")
+def window():
+    yield Window()
+
 class TestClouds:
     @pytest.fixture(autouse=True)
-    def teardown(self, model):
+    def teardown(self, model,window):
         model.world.clear()
+        window.model = model
+        window.paused = False
+        window.exclusive = True
+
 
     def test_light_clouds_created_dynamically(self, model):
         clouds = model.generate_clouds_positions(80, 100)
@@ -90,3 +101,15 @@ class TestClouds:
         
         model.world[(0,100,0)] = DARK_CLOUD
         assert model.can_pass_through_block((0,100,0)) == True
+    
+    
+    def test_no_textures_added_to_clouds(self):
+        model = Model()
+        window = Window()
+        window.model = model
+        window.model.clouds = model.generate_clouds_positions(80, 150)
+        x, y, z = window.model.clouds[0][0]
+        
+        with patch.object(window.model, 'add_block', return_value=None) as add_block_method:
+            window.on_mouse_press(x,y, pyglet.window.mouse.RIGHT, 0)
+        assert add_block_method.call_count == 0
