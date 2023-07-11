@@ -4,4 +4,5 @@ from tempus_fugit_minecraft.utilities import *
 
 class Shaders():
     def __init__(self, model):
-        self.vertex
+        self.blockInformation = model._shown
+        
