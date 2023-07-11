@@ -38,6 +38,7 @@ class Model(object):
         self.sectors = {}
         
         self.clouds_move_time = 0
+        self.is_cloud_paused = False
 
         # Simple function queue implementation. The queue is populated with
         # _show_block() and _hide_block() calls
@@ -418,6 +419,8 @@ class Model(object):
         ------
         
         """
+        if self.is_cloud_paused:
+            return
         
         self.clouds_move_time += time_delta
         if self.clouds_move_time < CLOUD_MOVE_INTERVAL:

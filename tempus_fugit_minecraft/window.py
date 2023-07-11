@@ -437,12 +437,14 @@ class Window(pyglet.window.Window):
     def pause_game(self) -> None:
         """Pauses the game and bring up the pause menu."""
         self.paused = True
+        self.model.is_cloud_paused = True
         self.set_mouse_visible(True)
         self.set_exclusive_mouse(False)
 
     def resume_game(self) -> None:
         """Resumes the game by restoring the game window to its original state."""
         self.paused = False
+        self.model.is_cloud_paused = False
         self.set_exclusive_mouse(True)
 
     def on_key_release(self, symbol: int, modifiers: int) -> None:
