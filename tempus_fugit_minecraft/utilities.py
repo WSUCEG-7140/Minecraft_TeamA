@@ -74,6 +74,9 @@ STONE = tex_coords((2, 1), (2, 1), (2, 1))
 LIGHT_CLOUD = tex_coords((3, 0), (3, 0), (3, 0))
 DARK_CLOUD = tex_coords((3, 1), (3, 1), (3, 1))
 CLOUD_TYPE = [LIGHT_CLOUD , DARK_CLOUD]
+MAX_CLOUD_X_DIMENTION = 100
+MIN_CLOUD_X_DIMENTION = -100
+CLOUD_MOVE_INTERVAL = 1
 
 
 FACES = [

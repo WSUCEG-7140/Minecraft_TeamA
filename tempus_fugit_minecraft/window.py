@@ -137,6 +137,7 @@ class Window(pyglet.window.Window):
         # This call schedules the `update()` method to be called
         # TICKS_PER_SEC. This is the main game event loop.
         pyglet.clock.schedule_interval(self.update, 1.0 / TICKS_PER_SEC)
+        pyglet.clock.schedule_interval(self.model.move_clouds , 1.0 / TICKS_PER_SEC)
 
     def set_exclusive_mouse(self, exclusive: bool) -> None:
         """If `exclusive` is True, the game will capture the mouse, if False

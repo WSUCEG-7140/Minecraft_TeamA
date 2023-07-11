@@ -36,6 +36,8 @@ class Model(object):
 
         # Mapping from sector to a list of positions inside that sector.
         self.sectors = {}
+        
+        self.clouds_move_time = 0
 
         # Simple function queue implementation. The queue is populated with
         # _show_block() and _hide_block() calls
@@ -399,3 +401,36 @@ class Model(object):
             cloud_color = random.choice(cloud_types)
             for x,y,z in cloud:
                 self.add_block((x,y,z) , cloud_color)
+    
+    
+    def move_clouds(self, time_delta):
+        """
+        this method is scheduled to be called periodically by pyglet to 
+        give the feeling of moving clouds.
+        
+        Parameter
+        ---------
+        time_delta:
+            represents the time that passed after the game drew the last frame.
+        
+        Return
+        ------
+        
+        """
+        
+        self.clouds_move_time += time_delta
+        if self.clouds_move_time < CLOUD_MOVE_INTERVAL:
+            return
+        
+        self.clouds_move_time -= CLOUD_MOVE_INTERVAL
+        
+        cloud_blocks = [(coords, cloud_texture) for coords, cloud_texture in self.world.items() if cloud_texture in CLOUD_TYPE]
+        for block , texture in cloud_blocks:
+            x, y, z = block
+            self.remove_block((x, y, z), immediate= True)
+            
+            if x == MAX_CLOUD_X_DIMENTION:
+                updated_x = MIN_CLOUD_X_DIMENTION
+            else:
+                updated_x = x+1
+            self.add_block((updated_x,y,z) , texture=texture , immediate=True)
