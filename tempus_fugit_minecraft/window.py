@@ -227,8 +227,8 @@ class Window(pyglet.window.Window):
             block, previous = self.model.hit_test(self.player.position, vector)
             if (button == mouse.RIGHT) or ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
                 # ON OSX, control + left click = right click.
-                block_texture = self.model.world[block]
                 if previous and block:
+                    block_texture = self.model.world[block]
                     if not self.is_it_cloud_texture(block_texture):
                         self.model.add_block(previous, self.player.block)
                         
@@ -526,5 +526,4 @@ class Window(pyglet.window.Window):
             True: if the texture belong to clouds' textures.
             False: otherwise.
         """
-        print(f"is_it_cloud_texture? {texture in [LIGHT_CLOUD,DARK_CLOUD]}")
         return texture in [LIGHT_CLOUD,DARK_CLOUD]
