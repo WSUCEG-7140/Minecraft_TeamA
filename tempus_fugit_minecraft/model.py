@@ -259,7 +259,8 @@ class Model(object):
         position : tuple of len 3
             The (x, y, z) position of the block to hide.
         """
-        self._shown.pop(position).delete()
+        if position in self._shown:
+            self._shown.pop(position).delete()
 
     def show_sector(self, sector: tuple) -> None:
         """Ensure all blocks in the given sector that should be shown are drawn to the canvas.
