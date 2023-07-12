@@ -549,6 +549,7 @@ class Window(pyglet.window.Window):
         self.set_2d()
         self.draw_label()
         self.draw_reticle()
+        self.setup_environmental_lighting()
 
         if self.paused:
             self.draw_pause_menu()
