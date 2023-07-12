@@ -14,6 +14,6 @@ class Shaders():
             glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
         
         def Normal3DVectorCalc(vector):
-            ThreeDVector = math.sqrt(vector[0] * v[0] + vector[1] * vector[1] + vector[2] * vector[2])
-            return ThreeDVector
+            threeDVector = math.sqrt(vector[0] * v[0] + vector[1] * vector[1] + vector[2] * vector[2])
+            return threeDVector
         
