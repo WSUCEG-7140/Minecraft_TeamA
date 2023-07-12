@@ -305,6 +305,8 @@ class Window(pyglet.window.Window):
     
     def setup_environmental_lighting(self):
         self.shaders.TurnOnEnvironmentalLighting()
+    
+    setup_environmental_lighting()
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """Called when a mouse button is pressed. See pyglet docs for button
@@ -549,7 +551,6 @@ class Window(pyglet.window.Window):
         self.set_2d()
         self.draw_label()
         self.draw_reticle()
-        self.setup_environmental_lighting()
 
         if self.paused:
             self.draw_pause_menu()
