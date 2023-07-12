@@ -6,6 +6,7 @@ from pyglet.gl import *
 from pyglet.window import key, mouse
 from tempus_fugit_minecraft.utilities import *
 from tempus_fugit_minecraft.model import Model
+from tempus_fugit_minecraft.shaders import Shaders
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -89,6 +90,10 @@ class Window(pyglet.window.Window):
 
         # Instance of the model that handles the world.
         self.model = Model()
+
+        #Instance of the shaders in the world
+        '''Placed in Windows for being a OpenGL related Class. Solves issue #7'''
+        self.shaders = Shaders(self.model)
 
         self.paused = False
 
@@ -298,6 +303,8 @@ class Window(pyglet.window.Window):
                     break
         return tuple(p)
     
+    def setup_environmental_lighting(self):
+        self.shaders.TurnOnEnvironmentalLighting()
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """Called when a mouse button is pressed. See pyglet docs for button

@@ -14,5 +14,6 @@ class TestLighting():
         assert glIsEnabled(GL_LIGHT0)
     
     def test_3D_norm_vector_calc():
-        
-
+        vector = [0, 0, 1]
+        threeDNormVector = Window.shaders.Normal3DVectorCalc(vector)
+        assert threeDNormVector == 1
