@@ -304,9 +304,7 @@ class Window(pyglet.window.Window):
         return tuple(p)
     
     def setup_environmental_lighting(self):
-        self.shaders.TurnOnEnvironmentalLighting()
-    
-    setup_environmental_lighting()
+        self.shaders.TurnOnEnvironmentLight()
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """Called when a mouse button is pressed. See pyglet docs for button
