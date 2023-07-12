@@ -1,11 +1,12 @@
 import math
 import sys
 
-from pyglet import window, text, graphics
+from pyglet import graphics, text, window
 from pyglet.gl import *
 from pyglet.window import key, mouse
-from tempus_fugit_minecraft.utilities import *
+
 from tempus_fugit_minecraft.model import Model
+from tempus_fugit_minecraft.utilities import *
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -47,6 +48,9 @@ class Window(pyglet.window.Window):
 
         # When flying gravity has no effect and speed is increased.
         self.flying = False
+        
+        self.ascend = False
+        self.descend = False
 
         # Strafing is moving lateral to the direction you are facing,
         # e.g. moving to the left or right while continuing to face forward.
@@ -240,6 +244,12 @@ class Window(pyglet.window.Window):
         dx, dy, dz = self.get_motion_vector()
         # New position in space, before accounting for gravity.
         dx, dy, dz = dx * d, dy * d, dz * d
+        
+        if self.flying:
+            if self.ascend:
+                self.position = self.position[0], self.position[1] + dt * self.FLYING_SPEED, self.position[2]
+            if self.descend:
+                self.position = self.position[0], self.position[1] - dt * self.FLYING_SPEED, self.position[2]
         # gravity
         if not self.flying:
             # Update your vertical speed: if you are falling, speed up until you
@@ -252,6 +262,8 @@ class Window(pyglet.window.Window):
         x, y, z = self.position
         x, y, z = self.collide((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
         self.position = (x, y, z)
+        
+        
 
     def collide(self, position: tuple, height: int) -> tuple:
         """Checks to see if the player at the given `position` and `height`
@@ -412,8 +424,13 @@ class Window(pyglet.window.Window):
         elif symbol == key.D:
             self.strafe[1] += 1
         elif symbol == key.SPACE:
-            if self.dy == 0:
+            if self.flying:
+                self.ascend = True
+            elif self.dy == 0:
                 self.dy = self.JUMP_SPEED
+        elif symbol == key.LSHIFT:
+            if self.flying:
+                self.descend = True
         elif symbol == key.TAB:
             self.flying = not self.flying
         elif symbol in self.num_keys:
@@ -463,6 +480,12 @@ class Window(pyglet.window.Window):
             self.strafe[1] += 1
         elif symbol == key.D:
             self.strafe[1] -= 1
+        elif symbol == key.SPACE:
+            if self.flying:
+                self.ascend = False
+        elif symbol == key.LSHIFT:
+            if self.flying:
+                self.descend = False
 
     def on_resize(self, width: int, height: int) -> None:
         """Called when the window is resized to a new `width` and `height`.
