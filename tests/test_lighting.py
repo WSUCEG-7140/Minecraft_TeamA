@@ -10,6 +10,7 @@ def window():
 
 class TestLighting():
     def test_lights_turned_on(self, window):
+        window.TurnOnEnvironmentLight()
         assert glIsEnabled(GL_LIGHTING)
         assert glIsEnabled(GL_LIGHT0)
     
