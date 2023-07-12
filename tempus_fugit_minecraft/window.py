@@ -154,21 +154,18 @@ class Window(pyglet.window.Window):
         x, y, z = self.collide((x + dx, y + dy, z + dz), self.player.PLAYER_HEIGHT)
         self.player.position = (x, y, z)
 
+    #issue57
     def collide(self, position: tuple, height: int) -> tuple:
-        """Checks to see if the player at the given `position` and `height`
-        is colliding with any blocks in the world.
+        """!
+        @brief Checks to see if the player at the given `position` and `height`
+            is colliding with any blocks in the world.
+        
+        @details If position for cloud texture, pass through clouds.
 
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position to check for collisions at.
-        height : int or float
-            The height of the player.
+        @param position The (x, y, z) position to check for collisions at.
+        @param height The height of the player.
 
-        Returns
-        -------
-        position : tuple of len 3
-            The new position of the player taking into account collisions.
+        @return position The new position of the player taking into account collisions.
         """
         # How much overlap with a dimension of a surrounding block you need to
         # have to count as a collision. If 0, touching terrain at all counts as
@@ -200,22 +197,27 @@ class Window(pyglet.window.Window):
                     break
         return tuple(p)
     
-
+    
+    #issue42
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
-        """Called when a mouse button is pressed. See pyglet docs for button
-        and modifier mappings.
+        """!
+        @brief Called when a mouse button is pressed. See pyglet docs for 
+            button and modifier mappings.
+        
+        @details If right-click on non-clouds texture, add_block() is called. 
+            Otherwise, the method is not called.
+        
+        @details If left-click on non-brick texture, remove_block() is called. 
+            Otherwise, the method is not called.
 
-        Parameters
-        ----------
-        x, y : int
-            The coordinates of the mouse click. Always center of the screen if
-            the mouse is captured.
-        button : int
-            Number representing mouse button that was clicked. 1 = left button,
-            4 = right button.
-        modifiers : int
-            Number representing any modifying keys that were pressed when the
-            mouse button was clicked.
+        @param x, y The coordinates of the mouse click. Always center of 
+            the screen if the mouse is captured.
+        @param button Number representing mouse button that was clicked. 
+            1 = left button, 4 = right button.
+        @param modifiers Number representing any modifying keys that 
+            were pressed when the mouse button was clicked.
+        
+        @return None
         """
         if self.paused:
             if self.within_label(x, y, self.resume_label):
@@ -497,33 +499,25 @@ class Window(pyglet.window.Window):
         self.reticle.draw(GL_LINES)
     
     
+    #issue57
     def is_it_cloud_coordinates(self, player_current_coords):
-        """
-        check if the block at the given palyer_current_coords is a cloud block
+        """!
+        @brief Check if the block at the given palyer_current_coords is a cloud block.
         
-        Input
-        -----
-            player_current_coords: current (x,y,z) corrdinates for the player
+        @param player_current_coords Current (x,y,z) corrdinates for the player.
         
-        Output
-        ------
-            True: if the coords corresponding to a cloud block.
-            False: otherwise.
+        @return True if the coordinates correspond to a cloud block, False otherwise.
         """
         block_type = self.model.world.get(player_current_coords)
         return block_type in [LIGHT_CLOUD,DARK_CLOUD]
     
+    #issue42
     def is_it_cloud_texture(self, texture):
-        """
-        check if the texture is of type cloud
+        """!
+        @brief Check if the texture is of type cloud.
         
-        Input
-        -----
-            texture: The texture that was clicked by the mouse left-button.
+        @param texture The texture that was clicked by the mouse left-button.
         
-        Output
-        ------
-            True: if the texture belong to clouds' textures.
-            False: otherwise.
+        @return True if the texture belong to clouds' textures, False otherwise.
         """
         return texture in [LIGHT_CLOUD,DARK_CLOUD]
