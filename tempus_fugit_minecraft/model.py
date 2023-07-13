@@ -388,18 +388,14 @@ class Model(object):
             for x,y,z in cloud:
                 self.add_block((x,y,z) , cloud_color , immediate=False)
 
+    #issue57
     def can_pass_through_block(self, player_current_coords):
-        """
-        check if the block at the given palyer_current_coords is a cloud block
+        """!
+        @brief Check if the block at the given palyer_current_coords is a cloud block.
         
-        Input
-        -----
-            player_current_coords: current (x,y,z) corrdinates for the player
+        @param player_current_coords Current (x,y,z) corrdinates for the player.
         
-        Output
-        ------
-            True: if the coords corresponding to a cloud block.
-            False: otherwise.
+        @return True if the coordinates correspond to a cloud block, False otherwise.
         """
         block_type = self.world.get(player_current_coords)
         return block_type in [LIGHT_CLOUD,DARK_CLOUD]
