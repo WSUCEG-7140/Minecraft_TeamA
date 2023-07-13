@@ -94,6 +94,7 @@ class Window(pyglet.window.Window):
         #Instance of the shaders in the world
         '''Placed in Windows for being a OpenGL related Class. Solves issue #7'''
         self.shaders = Shaders(self.model)
+        self.shaders.TurnOnEnvironmentLight()
 
         self.paused = False
 
@@ -302,9 +303,6 @@ class Window(pyglet.window.Window):
                         self.dy = 0
                     break
         return tuple(p)
-    
-    def setup_environmental_lighting(self):
-        self.shaders.TurnOnEnvironmentLight()
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """Called when a mouse button is pressed. See pyglet docs for button

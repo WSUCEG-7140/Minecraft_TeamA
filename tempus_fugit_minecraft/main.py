@@ -48,7 +48,6 @@ def main() -> None:
     # Hide the mouse cursor and prevent the mouse from leaving the window.
     window.set_exclusive_mouse(True)
     setup()
-    window.setup_environmental_lighting()
     app.run()
 
 
