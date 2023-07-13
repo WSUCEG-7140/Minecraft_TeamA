@@ -231,7 +231,7 @@ class Window(pyglet.window.Window):
                 # ON OSX, control + left click = right click.
                 if previous and block:
                     block_texture = self.model.world[block]
-                    if not self.is_it_cloud_texture(block_texture):
+                    if not self.model.is_it_cloud_texture(block_texture):
                         self.model.add_block(previous, self.player.block)
                         
             elif button == pyglet.window.mouse.LEFT and block:
@@ -497,14 +497,3 @@ class Window(pyglet.window.Window):
         """Draw the crosshairs in the center of the screen."""
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
-    
-    #issue42
-    def is_it_cloud_texture(self, texture):
-        """!
-        @brief Check if the texture is of type cloud.
-        
-        @param texture The texture that was clicked by the mouse left-button.
-        
-        @return True if the texture belong to clouds' textures, False otherwise.
-        """
-        return texture in [LIGHT_CLOUD,DARK_CLOUD]

@@ -399,3 +399,14 @@ class Model(object):
         """
         block_type = self.world.get(player_current_coords)
         return block_type in [LIGHT_CLOUD,DARK_CLOUD]
+    
+    #issue42
+    def is_it_cloud_texture(self, texture):
+        """!
+        @brief Check if the texture is of type cloud.
+        
+        @param texture The texture that was clicked by the mouse left-button.
+        
+        @return True if the texture belong to clouds' textures, False otherwise.
+        """
+        return texture in [LIGHT_CLOUD,DARK_CLOUD]
