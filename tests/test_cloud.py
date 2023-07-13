@@ -111,7 +111,7 @@ class TestClouds:
         assert model.can_pass_through_block((0,100,0)) == True
     
     #issue42
-    def test_mouse_press_on_clouds(self):
+    def test_click_mouse_to_add_block_to_clouds(self):
         model = Model()
         window = Window()
         window.model = model
