@@ -154,21 +154,18 @@ class Window(pyglet.window.Window):
         x, y, z = self.collide((x + dx, y + dy, z + dz), self.player.PLAYER_HEIGHT)
         self.player.position = (x, y, z)
 
+    #issue57
     def collide(self, position: tuple, height: int) -> tuple:
-        """Checks to see if the player at the given `position` and `height`
-        is colliding with any blocks in the world.
+        """!
+        @brief Checks to see if the player at the given `position` and `height`
+            is colliding with any blocks in the world.
+        
+        @details If position for cloud texture, pass through clouds.
 
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position to check for collisions at.
-        height : int or float
-            The height of the player.
+        @param position The (x, y, z) position to check for collisions at.
+        @param height The height of the player.
 
-        Returns
-        -------
-        position : tuple of len 3
-            The new position of the player taking into account collisions.
+        @return position The new position of the player taking into account collisions.
         """
         # How much overlap with a dimension of a surrounding block you need to
         # have to count as a collision. If 0, touching terrain at all counts as
@@ -200,22 +197,27 @@ class Window(pyglet.window.Window):
                     break
         return tuple(p)
     
-
+    
+    #issue42
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
-        """Called when a mouse button is pressed. See pyglet docs for button
-        and modifier mappings.
+        """!
+        @brief Called when a mouse button is pressed. See pyglet docs for 
+            button and modifier mappings.
+        
+        @details If right-click on non-clouds texture, add_block() is called. 
+            Otherwise, the method is not called.
+        
+        @details If left-click on non-brick texture, remove_block() is called. 
+            Otherwise, the method is not called.
 
-        Parameters
-        ----------
-        x, y : int
-            The coordinates of the mouse click. Always center of the screen if
-            the mouse is captured.
-        button : int
-            Number representing mouse button that was clicked. 1 = left button,
-            4 = right button.
-        modifiers : int
-            Number representing any modifying keys that were pressed when the
-            mouse button was clicked.
+        @param x, y The coordinates of the mouse click. Always center of 
+            the screen if the mouse is captured.
+        @param button Number representing mouse button that was clicked. 
+            1 = left button, 4 = right button.
+        @param modifiers Number representing any modifying keys that 
+            were pressed when the mouse button was clicked.
+        
+        @return None
         """
         if self.paused:
             if self.within_label(x, y, self.resume_label):
@@ -227,8 +229,11 @@ class Window(pyglet.window.Window):
             block, previous = self.model.hit_test(self.player.position, vector)
             if (button == mouse.RIGHT) or ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
                 # ON OSX, control + left click = right click.
-                if previous:
-                    self.model.add_block(previous, self.player.block)
+                if previous and block:
+                    block_texture = self.model.world[block]
+                    if not self.model.is_it_cloud_texture(block_texture):
+                        self.model.add_block(previous, self.player.block)
+                        
             elif button == pyglet.window.mouse.LEFT and block:
                 texture = self.model.world[block]
                 if texture != STONE:

@@ -1,6 +1,9 @@
+# from pyglet.window.mouse import RIGHT as right_mouse_button
 import pyglet
 import pytest
 from unittest.mock import Mock
+from unittest.mock import patch
+from tempus_fugit_minecraft.window import Window
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND
 
@@ -8,11 +11,19 @@ from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRI
 def model():
     yield Model()
 
+@pytest.fixture(scope="class")
+def window():
+    yield Window()
+
 class TestClouds:
     @pytest.fixture(autouse=True)
-    def teardown(self, model):
+    def teardown(self, model,window):
         model.world.clear()
+        window.model = model
+        window.paused = False
+        window.exclusive = True
 
+    #issue20
     def test_light_clouds_created_dynamically(self, model):
         clouds = model.generate_clouds_positions(80, 100)
         for cloud in clouds:
@@ -20,6 +31,7 @@ class TestClouds:
                 model.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
         assert LIGHT_CLOUD in model.world.values()
 
+    #issue20; #issue28
     def test_cloud_positions(self):
         model = Model()
         model.generate_clouds_positions(80, 100)
@@ -29,6 +41,7 @@ class TestClouds:
             assert -o <= block[0] <= o
             assert -o <= block[2] <= o
 
+    #issue20; #issue28
     def test_cloud_height(self):
         model = Model()
         model.generate_clouds_positions(80, 100)
@@ -36,12 +49,14 @@ class TestClouds:
         for cloud_coordinates in clouds:
             assert cloud_coordinates[1] >= 20
 
+    #issue20; #issue28
     def test_non_overlapping_clouds(self, model):
         model.generate_clouds_positions(80, 100)
         blocks_of_all_clouds = [coordinates for coordinates, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         unique_clouds = set(blocks_of_all_clouds)
         assert len(blocks_of_all_clouds) == len(unique_clouds)
 
+    #issue28
     def test_dark_clouds_created_dynamically(self, model):
         clouds = model.generate_clouds_positions(80, 200)
         for cloud in clouds:
@@ -49,6 +64,7 @@ class TestClouds:
                 model.add_block((x, c, z), DARK_CLOUD, immediate=True)
         assert DARK_CLOUD in model.world.values()
 
+    #issue20; #issue28
     def test_draw_clouds_in_the_sky_and_count_blocks(self):
         model = Model()
         clouds = model.generate_clouds_positions(80, 150)
@@ -56,7 +72,8 @@ class TestClouds:
         cloud_blocks = [coordinates for coordinates, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         assert len(cloud_blocks) >= sum(len(cloud) for cloud in clouds)
     
-    def test_pass_through_clouds(self, model):
+    #issue57
+    def test_pass_through_clouds(self, model, window):
         model.world[(0,50,0)] = LIGHT_CLOUD
         assert model.can_pass_through_block((0,50,0)) == True
         
@@ -64,7 +81,8 @@ class TestClouds:
         assert model.can_pass_through_block((0,52,0)) == True
     
     
-    def test_no_pass_through_objects_not_of_type_clouds(self, model):
+    #issue57
+    def test_no_pass_through_objects_not_of_type_clouds(self, model, window):
         model.world[(0,10,0)] = STONE
         assert model.can_pass_through_block((0,10,0)) == False
         
@@ -78,7 +96,8 @@ class TestClouds:
         assert model.can_pass_through_block((0,40,0)) == False
     
     
-    def test__try_pass_through_different_objects_added_at_same_position(self, model):
+    #issue57;
+    def test__try_pass_through_different_objects_added_at_same_position(self, model, window):
         block_type = model.world.get((0,100,0))
         assert block_type == None
         
@@ -90,3 +109,15 @@ class TestClouds:
         
         model.world[(0,100,0)] = DARK_CLOUD
         assert model.can_pass_through_block((0,100,0)) == True
+    
+    #issue42
+    def test_click_mouse_to_add_block_to_clouds(self):
+        model = Model()
+        window = Window()
+        window.model = model
+        window.model.clouds = model.generate_clouds_positions(80, 150)
+        x, y, z = window.model.clouds[0][0]
+        
+        with patch.object(window.model, 'add_block', return_value=None) as add_block_method:
+            window.on_mouse_press(x,y, pyglet.window.mouse.RIGHT, 0)
+        assert add_block_method.call_count == 0
