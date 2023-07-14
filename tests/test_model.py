@@ -114,7 +114,6 @@ class TestModel:
             model.handle_secondary_action()
             assert add_block_method.call_count == 0
 
-    
     #issue 68
     def test_handle_flight_toggle_while_player_not_flying(self, model):
         model.handle_flight_toggle()
