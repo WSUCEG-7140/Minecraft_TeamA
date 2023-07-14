@@ -134,15 +134,12 @@ class Model(object):
         return False
 
     def add_block(self, position: tuple, texture: list, immediate=True) -> None:
-        """Add a block with the given `texture` and `position` to the world.
+        """!
+        @brief Add a block with the given `texture` and `position` to the world.
 
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position of the block to add.
-        texture : list of len 3
-            The coordinates of the texture squares. Use `tex_coords()` to
-            generate.
+        @param position The (x, y, z) position of the block to add.
+        @param texture The coordinates of the texture squares. Use `tex_coords()`
+            to generate.
         immediate : bool
             Whether to draw the block immediately.
         """
@@ -348,21 +345,16 @@ class Model(object):
         while self.queue:
             self._dequeue()
 
+    #issue20; #issue28
     @staticmethod
     def generate_clouds_positions(world_size: int, num_of_clouds=250) -> list:
-        """Generate the position of the clouds on the sky.
-
-        Parameters
-        ----------
-        world_size : int
-            1/2 size of the world.
-        num_of_clouds : int
-            Default clouds to be generated = 250
-
-        Returns
-        -------
-        clouds : list of lists
-            Each inner list represents a set of cloud blocks.
+        """!
+        @brief Generate sky cloud positions.
+        
+        @param world_size Half the world's size.
+        @param num_of_clouds Number of clouds (default is 250).
+        
+        @return clouds list of lists representing cloud blocks coordinates.
         """
         game_margin = world_size
         clouds = list()
@@ -381,17 +373,40 @@ class Model(object):
             clouds.append(single_cloud)
         return clouds
 
-
+    #issue20; #issue28
     def place_cloud_blocks(self, clouds):
-        """
-        represent each cloud block's coordinates with a cloud block in the sky.
+        """!
+        @breif represent cloud block's coordinates in the sky.
 
-        Input: clouds: list of lists; each inner list is a set of cloud block's coordinates.
+        @param clouds list of lists; each inner list contains cloud block's coordinates.
 
-        output: draw a cloud block with its corresponding coordinates.
+        @return None, but draw a cloud block at its corresponding coordinates.
         """
         cloud_types = [LIGHT_CLOUD,DARK_CLOUD]
         for cloud in clouds:
             cloud_color = random.choice(cloud_types)
             for x,y,z in cloud:
                 self.add_block((x,y,z) , cloud_color , immediate=False)
+
+    #issue57
+    def can_pass_through_block(self, player_current_coords):
+        """!
+        @brief Check if the block at the given palyer_current_coords is a cloud block.
+        
+        @param player_current_coords Current (x,y,z) corrdinates for the player.
+        
+        @return True if the coordinates correspond to a cloud block, False otherwise.
+        """
+        block_type = self.world.get(player_current_coords)
+        return block_type in [LIGHT_CLOUD,DARK_CLOUD]
+    
+    #issue42
+    def is_it_cloud_texture(self, texture):
+        """!
+        @brief Check if the texture is of type cloud.
+        
+        @param texture The texture that was clicked by the mouse left-button.
+        
+        @return True if the texture belong to clouds' textures, False otherwise.
+        """
+        return texture in [LIGHT_CLOUD,DARK_CLOUD]
