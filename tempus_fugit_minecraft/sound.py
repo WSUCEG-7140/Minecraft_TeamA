@@ -6,7 +6,7 @@ class Sound:
         '''!Initializes the class. If a file path is named, uses that to load the sound file
             @param string The file path for the sound file'''
         self.sound_file_path = file_path
-        self.player = None
+        self.player = media.Player()
         if file_path != None:
             self.sound_file = media.load(file_path)
     def load_sound(self, file_path):
@@ -15,9 +15,11 @@ class Sound:
         self.sound_file = media.load(file_path)
     def play_sound(self):
         '''!plays the sound contained in the class'''
-        if self.player == None:
-            self.player = self.sound_file.play()
+        self.player.queue(self.sound_file)
+        if not self.player.playing:
+            self.player.play()
         else:
-            self.player.queue(self.sound_file)
+            self.player.next_source()
             self.player.play()
         return 1
+            
