@@ -16,4 +16,4 @@ class TestLighting():
     @staticmethod
     def test_3D_norm_vector_calc():
         vector = [0, 0, 1]
-        assert Shaders.Normal3DVectorCalc(vector) == 1
+        assert Shaders.normal_3D_vector_calc(vector) == 1
