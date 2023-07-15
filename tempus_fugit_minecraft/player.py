@@ -151,3 +151,31 @@ class Player:
     
     def toggle_flight(self):
         self.flying = not self.flying
+
+    #issue 68
+    def update(self, dt: float, collision_checker) -> None:
+        """Private implementation of the `update()` method. This is where most
+        of the motion logic lives, along with gravity and collision detection.
+
+        Parameters
+        ----------
+        dt : float
+            The change in time (seconds) since the last call.
+        """
+        # walking
+        speed = self.current_speed()
+        d = dt * speed  # distance covered this tick.
+        dx, dy, dz = self.get_motion_vector()
+        # New position in space, before accounting for gravity.
+        dx, dy, dz = dx * d, dy * d, dz * d
+        # gravity
+        if not self.flying:
+            # Update your vertical speed: if you are falling, speed up until you
+            # hit terminal velocity; if you are jumping, slow down until you
+            # start falling.
+            self.dy -= dt * self.GRAVITY
+            self.dy = max(self.dy, -self.MAX_FALL_SPEED)
+            dy += self.dy * dt
+        # collisions
+        x, y, z = self.position
+        self.position = collision_checker((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
