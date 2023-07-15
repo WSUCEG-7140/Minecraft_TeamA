@@ -82,6 +82,8 @@ class Model(object):
         self.player = Player()
 
         self._initialize()
+        self.background_noise = sound_list.wind_blowing
+        self.background_noise.play_sound()
 
     def _initialize(self, immediate=False) -> None:
         """Initialize the world by placing all the blocks."""
