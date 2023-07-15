@@ -486,6 +486,9 @@ class Model(object):
             if self.sector is None:
                 self.process_entire_queue()
             self.sector = sector
+        
+        self.player.check_player_within_world_boundaries()
+        
         moves = 8
         dt = min(dt, 0.2)
         for _ in xrange(moves):

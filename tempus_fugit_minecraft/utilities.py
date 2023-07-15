@@ -66,6 +66,8 @@ def tex_coords(top: tuple, bottom: tuple, side: tuple) -> list:
     result.extend(side * 4)
     return result
 
+WHOLE_WORLD_SIZE = 160
+WORLD_SIZE = int(WHOLE_WORLD_SIZE/2)
 TICKS_PER_SEC = 60
 GRASS = tex_coords((1, 0), (0, 1), (0, 0))
 SAND = tex_coords((1, 1), (1, 1), (1, 1))
