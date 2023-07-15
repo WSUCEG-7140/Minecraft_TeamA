@@ -8,6 +8,7 @@ from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
 from tempus_fugit_minecraft.utilities import *
 from typing import Callable
+from tempus_fugit_minecraft import sound_list
 
 if sys.version_info[0] >= 3:
     xrange = range
@@ -167,6 +168,7 @@ class Model(object):
         if immediate:
             if position in self.shown:
                 self.hide_block(position)
+                sound_list.rock_hit_sound.play_sound()
             self.check_neighbors(position)
 
     def check_neighbors(self, position: tuple) -> None:
