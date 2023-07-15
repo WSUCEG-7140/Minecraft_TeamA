@@ -25,7 +25,7 @@ class Shaders():
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
         
     @staticmethod
-    def normal_3D_vector_calc(self, vector):
-        threeDVector = math.sqrt(vector[0] * v[0] + vector[1] * vector[1] + vector[2] * vector[2])
+    def normal_3D_vector_calc(vector):
+        threeDVector = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
         return threeDVector
     
