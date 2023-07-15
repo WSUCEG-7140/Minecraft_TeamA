@@ -4,7 +4,7 @@ from unittest.mock import Mock
 from unittest.mock import patch
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.player import Player
-from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND
+from tempus_fugit_minecraft.block import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND
 
 @pytest.fixture(scope="class")
 def model():
@@ -159,14 +159,15 @@ class TestModel:
     #issue 68
     def test_handle_secondary_action_with_block_and_cloud_no_add(self, model: Model):
         model.world[(0, 0, 0)] = LIGHT_CLOUD
-        with patch.object(model, 'hit_test', return_value = ((0, 0, 0), LIGHT_CLOUD)) as hit_test_method:
+        with patch.object(model, 'hit_test', return_value = ((0, 0, 0), None)) as hit_test_method:
             with patch.object(model, 'add_block', return_value=None) as add_block_method:
                 model.handle_secondary_action()
                 assert add_block_method.call_count == 0
     
     #issue 68
     def test_handle_secondary_action_with_block_and_brick_one_add_block_call(self, model: Model):
-        with patch.object(model, 'hit_test', return_value = ((0, 0, 0), BRICK)) as hit_test_method:
+        model.world[(0, 0, 0)] = BRICK
+        with patch.object(model, 'hit_test', return_value = ((0, 0, 0), (1, 1, 1))) as hit_test_method:
             with patch.object(model, 'add_block', return_value=None) as add_block_method:
                 model.handle_secondary_action()
                 assert add_block_method.call_count == 1
