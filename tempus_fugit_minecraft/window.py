@@ -48,7 +48,7 @@ class Window(pyglet.window.Window):
 
         # When flying gravity has no effect and speed is increased.
         self.flying = False
-        
+
         self.ascend = False
         self.descend = False
 
@@ -244,7 +244,7 @@ class Window(pyglet.window.Window):
         dx, dy, dz = self.get_motion_vector()
         # New position in space, before accounting for gravity.
         dx, dy, dz = dx * d, dy * d, dz * d
-        
+
         if self.flying:
             if self.ascend:
                 self.position = self.position[0], self.position[1] + dt * self.FLYING_SPEED, self.position[2]
@@ -262,8 +262,6 @@ class Window(pyglet.window.Window):
         x, y, z = self.position
         x, y, z = self.collide((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
         self.position = (x, y, z)
-        
-        
 
     def collide(self, position: tuple, height: int) -> tuple:
         """Checks to see if the player at the given `position` and `height`
