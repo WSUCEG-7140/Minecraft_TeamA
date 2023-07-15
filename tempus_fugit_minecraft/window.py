@@ -47,7 +47,7 @@ class Window(pyglet.window.Window):
         #Instance of the shaders in the world
         '''Placed in Windows for being a OpenGL related Class. Solves issue #7'''
         self.shaders = Shaders(self.model)
-        self.shaders.TurnOnEnvironmentLight()
+        self.shaders.turn_on_environment_light()
 
         self.paused = False
 
