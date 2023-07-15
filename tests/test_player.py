@@ -319,3 +319,40 @@ class TestPlayer:
         player.toggle_flight()
         player.toggle_flight()
         assert not player.flying
+
+    #issue 68
+    def test_update_with_no_flying(self, player: Player):
+        for x in [-1, 0, 1]:
+            for z in [-1, 0, 1]:
+                player.position = (0, 0, 0)
+                player.rotation = (0, 0)
+                player.dy = 0
+                player.strafe = [x, z]
+
+                player.update(1, lambda pos, _: pos)
+
+                p_x, p_y, p_z = player.position
+                m_x, _, m_z = player.get_motion_vector()
+
+                assert p_x == m_x * player.current_speed()
+                assert p_z == m_z * player.current_speed()
+
+                assert p_y == -player.GRAVITY
+                assert player.dy == -player.GRAVITY
+
+    #issue 68
+    def test_update_with_flying(self, player: Player):
+        player.flying = True
+        for x in [-1, 0, 1]:
+            for y in [-90, -45, 0, 45, 90]:
+                for z in [-1, 0, 1]:
+                    player.position = (0, 0, 0)
+                    player.rotation = (0,y)
+                    player.dy = 0
+                    player.strafe = [x, z]
+                    player.update(1, lambda pos, _: pos)
+                    p_x, p_y, p_z = player.position
+                    m_x, m_y, m_z = player.get_motion_vector()
+                    assert p_x == m_x * player.current_speed()
+                    assert p_y == m_y * player.current_speed()
+                    assert p_z == m_z * player.current_speed()
