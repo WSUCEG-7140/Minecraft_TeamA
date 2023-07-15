@@ -8,6 +8,7 @@ from tempus_fugit_minecraft.utilities import DARK_CLOUD, LIGHT_CLOUD, STONE, BRI
 
 @pytest.fixture(scope="class")
 def model():
+    pyglet.options['audio'] = ('silent')
     yield Model()
 
 class TestModel:
