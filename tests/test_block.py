@@ -24,3 +24,15 @@ class TestBlock:
 
         for block in blocks:
             assert not block.is_collidable
+
+    def test_specified_blocks_placeable(self):
+        blocks = [GRASS, SAND, BRICK, STONE]
+        
+        for block in blocks:
+            assert block.can_build_on
+
+    def test_specified_blocks_not_placeable(self):
+        blocks = [LIGHT_CLOUD, DARK_CLOUD]
+
+        for block in blocks:
+            assert not block.can_build_on

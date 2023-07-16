@@ -449,7 +449,7 @@ class Model(object):
     def handle_secondary_action(self):
         vector = self.player.get_sight_vector()
         position, previous = self.hit_test(self.player.position, vector)
-        if previous and position and self.world[position].is_collidable:
+        if previous and position and self.world[position].can_build_on:
             self.add_block(previous, self.player.block)
 
     #issue 68
