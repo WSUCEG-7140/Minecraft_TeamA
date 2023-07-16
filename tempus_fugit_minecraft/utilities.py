@@ -67,6 +67,8 @@ def tex_coords(top: tuple, bottom: tuple, side: tuple) -> list:
     return result
 
 
+WHOLE_WORLD_SIZE = 160
+WORLD_SIZE = int(WHOLE_WORLD_SIZE/2)
 TICKS_PER_SEC = 60
 GRASS = tex_coords((1, 0), (0, 1), (0, 0))
 SAND = tex_coords((1, 1), (1, 1), (1, 1))
@@ -83,37 +85,3 @@ FACES = [
     (0, 0, 1),
     (0, 0, -1),
 ]
-
-
-def normalize(position: tuple) -> tuple:
-    """Accepts `position` of arbitrary precision and returns the block containing that position.
-
-    Parameters
-    ----------
-    position : tuple of len 3
-
-    Returns
-    -------
-    block_position : tuple of ints of len 3
-    """
-    x, y, z = position
-    x, y, z = (int(round(x)), int(round(y)), int(round(z)))
-    return x, y, z
-
-
-def sectorize(position: tuple) -> tuple:
-    """Returns a tuple representing the sector for the given `position`.
-
-    Parameters
-    ----------
-    position : tuple of len 3
-
-    Returns
-    -------
-    sector : tuple of len 3
-    """
-    SECTOR_SIZE = 16  # Size of sectors used to ease block loading.
-
-    x, y, z = normalize(position)
-    x, y, z = x // SECTOR_SIZE, y // SECTOR_SIZE, z // SECTOR_SIZE
-    return x, 0, z

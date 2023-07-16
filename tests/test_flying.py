@@ -3,14 +3,6 @@ from unittest.mock import Mock
 import pyglet
 import pytest
 
-from tempus_fugit_minecraft.utilities import (
-    BRICK,
-    DARK_CLOUD,
-    GRASS,
-    LIGHT_CLOUD,
-    SAND,
-    STONE,
-)
 from tempus_fugit_minecraft.window import Window
 
 

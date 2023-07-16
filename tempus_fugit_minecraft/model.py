@@ -7,10 +7,46 @@ from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
 from tempus_fugit_minecraft.utilities import *
+from tempus_fugit_minecraft.player import Player
 from typing import Callable
+from tempus_fugit_minecraft import sound_list
 
 if sys.version_info[0] >= 3:
     xrange = range
+
+
+def normalize(position: tuple) -> tuple:
+    """Accepts `position` of arbitrary precision and returns the block containing that position.
+
+    Parameters
+    ----------
+    position : tuple of len 3
+
+    Returns
+    -------
+    block_position : tuple of ints of len 3
+    """
+    x, y, z = position
+    x, y, z = (int(round(x)), int(round(y)), int(round(z)))
+    return x, y, z
+
+
+def sectorize(position: tuple) -> tuple:
+    """Returns a tuple representing the sector for the given `position`.
+
+    Parameters
+    ----------
+    position : tuple of len 3
+
+    Returns
+    -------
+    sector : tuple of len 3
+    """
+    SECTOR_SIZE = 16  # Size of sectors used to ease block loading.
+
+    x, y, z = normalize(position)
+    x, y, z = x // SECTOR_SIZE, y // SECTOR_SIZE, z // SECTOR_SIZE
+    return x, 0, z
 
 
 class Model(object):
@@ -36,15 +72,18 @@ class Model(object):
         self._shown = {}
 
         # Mapping from sector to a list of positions inside that sector.
+        self.sector = None
         self.sectors = {}
 
         # Simple function queue implementation. The queue is populated with
         # _show_block() and _hide_block() calls
         self.queue = deque()
 
+        self.player = Player()
+
         self._initialize()
 
-    def _initialize(self) -> None:
+    def _initialize(self, immediate=False) -> None:
         """Initialize the world by placing all the blocks."""
         n = 80  # 1/2 width and height of world
         s = 1  # step size
@@ -52,12 +91,12 @@ class Model(object):
         for x in xrange(-n, n + 1, s):
             for z in xrange(-n, n + 1, s):
                 # create a layer stone and grass everywhere.
-                self.add_block((x, y - 2, z), GRASS, immediate=False)
-                self.add_block((x, y - 3, z), STONE, immediate=False)
+                self.add_block((x, y - 2, z), GRASS, immediate=immediate)
+                self.add_block((x, y - 3, z), STONE, immediate=immediate)
                 if x in (-n, n) or z in (-n, n):
                     # create outer walls.
                     for dy in xrange(-2, 3):
-                        self.add_block((x, y + dy, z), STONE, immediate=False)
+                        self.add_block((x, y + dy, z), STONE, immediate=immediate)
 
         # generate the hills randomly
         o = n - 10
@@ -76,7 +115,7 @@ class Model(object):
                             continue
                         if (x - 0) ** 2 + (z - 0) ** 2 < 5 ** 2:
                             continue
-                        self.add_block((x, y, z), t, immediate=False)
+                        self.add_block((x, y, z), t, immediate=immediate)
                 s -= d  # decrement side length so hills taper off
 
         clouds = self.generate_clouds_positions(n, num_of_clouds=150)
@@ -134,15 +173,12 @@ class Model(object):
         return False
 
     def add_block(self, position: tuple, texture: list, immediate=True) -> None:
-        """Add a block with the given `texture` and `position` to the world.
+        """!
+        @brief Add a block with the given `texture` and `position` to the world.
 
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position of the block to add.
-        texture : list of len 3
-            The coordinates of the texture squares. Use `tex_coords()` to
-            generate.
+        @param position The (x, y, z) position of the block to add.
+        @param texture The coordinates of the texture squares. Use `tex_coords()`
+            to generate.
         immediate : bool
             Whether to draw the block immediately.
         """
@@ -170,6 +206,7 @@ class Model(object):
         if immediate:
             if position in self.shown:
                 self.hide_block(position)
+                sound_list.rock_hit_sound.play_sound()
             self.check_neighbors(position)
 
     def check_neighbors(self, position: tuple) -> None:
@@ -206,6 +243,9 @@ class Model(object):
         immediate : bool
             Whether to show the block immediately.
         """
+        if position not in self.world:
+            return
+
         texture = self.world[position]
         self.shown[position] = texture
         if immediate:
@@ -348,21 +388,16 @@ class Model(object):
         while self.queue:
             self._dequeue()
 
+    #issue20; #issue28
     @staticmethod
     def generate_clouds_positions(world_size: int, num_of_clouds=250) -> list:
-        """Generate the position of the clouds on the sky.
+        """!
+        @brief Generate sky cloud positions.
 
-        Parameters
-        ----------
-        world_size : int
-            1/2 size of the world.
-        num_of_clouds : int
-            Default clouds to be generated = 250
+        @param world_size Half the world's size.
+        @param num_of_clouds Number of clouds (default is 250).
 
-        Returns
-        -------
-        clouds : list of lists
-            Each inner list represents a set of cloud blocks.
+        @return clouds list of lists representing cloud blocks coordinates.
         """
         game_margin = world_size
         clouds = list()
@@ -381,16 +416,172 @@ class Model(object):
             clouds.append(single_cloud)
         return clouds
 
+    #issue20; #issue28
     def place_cloud_blocks(self, clouds):
-        """
-        represent each cloud block's coordinates with a cloud block in the sky.
+        """!
+        @breif represent cloud block's coordinates in the sky.
 
-        Input: clouds: list of lists; each inner list is a set of cloud block's coordinates.
+        @param clouds list of lists; each inner list contains cloud block's coordinates.
 
-        output: draw a cloud block with its corresponding coordinates.
+        @return None, but draw a cloud block at its corresponding coordinates.
         """
         cloud_types = [LIGHT_CLOUD, DARK_CLOUD]
         for cloud in clouds:
             cloud_color = random.choice(cloud_types)
             for x, y, z in cloud:
                 self.add_block((x, y, z), cloud_color, immediate=False)
+
+    #issue57
+    def can_pass_through_block(self, player_current_coords):
+        """!
+        @brief Check if the block at the given palyer_current_coords is a cloud block.
+
+        @param player_current_coords Current (x,y,z) corrdinates for the player.
+
+        @return True if the coordinates correspond to a cloud block, False otherwise.
+        """
+        return self.is_a_cloud_block(self.world.get(player_current_coords))
+
+    #issue42
+    def is_a_cloud_block(self, texture):
+        """!
+        @brief Check if the texture is of type cloud.
+
+        @param texture The texture that was clicked by the mouse left-button.
+
+        @return True if the texture belong to clouds' textures, False otherwise.
+        """
+        return texture in [LIGHT_CLOUD,DARK_CLOUD]
+
+    #issue 68
+    def handle_secondary_action(self):
+        vector = self.player.get_sight_vector()
+        block, previous = self.hit_test(self.player.position, vector)
+        if previous and block and not self.is_a_cloud_block(self.world.get(block)):
+            self.add_block(previous, self.player.block)
+
+    #issue 68
+    def handle_primary_action(self):
+        vector = self.player.get_sight_vector()
+        block, _ = self.hit_test(self.player.position, vector)
+        if block:
+            texture = self.world[block]
+            if texture is not STONE:
+                self.remove_block(block)
+
+    #issue 68
+    def update(self, dt: float) -> None:
+        """This method is scheduled to be called repeatedly by the pyglet clock.
+
+        Parameters
+        ----------
+        dt : float
+            The change in time (seconds) since the last call.
+        """
+        self.process_queue()
+        sector = sectorize(self.player.position)
+        if sector != self.sector:
+            self.change_sectors(self.sector, sector)
+            if self.sector is None:
+                self.process_entire_queue()
+            self.sector = sector
+
+        if self.player.flying:
+            if self.player.ascend:
+                self.player.position = self.player.position[0], self.player.position[1] + dt * self.player.FLYING_SPEED, \
+                    self.player.position[2]
+            if self.player.descend:
+                self.player.position = self.player.position[0], self.player.position[1] - dt * \
+                                                                self.player.FLYING_SPEED, self.player.position[2]
+
+        self.player.check_player_within_world_boundaries()
+
+        moves = 8
+        dt = min(dt, 0.2)
+        for _ in xrange(moves):
+            self.player.update(dt / moves, self.collide)
+
+    #issue 68
+    def collide(self, position: tuple, height: int) -> tuple:
+        """Checks to see if the player at the given `position` and `height`
+        is colliding with any blocks in the world.
+
+        Parameters
+        ----------
+        position : tuple of len 3
+            The (x, y, z) position to check for collisions at.
+        height : int or float
+            The height of the player.
+
+        Returns
+        -------
+        position : tuple of len 3
+            The new position of the player taking into account collisions.
+        """
+        # How much overlap with a dimension of a surrounding block you need to
+        # have to count as a collision. If 0, touching terrain at all counts as
+        # a collision. If .49, you sink into the ground, as if walking through
+        # tall grass. If >= .5, you'll fall through the ground.
+        pad = 0.25
+        p = list(position)
+        np = normalize(position)
+        for face in FACES:  # check all surrounding blocks
+            for i in xrange(3):  # check each dimension independently
+                if not face[i]:
+                    continue
+                # How much overlap you have with this dimension.
+                d = (p[i] - np[i]) * face[i]
+                if d < pad:
+                    continue
+                for dy in xrange(height):  # check each height
+                    player_currnet_coords = list(np)
+                    player_currnet_coords[1] -= dy
+                    player_currnet_coords[i] += face[i]
+                    block_type = self.world.get(tuple(player_currnet_coords))
+                    if block_type is None or self.can_pass_through_block(player_current_coords=tuple(player_currnet_coords)):
+                        continue
+                    p[i] -= (d - pad) * face[i]
+                    if face == (0, -1, 0) or face == (0, 1, 0):
+                        # You are colliding with the ground or ceiling, so stop
+                        # falling / rising.
+                        self.player.dy = 0
+                    break
+        return tuple(p)
+
+    #issue 68
+    def handle_adjust_vision(self, dx, dy):
+        self.player.adjust_sight(dx, dy)
+
+    #issue 68
+    def handle_change_active_block(self, index):
+        self.player.select_active_item(index)
+
+    #issue 68
+    def handle_speed_change(self, increase):
+        if increase:
+            self.player.speed_up()
+        else:
+            self.player.speed_down()
+
+    #issue 68
+    def handle_jump(self):
+        self.player.jump()
+
+    #issue 68
+    def handle_flight_toggle(self):
+        self.player.toggle_flight()
+
+    #issue 68
+    def handle_movement(self, forward, backward, left, right):
+        def handle_movement_for_direction(direction, move, stop):
+            if direction != 0:
+                if direction == 1:
+                    move()
+                else:
+                    stop()
+
+        handle_movement_for_direction(forward, self.player.move_forward, self.player.stop_forward)
+        handle_movement_for_direction(backward, self.player.move_backward, self.player.stop_backward)
+        handle_movement_for_direction(left, self.player.move_left, self.player.stop_left)
+        handle_movement_for_direction(right, self.player.move_right, self.player.stop_right)
+
