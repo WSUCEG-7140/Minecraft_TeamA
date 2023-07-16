@@ -25,7 +25,7 @@ class TestPlayer:
         assert player.position == (0, 0, 0)
         assert player.rotation == (0, 0)
         assert player.dy == 0
-        assert len(player.inventory) == 3
+        assert len(player.inventory) == 5
         assert BRICK in player.inventory
         assert GRASS in player.inventory
         assert SAND in player.inventory
