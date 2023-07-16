@@ -81,6 +81,7 @@ class Model(object):
         self.queue = deque()
 
         self.player = Player()
+        self.trees = list()
 
         self._initialize()
 
@@ -121,6 +122,7 @@ class Model(object):
 
         clouds = self.generate_clouds_positions(n, num_of_clouds=150)
         self.place_cloud_blocks(clouds)
+        self.trees = self.generate_trees(num_trees=50)
 
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
@@ -566,3 +568,62 @@ class Model(object):
         handle_movement_for_direction(left, self.player.move_left, self.player.stop_left)
         handle_movement_for_direction(right, self.player.move_right, self.player.stop_right)
 
+
+    #issue80
+    def generate_trees(self, num_trees=100):
+        """!
+        @brief Generate trees' (trunks and leavs) positions.
+        
+        @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
+        @details list trees appends each single_tree list.
+        @details the trees are set to be built on SAND and GRASS only.
+        
+        @param num_trees Number of clouds (default is 100).
+        
+        @return trees list of lists representing trees blocks (single tree=list_trunks , list_leaves) coordinates.
+        """
+        grass_coords = [coords for coords, block in self.world.items() if block in [GRASS,SAND]]
+        trees = list()
+        for _ in range(num_trees):
+            single_tree = list()
+            if grass_coords:
+                base_x, base_y , base_z = random.choice(grass_coords)
+                grass_coords.remove((base_x, base_y , base_z))
+                
+                single_tree = self.generate_single_tree(base_x,base_y+1,base_z, trunk_hight=random.randint(4,8))
+                trees.append(single_tree)
+            else:
+                break
+        return trees
+    
+    #issue80
+    def generate_single_tree(self, x, y, z, trunk_hight=4):
+        """!
+        @breif represent trees' components.
+        
+        @details Tree components are Trunks and Leaves.
+        @details The function returns 2 lists: list of trunks, list of leaves.
+
+        @param x,y,z The coordinates of the position of the tree to be built at.
+        @param trunk_hight Number of trunks (stems) in the tree (default=4).
+        @param 
+        
+        
+        @return [single_stem,single_leaves], coordinates for the tree components.
+        """
+        single_stem = []
+        single_leaves = []
+        
+        # Create trunks
+        for stem in range(trunk_hight):
+            self.add_block((x, y + stem, z), TREE_TRUNK, immediate=False)
+            single_stem.append((x, y + stem, z))
+        
+        # Create leaves
+        for dx in range(-2,3):
+            for dy in range(0,3):
+                for dz in range(-2,3):
+                    self.add_block((x + dx, y + trunk_hight + dy, z + dz), TREE_LEAVES, immediate=False)
+                    single_leaves.append((x + dx, y + trunk_hight + dy, z + dz))
+        return [single_stem,single_leaves]
+    
