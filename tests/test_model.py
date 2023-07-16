@@ -199,7 +199,7 @@ class TestModel:
     #issue 68
     def test_handle_change_active_block(self, model):
         model.handle_change_active_block(3)
-        assert model.player.block == model.player.inventory[0]
+        assert model.player.block == model.player.inventory[3]
     
     #issue 68
     def test_collide_not_coliding_result_should_be_input(self, model):
