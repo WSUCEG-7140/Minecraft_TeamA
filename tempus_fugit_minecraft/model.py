@@ -581,14 +581,24 @@ class Model(object):
         
         @return trees list of lists representing trees blocks (single tree=list_trunks , list_leaves) coordinates.
         """
-        grass_coords = [coords for coords, block in self.world.items() if block in [GRASS,SAND]]
+        suggested_places_for_trees = []
         trees = list()
+        grass_list = [coords for coords , block in self.world.items() if block == GRASS and coords[1]<=0]
+        min_grass_level = min(ground[1] for ground in grass_list)
+        ground_grass_list = [ground for ground in grass_list if ground[1] == min_grass_level]
+        
+        
+        for coords in ground_grass_list:
+            x,y,z = coords
+            does_grass_have_block_above_it = all([(x, y+j, z) not in self.world for j in range(1,10)])
+            if does_grass_have_block_above_it:
+                suggested_places_for_trees.append(coords)
+        
         for _ in range(num_trees):
-            single_tree = list()
-            if grass_coords:
-                base_x, base_y , base_z = random.choice(grass_coords)
-                grass_coords.remove((base_x, base_y , base_z))
-                
+            if suggested_places_for_trees:
+                single_tree=[]
+                base_x, base_y, base_z = random.choice(suggested_places_for_trees)
+                suggested_places_for_trees.remove((base_x, base_y, base_z))
                 single_tree = self.generate_single_tree(base_x,base_y+1,base_z, trunk_hight=5)
                 trees.append(single_tree)
             else:
