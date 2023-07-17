@@ -312,5 +312,16 @@ class TestModel:
         for single_tree in trees:
             base_trunk_x , base_trunk_y , base_trunk_z = single_tree[0][0]
             assert model.world[(base_trunk_x , base_trunk_y , base_trunk_z)] == TREE_TRUNK
-            assert model.world[(base_trunk_x , base_trunk_y-1 , base_trunk_z)] in [GRASS , SAND]            
+            assert model.world[(base_trunk_x , base_trunk_y-1 , base_trunk_z)] in [GRASS , SAND]
+    
+    # #issue80
+    def test_tree_built_on_top_of_ground_level_grass_or_sand(self, model):
+        for x in range(-WORLD_SIZE,WORLD_SIZE):
+            for z in range(-WORLD_SIZE,WORLD_SIZE):
+                model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
+        
+        trees = model.generate_trees(50)
+        for single_tree in trees:
+            trunks , leaves = single_tree
+            assert model.world[(trunks[0][0],trunks[0][1]-1,trunks[0][2])] in [GRASS,SAND]
             
