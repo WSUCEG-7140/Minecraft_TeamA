@@ -81,7 +81,6 @@ class Model(object):
         self.queue = deque()
 
         self.player = Player()
-        self.trees = list()
 
         self._initialize()
 
@@ -122,7 +121,7 @@ class Model(object):
 
         clouds = self.generate_clouds_positions(n, num_of_clouds=150)
         self.place_cloud_blocks(clouds)
-        self.trees = self.generate_trees(num_trees=50)
+        self.generate_trees(num_trees=50)
 
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
