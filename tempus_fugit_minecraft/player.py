@@ -1,4 +1,5 @@
-from tempus_fugit_minecraft.utilities import BRICK, GRASS, SAND
+from tempus_fugit_minecraft.utilities import WHOLE_WORLD_SIZE, WORLD_SIZE
+from tempus_fugit_minecraft.block import BRICK, GRASS, SAND
 import math
 
 class Player:
@@ -179,3 +180,38 @@ class Player:
         # collisions
         x, y, z = self.position
         self.position = collision_checker((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
+    
+    #issue25
+    def check_player_within_world_boundaries(self):
+        """!
+        @brief Ensure that the player character remains within the 
+            confines of the defined game world.
+        
+        @param None
+        
+        @return None
+        """
+        x,y,z = self.position
+
+        x = self.keep_player_within_coordinates(x , boundary_size=WORLD_SIZE)
+        z = self.keep_player_within_coordinates(z , boundary_size=WORLD_SIZE)        
+        self.position = (x,y,z)
+
+    #issue25
+    def keep_player_within_coordinates(self, dimention, boundary_size):
+        """!
+        @brief check whether the dimention (usually x or z) is 
+            within the boundary size.
+        
+        @param dimention represent a player dimention (x,y, or z)
+        @param boundary_size represent the size of the world 
+            withing the walls.
+        
+        @return The dimension adjusted to be within the boundary size.
+        """
+        if dimention > boundary_size:
+            return boundary_size
+        elif dimention < -boundary_size:
+            return -boundary_size
+        else:
+            return dimention

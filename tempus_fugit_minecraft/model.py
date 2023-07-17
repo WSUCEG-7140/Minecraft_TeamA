@@ -6,6 +6,7 @@ from collections import deque
 from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
+from tempus_fugit_minecraft.block import *
 from tempus_fugit_minecraft.utilities import *
 from tempus_fugit_minecraft.player import Player
 from typing import Callable
@@ -61,7 +62,7 @@ class Model(object):
         # A TextureGroup manages an OpenGL texture.
         self.group = TextureGroup(image.load(TEXTURE_PATH).get_texture())
 
-        # A mapping from position to the texture of the block at that position.
+        # A mapping from position to the block at that position.
         # This defines all the blocks that are currently in the world.
         self.world = {}
 
@@ -173,7 +174,7 @@ class Model(object):
                 return True
         return False
 
-    def add_block(self, position: tuple, texture: list, immediate=True) -> None:
+    def add_block(self, position: tuple, block: Block, immediate=True) -> None:
         """!
         @brief Add a block with the given `texture` and `position` to the world.
 
@@ -185,7 +186,7 @@ class Model(object):
         """
         if position in self.world:
             self.remove_block(position, immediate)
-        self.world[position] = texture
+        self.world[position] = block
         self.sectors.setdefault(sectorize(position), []).append(position)
         if immediate:
             if self.exposed(position):
@@ -247,14 +248,14 @@ class Model(object):
         if position not in self.world:
             return
         
-        texture = self.world[position]
-        self.shown[position] = texture
+        block = self.world[position]
+        self.shown[position] = block
         if immediate:
-            self._show_block(position, texture)
+            self._show_block(position, block)
         else:
-            self._enqueue(self._show_block, position, texture)
+            self._enqueue(self._show_block, position, block)
 
-    def _show_block(self, position: tuple, texture: list) -> None:
+    def _show_block(self, position: tuple, block: Block) -> None:
         """Private implementation of the `show_block()` method.
 
         Parameters
@@ -267,7 +268,7 @@ class Model(object):
         """
         x, y, z = position
         vertex_data = cube_vertices(x, y, z, 0.5)
-        texture_data = list(texture)
+        texture_data = list(block.texture_coordinates)
         # create vertex list
         # FIXME Maybe `add_indexed()` should be used instead
         self._shown[position] = self.batch.add(24, GL_QUADS, self.group,
@@ -441,34 +442,22 @@ class Model(object):
         
         @return True if the coordinates correspond to a cloud block, False otherwise.
         """
-        return self.is_a_cloud_block(self.world.get(player_current_coords))
-    
-    #issue42
-    def is_a_cloud_block(self, texture):
-        """!
-        @brief Check if the texture is of type cloud.
-        
-        @param texture The texture that was clicked by the mouse left-button.
-        
-        @return True if the texture belong to clouds' textures, False otherwise.
-        """
-        return texture in [LIGHT_CLOUD,DARK_CLOUD]
+        block = self.world.get(player_current_coords)
+        return block is None or not block.is_collidable
     
     #issue 68
     def handle_secondary_action(self):
         vector = self.player.get_sight_vector()
-        block, previous = self.hit_test(self.player.position, vector)
-        if previous and block and not self.is_a_cloud_block(self.world.get(block)):
+        position, previous = self.hit_test(self.player.position, vector)
+        if previous and position and self.world[position].can_build_on:
             self.add_block(previous, self.player.block)
 
     #issue 68
     def handle_primary_action(self):
         vector = self.player.get_sight_vector()
-        block, _ = self.hit_test(self.player.position, vector)
-        if block:
-            texture = self.world[block]
-            if texture is not STONE:
-                self.remove_block(block)
+        position, _ = self.hit_test(self.player.position, vector)
+        if position and self.world[position].is_breakable:
+            self.remove_block(position)
 
     #issue 68
     def update(self, dt: float) -> None:
@@ -486,6 +475,9 @@ class Model(object):
             if self.sector is None:
                 self.process_entire_queue()
             self.sector = sector
+        
+        self.player.check_player_within_world_boundaries()
+        
         moves = 8
         dt = min(dt, 0.2)
         for _ in xrange(moves):
@@ -527,8 +519,7 @@ class Model(object):
                     player_currnet_coords = list(np)
                     player_currnet_coords[1] -= dy
                     player_currnet_coords[i] += face[i]
-                    block_type = self.world.get(tuple(player_currnet_coords))
-                    if block_type is None or self.can_pass_through_block(player_current_coords=tuple(player_currnet_coords)):
+                    if self.can_pass_through_block(player_current_coords=tuple(player_currnet_coords)):
                         continue
                     p[i] -= (d - pad) * face[i]
                     if face == (0, -1, 0) or face == (0, 1, 0):
