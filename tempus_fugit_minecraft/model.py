@@ -6,8 +6,8 @@ from collections import deque
 from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
-from tempus_fugit_minecraft.block import *
-from tempus_fugit_minecraft.utilities import *
+from tempus_fugit_minecraft.block import Block,BRICK, STONE, GRASS, SAND, LIGHT_CLOUD,DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
+from tempus_fugit_minecraft.utilities import cube_vertices, WORLD_SIZE, FACES, TICKS_PER_SEC
 from tempus_fugit_minecraft.player import Player
 from typing import Callable
 from tempus_fugit_minecraft import sound_list
