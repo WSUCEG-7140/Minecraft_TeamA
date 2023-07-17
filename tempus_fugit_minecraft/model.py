@@ -590,7 +590,7 @@ class Model(object):
                 base_x, base_y , base_z = random.choice(grass_coords)
                 grass_coords.remove((base_x, base_y , base_z))
                 
-                single_tree = self.generate_single_tree(base_x,base_y+1,base_z, trunk_hight=random.randint(4,8))
+                single_tree = self.generate_single_tree(base_x,base_y+1,base_z, trunk_hight=5)
                 trees.append(single_tree)
             else:
                 break
