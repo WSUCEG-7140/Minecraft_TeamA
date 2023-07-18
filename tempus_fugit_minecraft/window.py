@@ -46,8 +46,8 @@ class Window(pyglet.window.Window):
         self.shaders = Shaders(self.model)
         self.shaders.turn_on_environment_light()
 
-        
-        day_night_clock = pyglet.clock.get_default()
+        '''Solves issue #8. Properties that are related to day night cycle'''
+        self.game_time = 0
 
         self.paused = False
 
@@ -96,6 +96,7 @@ class Window(pyglet.window.Window):
         # This call schedules the `update()` method to be called
         # TICKS_PER_SEC. This is the main game event loop.
         pyglet.clock.schedule_interval(self.update, 1.0 / TICKS_PER_SEC)
+        pyglet.clock.schedule_interval(self.update_day_night, 5)
 
 
     def set_exclusive_mouse(self, exclusive: bool) -> None:
@@ -119,7 +120,7 @@ class Window(pyglet.window.Window):
             The change in time since the last call.
         """
         if not self.paused:
-            self.model.update(dt)    
+            self.model.update(dt)
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """!
@@ -412,5 +413,14 @@ class Window(pyglet.window.Window):
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
 
-    def update_day_night(self) -> None:
+    def update_day_night(self, dt: float) -> None:
+        self.game_time = self.game_time + 1
+        hour = math.fmod(self.game_time, 24)
+        increase_decrease_value = .2
+        print(hour)
+        if hour < 12:
+            self.shaders.decrease_light_intensity(increase_decrease_value)
+        else:
+            self.shaders.increase_light_intensity(increase_decrease_value)
+        return dt
 

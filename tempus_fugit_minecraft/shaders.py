@@ -19,12 +19,24 @@ class Shaders():
     def turn_on_environment_light(self):
         glEnable(GL_LIGHTING)
         glEnable(GL_LIGHT0)
-        lightpos = [0, -1, 0, 0.]
-        lightpos = to_cfloat(lightpos)
-        glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
+        lightpos_y = [0, -1, 0, 0.]
+        lightpos_y = to_cfloat(lightpos_y)
+        glLightfv(GL_LIGHT0, GL_POSITION, lightpos_y)
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
+
+        '''lightpos_x = to_cfloat([-1, 0, 0, 0.])
+        glLightfv(GL_LIGHT1, GL_POSITION, lightpos_x)
+        glLightfv(GL_LIGHT1, GL_AMBIENT, self.ambient)
+        glLightfv(GL_LIGHT1, GL_DIFFUSE, self.diffuse)
+        glLightfv(GL_LIGHT1, GL_SPECULAR, self.specular)
+
+        lightpos_z = to_cfloat([0, 0, -1, 0.])
+        glLightfv(GL_LIGHT2, GL_POSITION, lightpos_z)
+        glLightfv(GL_LIGHT2, GL_AMBIENT, self.ambient)
+        glLightfv(GL_LIGHT2, GL_DIFFUSE, self.diffuse)
+        glLightfv(GL_LIGHT2, GL_SPECULAR, self.specular)'''
         return 1
     
     def enable_lighting(self):
@@ -42,6 +54,26 @@ class Shaders():
     
     def _adjust_specular_light(self, red, green, blue):
         self.specular = to_cfloat([red, green, blue])
+    
+    def _update_light(self):
+        #lightpos_y = [0, -1, 0, 0.]
+        #lightpos_y = to_cfloat(lightpos_y)
+        #glLightfv(GL_LIGHT0, GL_POSITION, lightpos_y)
+        glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
+        glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
+        glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
+
+    def decrease_light_intensity(self, decrease_value):
+        self.ambient = to_cfloat([color - decrease_value for color in self.ambient])
+        self.diffuse = to_cfloat([color - decrease_value for color in self.diffuse])
+        self.specular = to_cfloat([color - decrease_value for color in self.specular])
+        self._update_light()
+    
+    def increase_light_intensity(self, increase_value):
+        self.ambient = to_cfloat([color + increase_value for color in self.ambient])
+        self.diffuse =  to_cfloat([color + increase_value for color in self.diffuse])
+        self.specular =  to_cfloat([color + increase_value for color in self.specular])
+        self._update_light()
 
     @staticmethod
     def normal_3D_vector_calc(vector):
