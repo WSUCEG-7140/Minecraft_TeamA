@@ -95,6 +95,10 @@ See the [wiki](https://github.com/fogleman/Minecraft/wiki) for this project to i
 - Q: Increase speed
 - E: Descrease speed
 
+While flying:
+- Left Shift: move down
+- Space: move up
+
 ### Building
 
 - Selecting type of block to create:
