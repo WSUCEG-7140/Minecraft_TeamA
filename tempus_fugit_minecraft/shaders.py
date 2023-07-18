@@ -4,6 +4,8 @@ import cmath as math
 from ctypes import *
 from tempus_fugit_minecraft.utilities import *
 
+'''!Function to convert a vector of numbers to a vector of c_float.
+    @Param A vector with numbers'''
 def to_cfloat(vector):
     return (c_float * len(vector))(*vector)
 
@@ -18,12 +20,18 @@ class Shaders():
         glEnable(GL_LIGHTING)
         glEnable(GL_LIGHT0)
         lightpos = [0, -1, 0, 0.]
-        lightpos = (c_float * len(lightpos))(*lightpos)
+        lightpos = to_cfloat(lightpos)
         glLightfv(GL_LIGHT0, GL_POSITION, lightpos)
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
         return 1
+    
+    def enable_lighting(self):
+        glEnable(GL_LIGHTING)
+    
+    def disable_lighting(self):
+        glDisable(GL_LIGHTING)
         
     @staticmethod
     def normal_3D_vector_calc(vector):

@@ -246,7 +246,7 @@ class Window(pyglet.window.Window):
         """Resumes the game by restoring the game window to its original state."""
         self.paused = False
         self.set_exclusive_mouse(True)
-        glEnable(GL_LIGHTING)
+        self.shaders.enable_lighting()
 
     def on_key_release(self, symbol: int, modifiers: int) -> None:
         """Called when the player releases a key. See pyglet docs for key
@@ -378,7 +378,7 @@ class Window(pyglet.window.Window):
         glMatrixMode(GL_MODELVIEW)
         glPopMatrix()
 
-        glDisable(GL_LIGHTING)
+        self.shaders.disable_lighting()
         self.pause_label.draw()
         self.resume_label.draw()
         self.quit_label.draw()
