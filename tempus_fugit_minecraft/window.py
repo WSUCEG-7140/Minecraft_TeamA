@@ -423,3 +423,8 @@ class Window(pyglet.window.Window):
             self.shaders.increase_light_intensity(increase_decrease_value)
         return dt
 
+    def stop_day_night(self) -> None:
+        self.game_clock.unschedule(self.update_day_night)
+    
+    def start_day_night(self) -> None:
+        self.game_clock.schedule_interval(self.update_day_night)

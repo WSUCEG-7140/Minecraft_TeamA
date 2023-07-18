@@ -5,7 +5,7 @@ from ctypes import *
 from tempus_fugit_minecraft.utilities import *
 
 '''!Function to convert a vector of numbers to a vector of c_float.
-    @Param A vector with numbers'''
+    @Param vector A     a list of numbers'''
 def to_cfloat(vector):
     return (c_float * len(vector))(*vector)
 
@@ -45,30 +45,40 @@ class Shaders():
     def disable_lighting(self):
         glDisable(GL_LIGHTING)
     
-    '''Solves Issue #8. Adjusts the three types of light's color and intensity'''
-    def _adjust_ambient_light(self, red, green, blue):
+    '''!Solves Issue #8. Adjusts the three types of light's color and intensity
+        @Param red  a number that specifies the intensity of red light
+        @Param green    a number that specifies the intensity of green light
+        @Param blue     a number that specifies the intensity of blue light 
+    '''
+    def adjust_ambient_light(self, red, green, blue):
         self.ambient = to_cfloat([red, green, blue])
-    
-    def _adjust_diffuse_light(self, red, green, blue):
+        return self.ambient
+
+    def adjust_diffuse_light(self, red, green, blue):
         self.diffuse = to_cfloat([red, green, blue])
+        return self.diffuse
     
-    def _adjust_specular_light(self, red, green, blue):
+    def adjust_specular_light(self, red, green, blue):
         self.specular = to_cfloat([red, green, blue])
+        return self.specular
     
     def _update_light(self):
-        #lightpos_y = [0, -1, 0, 0.]
-        #lightpos_y = to_cfloat(lightpos_y)
-        #glLightfv(GL_LIGHT0, GL_POSITION, lightpos_y)
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
-
+    
+    '''!Solves issue#8 Decreases the intensity of light
+        @Param decrease_value   a number that specifies how much to decrease light intensity
+    '''
     def decrease_light_intensity(self, decrease_value):
         self.ambient = to_cfloat([color - decrease_value for color in self.ambient])
         self.diffuse = to_cfloat([color - decrease_value for color in self.diffuse])
         self.specular = to_cfloat([color - decrease_value for color in self.specular])
         self._update_light()
     
+    '''!Solves issue#8 Increases the intensity of light
+        @Param increase_value   a number that specifies how much to decrease light intensity
+    '''    
     def increase_light_intensity(self, increase_value):
         self.ambient = to_cfloat([color + increase_value for color in self.ambient])
         self.diffuse =  to_cfloat([color + increase_value for color in self.diffuse])

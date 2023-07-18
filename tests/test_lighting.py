@@ -31,3 +31,18 @@ class TestLighting():
     def test_3D_norm_vector_calc():
         vector = [0, 0, 1]
         assert Shaders.normal_3D_vector_calc(vector) == 1
+    
+    def test_adjust_ambient_light(self, window):
+        rgb_vector = to_cfloat(window.shaders.ambient)
+        new_ambient_vector = window.shaders.adjust_ambient_light(8, 9, 10)
+        assert rgb_vector != new_ambient_vector
+
+    def test_adjust_diffuse_light(self, window):
+        rgb_vector = to_cfloat(window.shaders.diffuse)
+        new_diffuse_vector = window.shaders.adjust_diffuse_light(8, 9, 10)
+        assert rgb_vector != new_diffuse_vector
+    
+    def test_adjust_specular_light(self, window):
+        rgb_vector = to_cfloat(window.shaders.specular)
+        new_specular_vector = window.shaders.adjust_specular_light(8, 9, 10)
+        assert rgb_vector != new_specular_vector
