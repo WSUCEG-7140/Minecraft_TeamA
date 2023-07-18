@@ -46,3 +46,5 @@ class TestLighting():
         rgb_vector = to_cfloat(window.shaders.specular)
         new_specular_vector = window.shaders.adjust_specular_light(8, 9, 10)
         assert rgb_vector != new_specular_vector
+
+    
