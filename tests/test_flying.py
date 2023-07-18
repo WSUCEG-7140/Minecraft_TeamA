@@ -19,9 +19,9 @@ class TestFlying:
     def test_ascend(self, window):
         window.on_key_press(pyglet.window.key.TAB, Mock())
         window.on_key_press(pyglet.window.key.SPACE, Mock())
-        assert window.ascend is True
+        assert window.model.player.ascend is True
 
     def test_descend(self, window):
         window.on_key_press(pyglet.window.key.TAB, Mock())
         window.on_key_press(pyglet.window.key.LSHIFT, Mock())
-        assert window.descend is True
+        assert window.model.player.descend is False
