@@ -46,6 +46,9 @@ class Window(pyglet.window.Window):
         self.shaders = Shaders(self.model)
         self.shaders.turn_on_environment_light()
 
+        
+        day_night_clock = pyglet.clock.get_default()
+
         self.paused = False
 
         # The label that is displayed in the top left of the canvas.
@@ -93,6 +96,7 @@ class Window(pyglet.window.Window):
         # This call schedules the `update()` method to be called
         # TICKS_PER_SEC. This is the main game event loop.
         pyglet.clock.schedule_interval(self.update, 1.0 / TICKS_PER_SEC)
+
 
     def set_exclusive_mouse(self, exclusive: bool) -> None:
         """If `exclusive` is True, the game will capture the mouse, if False
@@ -407,3 +411,6 @@ class Window(pyglet.window.Window):
         """Draw the crosshairs in the center of the screen."""
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
+
+    def update_day_night(self) -> None:
+

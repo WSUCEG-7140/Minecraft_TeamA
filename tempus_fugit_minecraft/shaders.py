@@ -32,7 +32,17 @@ class Shaders():
     
     def disable_lighting(self):
         glDisable(GL_LIGHTING)
-        
+    
+    '''Solves Issue #8. Adjusts the three types of light's color and intensity'''
+    def _adjust_ambient_light(self, red, green, blue):
+        self.ambient = to_cfloat([red, green, blue])
+    
+    def _adjust_diffuse_light(self, red, green, blue):
+        self.diffuse = to_cfloat([red, green, blue])
+    
+    def _adjust_specular_light(self, red, green, blue):
+        self.specular = to_cfloat([red, green, blue])
+
     @staticmethod
     def normal_3D_vector_calc(vector):
         threeDVector = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
