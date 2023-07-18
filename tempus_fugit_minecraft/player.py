@@ -1,4 +1,5 @@
-from tempus_fugit_minecraft.utilities import BRICK, GRASS, SAND, WHOLE_WORLD_SIZE, WORLD_SIZE
+from tempus_fugit_minecraft.utilities import WHOLE_WORLD_SIZE, WORLD_SIZE
+from tempus_fugit_minecraft.block import BRICK, GRASS, SAND
 import math
 
 
