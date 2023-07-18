@@ -62,7 +62,7 @@ class Model(object):
         # A TextureGroup manages an OpenGL texture.
         self.group = TextureGroup(image.load(TEXTURE_PATH).get_texture())
 
-        # A mapping from position to the texture of the block at that position.
+        # A mapping from position to the block at that position.
         # This defines all the blocks that are currently in the world.
         self.world = {}
 
@@ -474,14 +474,6 @@ class Model(object):
             if self.sector is None:
                 self.process_entire_queue()
             self.sector = sector
-
-        if self.player.flying:
-            if self.player.ascend:
-                self.player.position = self.player.position[0], self.player.position[1] + dt * self.player.FLYING_SPEED, \
-                    self.player.position[2]
-            if self.player.descend:
-                self.player.position = self.player.position[0], self.player.position[1] - dt * \
-                                                                self.player.FLYING_SPEED, self.player.position[2]
 
         self.player.check_player_within_world_boundaries()
 
