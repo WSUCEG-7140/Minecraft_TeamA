@@ -72,7 +72,27 @@ class TestModel:
         model.place_cloud_blocks(clouds)
         cloud_blocks = [coordinates for coordinates, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         assert len(cloud_blocks) >= sum(len(cloud) for cloud in clouds)
+    
+    #issue44
+    def test_build_clouds_in_different_layers_in_the_sky(self):
+        model = Model()
+        clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE)
+        model.place_cloud_blocks(clouds)
+        for cloud in clouds:
+            first_block_in_the_cloud = cloud[0]
+            x,y,z = first_block_in_the_cloud
+            assert y in [18,20,22,24,26]
 
+    #issue44
+    def test_build_dark_and_light_clouds_in_different_layers_in_the_sky(self):
+        model = Model()
+        clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE)
+        model.place_cloud_blocks(clouds)
+        for cloud in clouds:
+            for coords in cloud:
+                x,y,z = coords
+                assert model.world[(x,y,z)] in [LIGHT_CLOUD, DARK_CLOUD]
+    
     #issue57
     def test_pass_through_clouds(self, model):
         model.world[(0,50,0)] = LIGHT_CLOUD
