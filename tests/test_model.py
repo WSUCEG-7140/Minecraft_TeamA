@@ -11,7 +11,7 @@ import random
 
 @pytest.fixture(scope="class")
 def model():
-    pyglet.options['audio'] = 'silent'
+    pyglet.options['audio'] = ('silent')
     yield Model()
 
 
@@ -80,7 +80,6 @@ class TestModel:
 
         model.world[(0,52,0)] = DARK_CLOUD
         assert model.can_pass_through_block((0,52,0)) == True
-
 
     #issue57
     def test_no_pass_through_objects_not_of_type_clouds(self, model):
