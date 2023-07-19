@@ -4,7 +4,9 @@ from unittest.mock import Mock
 from unittest.mock import patch
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.player import Player
-from tempus_fugit_minecraft.block import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND
+from tempus_fugit_minecraft.block import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
+from tempus_fugit_minecraft.utilities import WORLD_SIZE
+import random
 
 @pytest.fixture(scope="class")
 def model():
@@ -18,6 +20,7 @@ class TestModel:
         model.sector = None
         model.player = Player()
         model.clouds = {}
+        model.trees = {}
 
     #issue20
     def test_light_clouds_created_dynamically(self, model):
@@ -198,7 +201,7 @@ class TestModel:
     #issue 68
     def test_handle_change_active_block(self, model):
         model.handle_change_active_block(3)
-        assert model.player.block == model.player.inventory[0]
+        assert model.player.block == model.player.inventory[3]
     
     #issue 68
     def test_collide_not_coliding_result_should_be_input(self, model):
@@ -239,3 +242,86 @@ class TestModel:
     def test_handle_adjust_vision(self, model):
         model.handle_adjust_vision(1, 1)
         assert model.player.rotation == (0.15, 0.15)
+    
+    #issue80
+    def test_generate_single_tree_default_values(self, model):
+        trunks , leaves = model.generate_single_tree(10,0,10)
+        assert (10,0,10) in trunks
+        assert len(trunks) == 4
+        
+        for trunk_position in range(4):
+            assert model.world[(10,0+trunk_position,10)] == TREE_TRUNK
+        
+        # Check leaf blocks
+        for dx in range(-2, 3):
+            for dy in range(0,3):
+                for dz in range(-2, 3):
+                    assert model.world[(10 + dx, 0 + dy+4, 10 + dz)] == TREE_LEAVES
+    
+    #issue80
+    def test_generate_single_tree_custom_values(self, model):
+        x,y,z = 15,0,30
+        trunk_hight=7
+        trunks , leaves = model.generate_single_tree(x,y,z, trunk_hight=trunk_hight)
+        assert (x,y,z) in trunks
+        assert len(trunks) == trunk_hight
+        
+        # Check leaf blocks
+        for dx in range(-2, 3):
+            for dy in range(0,3):
+                for dz in range(-2, 3):
+                    assert model.world[(x + dx, y + dy+trunk_hight, z + dz)] == TREE_LEAVES
+    
+    #issue80
+    def test_generate_trees_default_values(self, model):
+        model.world.clear()
+        for x in range(-WORLD_SIZE,WORLD_SIZE):
+            for z in range(-WORLD_SIZE,WORLD_SIZE):
+                model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
+        
+        
+        trees = model.generate_trees()
+        assert len(trees) == 100
+        
+        for single_tree in trees:
+            assert all(model.world[trunk_coord] == TREE_TRUNK for trunk_coord in single_tree[0])
+            assert all(model.world[trunk_leaf]  == TREE_LEAVES for trunk_leaf in single_tree[1])
+    
+    
+    # #issue80
+    def test_generate_trees_custom_values(self, model):
+        for x in range(-WORLD_SIZE,WORLD_SIZE):
+            for z in range(-WORLD_SIZE,WORLD_SIZE):
+                model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
+        
+        trees = model.generate_trees(250)
+        assert len(trees) == 250
+        
+        for single_tree in trees:
+            assert all(model.world[trunk_coord] == TREE_TRUNK for trunk_coord in single_tree[0])
+            assert all(model.world[trunk_leaf]  == TREE_LEAVES for trunk_leaf in single_tree[1])
+    
+    # #issue80
+    def test_check_tree_built_on_grass_or_sand(self, model):
+        for x in range(-WORLD_SIZE,WORLD_SIZE):
+            for z in range(-WORLD_SIZE,WORLD_SIZE):
+                model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
+        
+        trees = model.generate_trees()
+        
+        for single_tree in trees:
+            base_trunk_x , base_trunk_y , base_trunk_z = single_tree[0][0]
+            assert model.world[(base_trunk_x , base_trunk_y , base_trunk_z)] == TREE_TRUNK
+            assert model.world[(base_trunk_x , base_trunk_y-1 , base_trunk_z)] in [GRASS , SAND]
+    
+    # #issue80
+    def test_tree_built_on_top_of_ground_level_grass_or_sand(self, model):
+        for x in range(-WORLD_SIZE,WORLD_SIZE):
+            for z in range(-WORLD_SIZE,WORLD_SIZE):
+                model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
+        
+        trees = model.generate_trees(50)
+        for single_tree in trees:
+            trunks , leaves = single_tree
+            assert model.world[(trunks[0][0],trunks[0][1]-1,trunks[0][2])] in [GRASS,SAND]
+            

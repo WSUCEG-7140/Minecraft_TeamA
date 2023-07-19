@@ -6,8 +6,8 @@ from collections import deque
 from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
-from tempus_fugit_minecraft.block import *
-from tempus_fugit_minecraft.utilities import *
+from tempus_fugit_minecraft.block import Block,BRICK, STONE, GRASS, SAND, LIGHT_CLOUD,DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
+from tempus_fugit_minecraft.utilities import cube_vertices, WORLD_SIZE, FACES, TICKS_PER_SEC
 from tempus_fugit_minecraft.player import Player
 from typing import Callable
 from tempus_fugit_minecraft import sound_list
@@ -121,6 +121,7 @@ class Model(object):
 
         clouds = self.generate_clouds_positions(n, num_of_clouds=150)
         self.place_cloud_blocks(clouds)
+        self.generate_trees(num_trees=50)
 
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
@@ -566,3 +567,72 @@ class Model(object):
         handle_movement_for_direction(left, self.player.move_left, self.player.stop_left)
         handle_movement_for_direction(right, self.player.move_right, self.player.stop_right)
 
+
+    #issue80
+    def generate_trees(self, num_trees=100):
+        """!
+        @brief Generate trees' (trunks and leavs) positions.
+        
+        @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
+        @details list trees appends each single_tree list.
+        @details the trees are set to be built on SAND and GRASS only.
+        
+        @param num_trees Number of clouds (default is 100).
+        
+        @return trees list of lists representing trees blocks (single tree=list_trunks , list_leaves) coordinates.
+        """
+        suggested_places_for_trees = []
+        trees = list()
+        grass_list = [coords for coords , block in self.world.items() if block == GRASS and coords[1]<=0]
+        min_grass_level = min(ground[1] for ground in grass_list)
+        ground_grass_list = [ground for ground in grass_list if ground[1] == min_grass_level]
+        
+        
+        for coords in ground_grass_list:
+            x,y,z = coords
+            does_grass_have_block_above_it = all([(x, y+j, z) not in self.world for j in range(1,10)])
+            if does_grass_have_block_above_it:
+                suggested_places_for_trees.append(coords)
+        
+        for _ in range(num_trees):
+            if suggested_places_for_trees:
+                single_tree=[]
+                base_x, base_y, base_z = random.choice(suggested_places_for_trees)
+                suggested_places_for_trees.remove((base_x, base_y, base_z))
+                single_tree = self.generate_single_tree(base_x,base_y+1,base_z, trunk_hight=5)
+                trees.append(single_tree)
+            else:
+                break
+        return trees
+    
+    #issue80
+    def generate_single_tree(self, x, y, z, trunk_hight=4):
+        """!
+        @breif represent trees' components.
+        
+        @details Tree components are Trunks and Leaves.
+        @details The function returns 2 lists: list of trunks, list of leaves.
+
+        @param x,y,z The coordinates of the position of the tree to be built at.
+        @param trunk_hight Number of trunks (stems) in the tree (default=4).
+        @param 
+        
+        
+        @return [single_stem,single_leaves], coordinates for the tree components.
+        """
+        single_stem = []
+        single_leaves = []
+        
+        # Create trunks
+        for stem in range(trunk_hight):
+            self.add_block((x, y + stem, z), TREE_TRUNK, immediate=False)
+            single_stem.append((x, y + stem, z))
+        
+        # Create leaves
+        for dx in range(-2,3):
+            for dy in range(0,3):
+                for dz in range(-2,3):
+                    self.add_block((x + dx, y + trunk_hight + dy, z + dz), TREE_LEAVES, immediate=False)
+                    single_leaves.append((x + dx, y + trunk_hight + dy, z + dz))
+        return [single_stem,single_leaves]
+    
