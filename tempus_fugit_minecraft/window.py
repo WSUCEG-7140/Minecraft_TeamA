@@ -6,8 +6,6 @@ from pyglet.window import key, mouse
 from tempus_fugit_minecraft.utilities import *
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.shaders import Shaders
-from tempus_fugit_minecraft.player import Player
-
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -41,7 +39,7 @@ class Window(pyglet.window.Window):
         # Instance of the model that handles the world.
         self.model = Model()
 
-        #Instance of the shaders in the world
+        # Instance of the shaders in the world
         '''Placed in Windows for being a OpenGL related Class. Solves issue #7'''
         self.shaders = Shaders(self.model)
         self.shaders.turn_on_environment_light()
@@ -398,7 +396,7 @@ class Window(pyglet.window.Window):
         self.quit_label.draw()
 
     def draw_focused_block(self) -> None:
-        """ Draw black edges around the block that is currently under the crosshairs."""
+        """Draw black edges around the block that is currently under the crosshairs."""
         vector = self.model.player.get_sight_vector()
         block, _ = self.model.hit_test(self.model.player.position, vector)
         if block:

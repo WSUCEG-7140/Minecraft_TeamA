@@ -6,8 +6,8 @@ from collections import deque
 from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
-from tempus_fugit_minecraft.block import Block,BRICK, STONE, GRASS, SAND, LIGHT_CLOUD,DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
-from tempus_fugit_minecraft.utilities import cube_vertices, WORLD_SIZE, FACES, TICKS_PER_SEC
+from tempus_fugit_minecraft.block import Block, BRICK, STONE, GRASS, SAND, LIGHT_CLOUD, DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
+from tempus_fugit_minecraft.utilities import cube_vertices, FACES, TICKS_PER_SEC
 from tempus_fugit_minecraft.player import Player
 from typing import Callable
 from tempus_fugit_minecraft import sound_list
@@ -591,7 +591,6 @@ class Model(object):
         grass_list = [coords for coords , block in self.world.items() if block == GRASS and coords[1]<=0]
         min_grass_level = min(ground[1] for ground in grass_list)
         ground_grass_list = [ground for ground in grass_list if ground[1] == min_grass_level]
-
 
         for coords in ground_grass_list:
             x,y,z = coords
