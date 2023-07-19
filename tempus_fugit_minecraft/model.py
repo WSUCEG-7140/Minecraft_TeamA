@@ -593,8 +593,8 @@ class Model(object):
 
         for coords in ground_grass_list:
             x,y,z = coords
-            does_grass_have_block_above_it = all([(x, y+j, z) not in self.world for j in range(1,10)])
-            if does_grass_have_block_above_it:
+            does_not_grass_have_block_above_it = all([(x, y+j, z) not in self.world for j in range(1,10)])
+            if does_not_grass_have_block_above_it:
                 suggested_places_for_trees.append(coords)
 
         for _ in range(num_trees):
