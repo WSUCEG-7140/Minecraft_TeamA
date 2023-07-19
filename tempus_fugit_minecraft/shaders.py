@@ -62,6 +62,7 @@ class Shaders():
         self.specular = to_cfloat([red, green, blue])
         return self.specular
     
+    '''!Solves issue #8 Takes the classes current ambient, diffuse and light values and changes them'''
     def _update_light(self):
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)

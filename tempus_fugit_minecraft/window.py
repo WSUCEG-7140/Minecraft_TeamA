@@ -413,7 +413,9 @@ class Window(pyglet.window.Window):
         """Draw the crosshairs in the center of the screen."""
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
-
+    '''!Updates the environments lights. Solves issue#8
+        @param dt   the amount of time that has elapsed since the last update to environment lights
+    '''
     def update_day_night(self, dt: float) -> None:
         self.game_time = self.game_time + 1
         hour = math.fmod(self.game_time, 24)
