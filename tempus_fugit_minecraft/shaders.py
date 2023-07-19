@@ -45,7 +45,7 @@ class Shaders():
     def disable_lighting(self):
         glDisable(GL_LIGHTING)
     
-    '''!Solves Issue #8. Adjusts the three types of light's color and intensity
+    '''!Solves Issue #12. Adjusts the three types of light's color and intensity
         @Param red  a number that specifies the intensity of red light
         @Param green    a number that specifies the intensity of green light
         @Param blue     a number that specifies the intensity of blue light 
@@ -62,13 +62,13 @@ class Shaders():
         self.specular = to_cfloat([red, green, blue])
         return self.specular
     
-    '''!Solves issue #8 Takes the classes current ambient, diffuse and light values and changes them'''
+    '''!Solves issue #12 Takes the classes current ambient, diffuse and light values and changes them'''
     def _update_light(self):
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
     
-    '''!Solves issue#8 Decreases the intensity of light
+    '''!Solves issue#12 Decreases the intensity of light
         @Param decrease_value   a number that specifies how much to decrease light intensity
     '''
     def decrease_light_intensity(self, decrease_value):
@@ -77,7 +77,7 @@ class Shaders():
         self.specular = to_cfloat([color - decrease_value for color in self.specular])
         self._update_light()
     
-    '''!Solves issue#8 Increases the intensity of light
+    '''!Solves issue#12 Increases the intensity of light
         @Param increase_value   a number that specifies how much to decrease light intensity
     '''    
     def increase_light_intensity(self, increase_value):

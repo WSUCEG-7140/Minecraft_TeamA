@@ -46,7 +46,7 @@ class Window(pyglet.window.Window):
         self.shaders = Shaders(self.model)
         self.shaders.turn_on_environment_light()
 
-        '''Solves issue #8. Properties that are related to day night cycle'''
+        '''Solves issue #12. Properties that are related to day night cycle'''
         self.game_clock = pyglet.clock.get_default()
         self.game_time = 0
         self.schedule_time = 5
@@ -413,7 +413,8 @@ class Window(pyglet.window.Window):
         """Draw the crosshairs in the center of the screen."""
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
-    '''!Updates the environments lights. Solves issue#8
+
+    '''!Updates the environments lights. Solves issue#12
         @param dt   the amount of time that has elapsed since the last update to environment lights
     '''
     def update_day_night(self, dt: float) -> None:
