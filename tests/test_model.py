@@ -5,7 +5,7 @@ from unittest.mock import patch
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.player import Player
 from tempus_fugit_minecraft.block import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
-from tempus_fugit_minecraft.utilities import WORLD_SIZE, WHOLE_WORLD_SIZE
+from tempus_fugit_minecraft.utilities import WHOLE_WORLD_SIZE
 import random
 
 
@@ -295,8 +295,8 @@ class TestModel:
     #issue80
     def test_generate_trees_default_values(self, model):
         model.world.clear()
-        for x in range(-WORLD_SIZE,WORLD_SIZE):
-            for z in range(-WORLD_SIZE,WORLD_SIZE):
+        for x in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
+            for z in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
                 model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
 
 
@@ -310,8 +310,8 @@ class TestModel:
 
     # #issue80
     def test_generate_trees_custom_values(self, model):
-        for x in range(-WORLD_SIZE,WORLD_SIZE):
-            for z in range(-WORLD_SIZE,WORLD_SIZE):
+        for x in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
+            for z in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
                 model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
 
         trees = model.generate_trees(250)
@@ -323,8 +323,8 @@ class TestModel:
 
     # #issue80
     def test_check_tree_built_on_grass_or_sand(self, model):
-        for x in range(-WORLD_SIZE,WORLD_SIZE):
-            for z in range(-WORLD_SIZE,WORLD_SIZE):
+        for x in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
+            for z in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
                 model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
 
         trees = model.generate_trees()
@@ -336,8 +336,8 @@ class TestModel:
 
     # #issue80
     def test_tree_built_on_top_of_ground_level_grass_or_sand(self, model):
-        for x in range(-WORLD_SIZE,WORLD_SIZE):
-            for z in range(-WORLD_SIZE,WORLD_SIZE):
+        for x in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
+            for z in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
                 model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
 
         trees = model.generate_trees(50)

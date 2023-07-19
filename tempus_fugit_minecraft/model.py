@@ -7,7 +7,7 @@ from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
 from tempus_fugit_minecraft.block import Block,BRICK, STONE, GRASS, SAND, LIGHT_CLOUD,DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
-from tempus_fugit_minecraft.utilities import cube_vertices, WHOLE_WORLD_SIZE,WORLD_SIZE, FACES, TICKS_PER_SEC
+from tempus_fugit_minecraft.utilities import cube_vertices, WHOLE_WORLD_SIZE, FACES, TICKS_PER_SEC
 from tempus_fugit_minecraft.player import Player
 from typing import Callable
 from tempus_fugit_minecraft import sound_list
@@ -83,7 +83,6 @@ class Model(object):
 
     def _initialize(self, immediate=False) -> None:
         """Initialize the world by placing all the blocks."""
-        # n = 80  # 1/2 width and height of world
         
         s = 1  # step size
         y = 0  # initial y height
