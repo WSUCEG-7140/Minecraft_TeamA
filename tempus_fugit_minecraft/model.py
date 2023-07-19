@@ -6,8 +6,8 @@ from collections import deque
 from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
-from tempus_fugit_minecraft.block import Block, BRICK, STONE, GRASS, SAND, LIGHT_CLOUD, DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
-from tempus_fugit_minecraft.utilities import cube_vertices, FACES, TICKS_PER_SEC
+from tempus_fugit_minecraft.block import Block,BRICK, STONE, GRASS, SAND, LIGHT_CLOUD,DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
+from tempus_fugit_minecraft.utilities import cube_vertices, WHOLE_WORLD_SIZE,WORLD_SIZE, FACES, TICKS_PER_SEC
 from tempus_fugit_minecraft.player import Player
 from typing import Callable
 from tempus_fugit_minecraft import sound_list
@@ -82,27 +82,24 @@ class Model(object):
         self.background_noise.play_sound()
 
     def _initialize(self, immediate=False) -> None:
-        """!
-        @brief Initialize the world by placing all the blocks.
-        @param immediate a flag that tells us if we should immediately place blocks or queue them
-        @returns None
-        """
-        n = 80  # 1/2 width and height of world
+        """Initialize the world by placing all the blocks."""
+        # n = 80  # 1/2 width and height of world
+        
         s = 1  # step size
         y = 0  # initial y height
-        for x in xrange(-n, n + 1, s):
-            for z in xrange(-n, n + 1, s):
+        for x in xrange(-WHOLE_WORLD_SIZE, WHOLE_WORLD_SIZE + 1, s):
+            for z in xrange(-WHOLE_WORLD_SIZE, WHOLE_WORLD_SIZE + 1, s):
                 # create a layer stone and grass everywhere.
                 self.add_block((x, y - 2, z), GRASS, immediate=immediate)
                 self.add_block((x, y - 3, z), STONE, immediate=immediate)
-                if x in (-n, n) or z in (-n, n):
+                if x in (-WHOLE_WORLD_SIZE, WHOLE_WORLD_SIZE) or z in (-WHOLE_WORLD_SIZE, WHOLE_WORLD_SIZE):
                     # create outer walls.
                     for dy in xrange(-2, 3):
                         self.add_block((x, y + dy, z), STONE, immediate=immediate)
 
         # generate the hills randomly
-        o = n - 10
-        for _ in xrange(120):
+        o = WHOLE_WORLD_SIZE - 10
+        for _ in xrange(260):
             a = random.randint(-o, o)  # x position of the hill
             b = random.randint(-o, o)  # z position of the hill
             c = -1  # base of the hill
@@ -120,9 +117,9 @@ class Model(object):
                         self.add_block((x, y, z), t, immediate=immediate)
                 s -= d  # decrement side length so hills taper off
 
-        clouds = self.generate_clouds_positions(n, num_of_clouds=150)
+        clouds = self.generate_clouds_positions(world_size=WHOLE_WORLD_SIZE)
         self.place_cloud_blocks(clouds)
-        self.generate_trees(num_trees=50)
+        self.generate_trees()
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
         """!
@@ -358,7 +355,7 @@ class Model(object):
             self._dequeue()
 
     @staticmethod
-    def generate_clouds_positions(world_size: int, num_of_clouds=250) -> list:
+    def generate_clouds_positions(world_size: int, num_of_clouds=random.randint(250,600)) -> list:
         """!
         @brief Generate sky cloud positions.
         @param world_size Half the world's size.
@@ -370,10 +367,10 @@ class Model(object):
         game_margin = world_size
         clouds = list()
         for _ in xrange(num_of_clouds):
-            cloud_center_x = random.randint(-game_margin, game_margin)  # x position of the cloud
-            cloud_center_z = random.randint(-game_margin, game_margin)  # z position of the cloud
-            cloud_center_y = 20                     # y position of the cloud (height)
-            s = random.randint(3, 6)   # 2 * s is the side length of the cloud
+            cloud_center_x = random.randint(-game_margin, game_margin)
+            cloud_center_z = random.randint(-game_margin, game_margin)
+            cloud_center_y = random.choice([18,20,22,24,26])
+            s = random.randint(3, 6)                                    # 2 * s is the side length of the cloud
 
             single_cloud = []
             for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
@@ -384,7 +381,8 @@ class Model(object):
             clouds.append(single_cloud)
         return clouds
 
-    def place_cloud_blocks(self, clouds):
+    #issue20; #issue28
+    def place_cloud_blocks(self, clouds) -> None:
         """!
         @brief represent cloud block's coordinates in the sky.
         @param clouds list of lists; each inner list contains cloud block's coordinates.
@@ -571,7 +569,8 @@ class Model(object):
             self.player.descend = True if descending == 1 else False
 
 
-    def generate_trees(self, num_trees=100):
+    #issue80
+    def generate_trees(self, num_trees=random.randint(350,500)):
         """!
         @brief Generate trees' (trunks and leavs) positions.
         @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
