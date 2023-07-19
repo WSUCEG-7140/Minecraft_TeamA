@@ -261,17 +261,17 @@ class TestModel:
     #issue80
     def test_generate_single_tree_custom_values(self, model):
         x,y,z = 15,0,30
-        trunk_hight=7
-        trunks , leaves = model.generate_single_tree(x,y,z, trunk_hight=trunk_hight)
+        trunk_height=7
+        trunks , leaves = model.generate_single_tree(x,y,z, trunk_height=trunk_height)
         assert (x,y,z) in trunks
-        assert len(trunks) == trunk_hight
-
+        assert len(trunks) == trunk_height
+        
         # Check leaf blocks
         for dx in range(-2, 3):
             for dy in range(0,3):
                 for dz in range(-2, 3):
-                    assert model.world[(x + dx, y + dy+trunk_hight, z + dz)] == TREE_LEAVES
-
+                    assert model.world[(x + dx, y + dy+trunk_height, z + dz)] == TREE_LEAVES
+    
     #issue80
     def test_generate_trees_default_values(self, model):
         model.world.clear()
