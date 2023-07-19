@@ -156,7 +156,7 @@ class Player:
     def toggle_flight(self):
         self.flying = not self.flying
 
-    #issue 68
+    #issue 68, 82
     def update(self, dt: float, collision_checker) -> None:
         """Private implementation of the `update()` method. This is where most
         of the motion logic lives, along with gravity and collision detection.
@@ -173,12 +173,6 @@ class Player:
         # New position in space, before accounting for gravity.
         dx, dy, dz = dx * d, dy * d, dz * d
 
-        if self.flying:
-            if self.ascend:
-                self.position = self.position[0], self.position[1] + dt * self.FLYING_SPEED, self.position[2]
-            if self.descend:
-                self.position = self.position[0], self.position[1] - dt * self.FLYING_SPEED, self.position[2]
-
         # gravity
         if not self.flying:
             # Update your vertical speed: if you are falling, speed up until you
@@ -187,6 +181,15 @@ class Player:
             self.dy -= dt * self.GRAVITY
             self.dy = max(self.dy, -self.MAX_FALL_SPEED)
             dy += self.dy * dt
+        else:
+            # The direction will either add or subtract one, or both, if the
+            # ascending or descending properties are true, the result of
+            # this will be -1, 0 or 1 which will change the direction of dy.
+            direction = 0
+            direction += 1 if self.ascend else 0
+            direction -= 1 if self.descend else 0
+            dy += direction * dt * self.FLYING_SPEED
+
         # collisions
         x, y, z = self.position
         self.position = collision_checker((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
@@ -208,20 +211,20 @@ class Player:
         self.position = (x,y,z)
 
     #issue25
-    def keep_player_within_coordinates(self, dimention, boundary_size):
+    def keep_player_within_coordinates(self, dimension, boundary_size):
         """!
         @brief check whether the dimention (usually x or z) is
             within the boundary size.
 
-        @param dimention represent a player dimention (x,y, or z)
+        @param dimension represent a player dimention (x,y, or z)
         @param boundary_size represent the size of the world
             withing the walls.
 
         @return The dimension adjusted to be within the boundary size.
         """
-        if dimention > boundary_size:
+        if dimension > boundary_size:
             return boundary_size
-        elif dimention < -boundary_size:
+        elif dimension < -boundary_size:
             return -boundary_size
         else:
-            return dimention
+            return dimension

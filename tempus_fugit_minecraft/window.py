@@ -221,11 +221,11 @@ class Window(pyglet.window.Window):
 
         elif symbol == key.LSHIFT:
             if self.model.player.flying:
-                self.model.player.descend = True
+                self.model.handle_flight(0, 1)
 
         if symbol == key.SPACE:
             if self.model.player.flying:
-                self.model.player.ascend = True
+                self.model.handle_flight(1, 0)
             else:
                 self.model.handle_jump()
 
@@ -246,6 +246,7 @@ class Window(pyglet.window.Window):
         self.paused = False
         self.set_exclusive_mouse(True)
 
+    #issue 82
     def on_key_release(self, symbol: int, modifiers: int) -> None:
         """Called when the player releases a key. See pyglet docs for key
         mappings.
@@ -266,10 +267,9 @@ class Window(pyglet.window.Window):
 
         if self.model.player.flying:
             if symbol == key.SPACE:
-                self.model.player.ascend = False
-
-            if symbol == key.LSHIFT:
-                self.model.player.descend = False
+                self.model.handle_flight(-1, 0)
+            elif symbol == key.LSHIFT:
+                self.model.handle_flight(0, -1)
 
     def on_resize(self, width: int, height: int) -> None:
         """Called when the window is resized to a new `width` and `height`.

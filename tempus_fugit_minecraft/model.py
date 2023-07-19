@@ -565,3 +565,9 @@ class Model(object):
         handle_movement_for_direction(left, self.player.move_left, self.player.stop_left)
         handle_movement_for_direction(right, self.player.move_right, self.player.stop_right)
 
+    #issue 82
+    def handle_flight(self, ascending, descending):
+        if ascending != 0:
+            self.player.ascend = True if ascending == 1 else False
+        elif descending != 0:
+            self.player.descend = True if descending == 1 else False
