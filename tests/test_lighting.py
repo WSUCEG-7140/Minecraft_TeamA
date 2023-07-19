@@ -9,6 +9,11 @@ from tempus_fugit_minecraft.shaders import Shaders, to_cfloat
 def window():
     yield Window()
 
+clock = pyglet.clock.get_default()
+
+def pass_time(dt:float):
+    return dt
+
 class TestLighting():
     def test_lights_turned_on(self, window):
         assert glIsEnabled(GL_LIGHTING)
@@ -47,4 +52,26 @@ class TestLighting():
         new_specular_vector = window.shaders.adjust_specular_light(8, 9, 10)
         assert rgb_vector != new_specular_vector
 
+    def test_update_lights(self, window):
+        window.shaders._update_light()
+        assert glIsEnabled(GL_LIGHT0)
+
+    def test_decrease_light_intensity(self, window):
+        test_ambient = window.shaders.ambient
+        test_diffuse = window.shaders.diffuse
+        test_specular = window.shaders.specular
+        window.shaders.decrease_light_intensity(.1)
+        assert window.shaders.ambient[0] < test_ambient[0]
+        assert window.shaders.diffuse[0] < test_diffuse[0]
+        assert window.shaders.specular[0] < test_specular[0]
+
+    def test_increase_light_intensity(self, window):
+        test_ambient = window.shaders.ambient
+        test_diffuse = window.shaders.diffuse
+        test_specular = window.shaders.specular
+        window.shaders.increase_light_intensity(.1)
+        assert window.shaders.ambient[0] > test_ambient[0]
+        assert window.shaders.diffuse[0] > test_diffuse[0]
+        assert window.shaders.specular[0] > test_specular[0]
+    
     

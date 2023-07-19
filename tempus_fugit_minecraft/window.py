@@ -49,7 +49,8 @@ class Window(pyglet.window.Window):
         '''Solves issue #8. Properties that are related to day night cycle'''
         self.game_clock = pyglet.clock.get_default()
         self.game_time = 0
-        self.game_clock.schedule_interval(self.update_day_night, 5)
+        self.schedule_time = 5
+        self.game_clock.schedule_interval(self.update_day_night, self.schedule_time)
 
         self.paused = False
 
@@ -422,9 +423,3 @@ class Window(pyglet.window.Window):
         else:
             self.shaders.increase_light_intensity(increase_decrease_value)
         return dt
-
-    def stop_day_night(self) -> None:
-        self.game_clock.unschedule(self.update_day_night)
-    
-    def start_day_night(self) -> None:
-        self.game_clock.schedule_interval(self.update_day_night)
