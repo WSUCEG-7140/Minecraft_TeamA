@@ -5,6 +5,9 @@ from pyglet.gl import *
 from pyglet.window import key, mouse
 from tempus_fugit_minecraft.utilities import *
 from tempus_fugit_minecraft.model import Model
+from tempus_fugit_minecraft.shaders import Shaders
+from tempus_fugit_minecraft.player import Player
+
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
@@ -37,6 +40,11 @@ class Window(pyglet.window.Window):
 
         # Instance of the model that handles the world.
         self.model = Model()
+
+        #Instance of the shaders in the world
+        '''Placed in Windows for being a OpenGL related Class. Solves issue #7'''
+        self.shaders = Shaders(self.model)
+        self.shaders.turn_on_environment_light()
 
         self.paused = False
 
@@ -245,6 +253,7 @@ class Window(pyglet.window.Window):
         """Resumes the game by restoring the game window to its original state."""
         self.paused = False
         self.set_exclusive_mouse(True)
+        self.shaders.enable_lighting()
 
     #issue 82
     def on_key_release(self, symbol: int, modifiers: int) -> None:
@@ -383,6 +392,7 @@ class Window(pyglet.window.Window):
         glMatrixMode(GL_MODELVIEW)
         glPopMatrix()
 
+        self.shaders.disable_lighting()
         self.pause_label.draw()
         self.resume_label.draw()
         self.quit_label.draw()
