@@ -81,8 +81,13 @@ class Model(object):
         self.background_noise = sound_list.wind_blowing
         self.background_noise.play_sound()
 
+    #issue84
     def _initialize(self, immediate=False) -> None:
-        """Initialize the world by placing all the blocks."""
+        """!
+        @brief Initialize the world by placing all the blocks.
+        @param immediate True: draw block immediatl; False: do not draw Block immediately. (default=False)
+        @return None
+        """
         
         s = 1  # step size
         y = 0  # initial y height
@@ -353,6 +358,7 @@ class Model(object):
         while self.queue:
             self._dequeue()
 
+    #issue20; #issue28; #issue44; #issue84
     @staticmethod
     def generate_clouds_positions(world_size: int, num_of_clouds=random.randint(250,600)) -> list:
         """!
@@ -568,7 +574,7 @@ class Model(object):
             self.player.descend = True if descending == 1 else False
 
 
-    #issue80
+    #issue80; #issue84
     def generate_trees(self, num_trees=random.randint(350,500)):
         """!
         @brief Generate trees' (trunks and leavs) positions.

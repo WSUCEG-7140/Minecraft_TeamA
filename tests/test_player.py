@@ -366,13 +366,13 @@ class TestPlayer:
         player.check_player_within_world_boundaries()
         assert player.position == (10,5,15)
 
-    # #issue25
+    # #issue25; #issue84
     def test_check_player_at_boundaries(self, player: Player):
         player.position = (WHOLE_WORLD_SIZE , 20, WHOLE_WORLD_SIZE)
         player.check_player_within_world_boundaries()
         assert player.position == (WHOLE_WORLD_SIZE , 20, WHOLE_WORLD_SIZE)
 
-    #issue25
+    #issue25; #issue84
     def test_player_out_of_world_boundaries(self, player: Player):
         player.position = ((-WHOLE_WORLD_SIZE-100) , 25 , (WHOLE_WORLD_SIZE+120))
         player.check_player_within_world_boundaries()
@@ -382,7 +382,7 @@ class TestPlayer:
         player.check_player_within_world_boundaries()
         assert player.position == (WHOLE_WORLD_SIZE , 25 , -WHOLE_WORLD_SIZE)
 
-    #issue25
+    #issue25; #issue84
     def test_player_out_of_world_in_x_coordinate(self, player: Player):
         player.position = ((WHOLE_WORLD_SIZE+2) , 125 , 15)
         player.check_player_within_world_boundaries()
@@ -392,7 +392,7 @@ class TestPlayer:
         player.check_player_within_world_boundaries()
         assert player.position == (-WHOLE_WORLD_SIZE , 125 , 15)
 
-    #issue25
+    #issue25; #issue84
     def test_player_out_of_world_in_z_coordinate(self, player: Player):
         player.position = (79 , 125 , (WHOLE_WORLD_SIZE+2))
         player.check_player_within_world_boundaries()
@@ -402,7 +402,7 @@ class TestPlayer:
         player.check_player_within_world_boundaries()
         assert player.position == (79 , 125 , -WHOLE_WORLD_SIZE)
 
-    #issue25
+    #issue25; #issue84
     def test_player_in_y_coordinate(self, player: Player):
         player.position = (79 , (WHOLE_WORLD_SIZE+1000) , 0)
         player.check_player_within_world_boundaries()

@@ -73,7 +73,7 @@ class TestModel:
         cloud_blocks = [coordinates for coordinates, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         assert len(cloud_blocks) >= sum(len(cloud) for cloud in clouds)
     
-    #issue44
+    #issue44; #issue84
     def test_build_clouds_in_different_layers_in_the_sky(self):
         model = Model()
         clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE)
@@ -83,7 +83,7 @@ class TestModel:
             x,y,z = first_block_in_the_cloud
             assert y in [18,20,22,24,26]
 
-    #issue44
+    #issue44; #issue84
     def test_build_dark_and_light_clouds_in_different_layers_in_the_sky(self):
         model = Model()
         clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE)
