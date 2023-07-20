@@ -1,15 +1,19 @@
 from pyglet.gl import *
-import pyglet.graphics as graphics
 import cmath as math
 from ctypes import *
-from tempus_fugit_minecraft.utilities import *
+
 
 '''!Function to convert a vector of numbers to a vector of c_float.
-    @Param vector A     a list of numbers'''
+    @Param vector     a list of numbers'''
 def to_cfloat(vector):
+    '''!Function to convert a vector of numbers to a vector of c_float.
+        @Param A vector with numbers'''
     return (c_float * len(vector))(*vector)
 
-'''!Function to compare '''
+'''!Function to compare two c_float vectors
+  @param vector1  The first c_float vector
+  @param vector2  The second c_float vector
+'''
 def c_float_vector_is_equal(vector1, vector2):
     count = 0
     if len(vector1) != len(vector2):
@@ -39,13 +43,13 @@ class Shaders():
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
         return 1
-    
+
     def enable_lighting(self):
         glEnable(GL_LIGHTING)
-    
+
     def disable_lighting(self):
         glDisable(GL_LIGHTING)
-    
+
     '''!Solves Issue #12. Adjusts the three types of light's color and intensity
         @Param red  a number that specifies the intensity of red light
         @Param green    a number that specifies the intensity of green light
@@ -91,4 +95,4 @@ class Shaders():
     def normal_3D_vector_calc(vector):
         threeDVector = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
         return threeDVector
-    
+
