@@ -1,13 +1,13 @@
-import pyglet
 import pytest
 from pyglet.gl import *
-from ctypes import c_float
 from tempus_fugit_minecraft.window import Window
 from tempus_fugit_minecraft.shaders import Shaders, to_cfloat
+
 
 @pytest.fixture(scope="class")
 def window():
     yield Window()
+
 
 class TestLighting():
     def test_lights_turned_on(self, window):
@@ -17,7 +17,7 @@ class TestLighting():
     def test_disable_glLIGHTING(self, window):
         window.shaders.disable_lighting()
         assert not glIsEnabled(GL_LIGHTING)
-    
+
     def test_enable_glLIGHTING(self, window):
         window.shaders.enable_lighting()
         assert glIsEnabled(GL_LIGHTING)

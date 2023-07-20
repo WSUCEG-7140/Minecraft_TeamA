@@ -3,9 +3,11 @@ import pytest
 from unittest.mock import Mock
 from tempus_fugit_minecraft.window import Window
 
+
 @pytest.fixture(scope="class")
 def window():
     yield Window()
+
 
 class TestSpeed:
     @pytest.fixture(autouse=True)

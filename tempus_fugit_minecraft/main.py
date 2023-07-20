@@ -4,8 +4,13 @@ from pyglet import app
 from pyglet.gl import *
 from tempus_fugit_minecraft.window import Window, WINDOW_WIDTH, WINDOW_HEIGHT
 
+
 def setup_fog() -> None:
-    """Configure the OpenGL fog properties."""
+    """!
+    @brief Configure the OpenGL fog properties.
+    @param None
+    @returns None
+    """
     # Enable fog. Fog "blends a fog color with each rasterized pixel fragment's
     # post-texturing color."
     glEnable(GL_FOG)
@@ -22,7 +27,11 @@ def setup_fog() -> None:
 
 
 def setup() -> None:
-    """Basic OpenGL configuration."""
+    """!
+    @brief Basic OpenGL configuration.
+    @param None
+    @returns None
+    """
     # Set the color of "clear", i.e. the sky, in rgba.
     glClearColor(0.5, 0.69, 1.0, 1)
     # Enable culling (not rendering) of back-facing facets -- facets that aren't
@@ -37,8 +46,12 @@ def setup() -> None:
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
     setup_fog()
 
-
 def main() -> None:
+    """!
+    @brief The main method
+    @param None
+    @returns None
+    """
     window = Window(
         width=WINDOW_WIDTH,
         height=WINDOW_HEIGHT,

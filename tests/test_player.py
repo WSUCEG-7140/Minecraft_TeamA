@@ -4,9 +4,11 @@ from tempus_fugit_minecraft.player import Player
 from tempus_fugit_minecraft.utilities import WHOLE_WORLD_SIZE, WORLD_SIZE
 from tempus_fugit_minecraft.block import BRICK, GRASS, SAND
 
+
 @pytest.fixture(scope = "class")
 def player():
     yield Player()
+
 
 class TestPlayer:
     @pytest.fixture(autouse=True)
@@ -228,8 +230,8 @@ class TestPlayer:
 
     def test_jump_no_vertical_velocity(self, player):
         player.jump()
-        assert player.dy == player.JUMP_SPEED 
-        
+        assert player.dy == player.JUMP_SPEED
+
     def test_jump_with_vertical_velocity(self, player):
         player.dy = 5
         player.jump()
@@ -258,7 +260,7 @@ class TestPlayer:
     def test_select_active_item_index_one_greater_than_inventory_length(self, player):
         player.select_active_item(len(player.inventory) + 1)
         assert player.block == player.inventory[1]
-    
+
     def test_select_active_item_negative_index(self, player):
         player.select_active_item(-1)
         assert player.block == player.inventory[(len(player.inventory) - 1)]
@@ -357,7 +359,7 @@ class TestPlayer:
                     assert p_x == m_x * player.current_speed()
                     assert p_y == m_y * player.current_speed()
                     assert p_z == m_z * player.current_speed()
-    
+
     #issue25
     def test_player_within_world_boundaries(self, player: Player):
         player.position = (10,5,15)
