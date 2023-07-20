@@ -20,14 +20,18 @@ class Player:
         self.MAX_FALL_SPEED = 50
         self.FLYING_SPEED = 15
         self.GRAVITY = 20.0
-        # To derive the formula for calculating jump speed, first solve v_t = v_0 + a * t for the time at which you
-        # achieve maximum height, where a is the acceleration due to gravity and v_t = 0. This gives: t = - v_0 / a
-        # Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in s = s_0 + v_0 * t + (a * t^2) / 2
-        self.JUMP_SPEED = math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT)
+        # To derive the formula for calculating jump speed, first solve
+        #    v_t = v_0 + a * t
+        # for the time at which you achieve maximum height, where a is the acceleration
+        # due to gravity and v_t = 0. This gives:
+        #    t = - v_0 / a
+        # Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in
+        #    s = s_0 + v_0 * t + (a * t^2) / 2
+        self.jump_speed = math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT)
         self.PLAYER_HEIGHT = 2
-        self.WALK_SPEED_INCREMENT = 5
+       
 
-        self.walking_speed = self.WALK_SPEED_INCREMENT
+        
         # When flying gravity has no effect and speed is increased.
         self.flying = False
         self.ascend = False
@@ -104,8 +108,9 @@ class Player:
             dx = 0.0
             dz = 0.0
         return dx, dy, dz
-
-    def speed_up(self) -> None:
+ 
+    """Issue #71 """
+    def Increase_speed(self) -> None:
         """!
         @brief Increases the walking speed of the player.
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
@@ -113,8 +118,9 @@ class Player:
         """
         if self.walking_speed <= 15:
             self.walking_speed += self.WALK_SPEED_INCREMENT
-
-    def speed_down(self) -> None:
+ 
+    """Issue #71 """   
+    def Decrease_speed(self) -> None:
         """!
         @brief Decreases the walking speed of the player
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
@@ -122,6 +128,15 @@ class Player:
         """
         if self.walking_speed > 5:
             self.walking_speed -= self.WALK_SPEED_INCREMENT
+   
+    #Issue #39
+    def Increase_jump(self) -> None:       
+            if self.jump_speed <= 15: 
+                self.jump_speed += 5
+    #Issue #39
+    def Decrease_jump(self) -> None:
+        if self.jump_speed >= 10:       
+            self.jump_speed -= 5
 
     def move_forward(self) -> None:
         """!
@@ -157,7 +172,7 @@ class Player:
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         if self.dy == 0:
-            self.dy = self.JUMP_SPEED
+            self.dy = self.jump_speed
 
     def select_active_item(self, index: int) -> None:
         """!
