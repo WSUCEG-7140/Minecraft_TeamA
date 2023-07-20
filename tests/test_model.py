@@ -153,7 +153,7 @@ class TestModel:
     def test_handle_jump_while_player_not_airborne(self, model):
         model.player.dy = 0
         model.handle_jump()
-        assert model.player.dy == model.player.JUMP_SPEED
+        assert model.player.dy == model.player.jump_speed
 
     #issue 68
     def test_handle_jump_while_player_airborne(self, model):
