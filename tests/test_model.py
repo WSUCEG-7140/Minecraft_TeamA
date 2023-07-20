@@ -26,7 +26,7 @@ class TestModel:
 
     #issue20
     def test_light_clouds_created_dynamically(self, model):
-        clouds = model.generate_clouds_positions(80, 100)
+        clouds = model.generate_clouds_positions(WORLD_SIZE, 100)
         for cloud in clouds:
             for x, c, z in cloud:
                 model.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
@@ -35,20 +35,20 @@ class TestModel:
     #issue20; #issue28
     def test_cloud_positions(self):
         model = Model()
-        model.generate_clouds_positions(80, 100)
-        o = 80 + 2*6  # + 2*6 to ensure that the test will cover cloud block outside the world
+        model.generate_clouds_positions(WORLD_SIZE, 100)
+        clouds_limitations = WORLD_SIZE + 2*6  # + 2*6 to ensure that the test will cover cloud block outside the world
         cloud_blocks = [coord for coord, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         for block in cloud_blocks:
-            assert -o <= block[0] <= o
-            assert -o <= block[2] <= o
+            assert -clouds_limitations <= block[0] <= clouds_limitations
+            assert -clouds_limitations <= block[2] <= clouds_limitations
 
     #issue20; #issue28
     def test_cloud_height(self):
         model = Model()
-        model.generate_clouds_positions(80, 100)
+        model.generate_clouds_positions(WORLD_SIZE, 100)
         clouds = [coord for coord, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         for cloud_coordinates in clouds:
-            assert cloud_coordinates[1] >= 20
+            assert cloud_coordinates[1] >= 18
 
     #issue20; #issue28
     def test_non_overlapping_clouds(self, model):
@@ -59,7 +59,7 @@ class TestModel:
 
     #issue28
     def test_dark_clouds_created_dynamically(self, model):
-        clouds = model.generate_clouds_positions(80, 200)
+        clouds = model.generate_clouds_positions(WORLD_SIZE, 200)
         for cloud in clouds:
             for x, c, z in cloud:
                 model.add_block((x, c, z), DARK_CLOUD, immediate=True)
@@ -68,11 +68,31 @@ class TestModel:
     #issue20; #issue28
     def test_draw_clouds_in_the_sky_and_count_blocks(self):
         model = Model()
-        clouds = model.generate_clouds_positions(80, 150)
+        clouds = model.generate_clouds_positions(WORLD_SIZE, 150)
         model.place_cloud_blocks(clouds)
         cloud_blocks = [coordinates for coordinates, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         assert len(cloud_blocks) >= sum(len(cloud) for cloud in clouds)
+    
+    #issue44; #issue84
+    def test_build_clouds_in_different_layers_in_the_sky(self):
+        model = Model()
+        clouds = model.generate_clouds_positions(WORLD_SIZE)
+        model.place_cloud_blocks(clouds)
+        for cloud in clouds:
+            first_block_in_the_cloud = cloud[0]
+            x,y,z = first_block_in_the_cloud
+            assert y in [18,20,22,24,26]
 
+    #issue44; #issue84
+    def test_build_dark_and_light_clouds_in_different_layers_in_the_sky(self):
+        model = Model()
+        clouds = model.generate_clouds_positions(WORLD_SIZE)
+        model.place_cloud_blocks(clouds)
+        for cloud in clouds:
+            for coords in cloud:
+                x,y,z = coords
+                assert model.world[(x,y,z)] in [LIGHT_CLOUD, DARK_CLOUD]
+    
     #issue57
     def test_pass_through_clouds(self, model):
         model.world[(0,50,0)] = LIGHT_CLOUD
@@ -111,7 +131,7 @@ class TestModel:
 
     #issue42
     def test_click_mouse_to_add_block_to_clouds(self, model):
-        model.clouds = model.generate_clouds_positions(80, 150)
+        model.clouds = model.generate_clouds_positions(WORLD_SIZE, 150)
         x, y, z = model.clouds[0][0]
 
         with patch.object(model, 'add_block', return_value=None) as add_block_method:
@@ -281,8 +301,8 @@ class TestModel:
 
 
         trees = model.generate_trees()
-        assert len(trees) == 100
-
+        assert 350 <= len(trees) <= 500
+        
         for single_tree in trees:
             assert all(model.world[trunk_coord] == TREE_TRUNK for trunk_coord in single_tree[0])
             assert all(model.world[trunk_leaf]  == TREE_LEAVES for trunk_leaf in single_tree[1])
@@ -324,3 +344,19 @@ class TestModel:
         for single_tree in trees:
             trunks , leaves = single_tree
             assert model.world[(trunks[0][0],trunks[0][1]-1,trunks[0][2])] in [GRASS,SAND]
+    
+    #issue84
+    def test_generate_single_cloud_blocks_at_a_specific_height(self, model):
+        y =100
+        cloud = model.generate_single_cloud(cloud_center_x=0,cloud_center_y=y,cloud_center_z=0,s=3)
+        for block_coords in cloud:
+            assert block_coords[1] == y
+    
+    def test_generate_cloud_returns_list_of_tuples(self, model):
+        x,y,z = 4,5,3
+        cloud = model.generate_single_cloud(cloud_center_x=x,cloud_center_y=y,cloud_center_z=z,s=3)
+        assert isinstance(cloud,list)
+        for block in cloud:
+            assert isinstance(block, tuple) and len(block) == 3
+
+            
