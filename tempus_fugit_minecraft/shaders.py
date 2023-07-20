@@ -9,6 +9,19 @@ from tempus_fugit_minecraft.utilities import *
 def to_cfloat(vector):
     return (c_float * len(vector))(*vector)
 
+'''!Function to compare '''
+def c_float_vector_is_equal(vector1, vector2):
+    count = 0
+    if len(vector1) != len(vector2):
+        return False
+
+    for float in vector1:
+        if float != vector2[count]:
+            return False
+        else:
+            count = count + 1
+    return True
+
 class Shaders():
     def __init__(self, model):
         self.blockInformation = model._shown
