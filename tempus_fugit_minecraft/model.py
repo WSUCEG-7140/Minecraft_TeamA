@@ -103,7 +103,7 @@ class Model(object):
 
         # generate the hills randomly
         o = WORLD_SIZE - 10
-        for _ in xrange(260):
+        for _ in xrange(int((WORLD_SIZE * 1.5))):
             a = random.randint(-o, o)  # x position of the hill
             b = random.randint(-o, o)  # z position of the hill
             c = -1  # base of the hill
@@ -360,7 +360,7 @@ class Model(object):
 
     #issue20; #issue28; #issue44; #issue84
     @staticmethod
-    def generate_clouds_positions(world_size: int, num_of_clouds=random.randint(250,600)) -> list:
+    def generate_clouds_positions(world_size: int, num_of_clouds=int((WORLD_SIZE * 3.75))) -> list:
         """!
         @brief Generate sky cloud positions.
         @param world_size Half the world's size.
@@ -575,7 +575,7 @@ class Model(object):
 
 
     #issue80; #issue84
-    def generate_trees(self, num_trees=random.randint(350,500)):
+    def generate_trees(self, num_trees=int((WORLD_SIZE * 3.125))):
         """!
         @brief Generate trees' (trunks and leavs) positions.
         @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
