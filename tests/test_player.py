@@ -177,55 +177,55 @@ class TestPlayer:
         assert dy == 0
         assert math.isclose(dz, 1e-15, abs_tol=1e-15)
 
-    def test_Increase_speed_no_call_should_be_default_speed(self, player):
+    def test_increase_speed_no_call_should_be_default_speed(self, player):
         assert player.walking_speed == player.WALK_SPEED_INCREMENT
 
-    def test_Increase_speed_called_one_time_should_be_double_initial_speed(self, player):
-        player.Increase_speed()
+    def test_increase_speed_called_one_time_should_be_double_initial_speed(self, player):
+        player.increase_speed()
         assert player.walking_speed == 2 * player.WALK_SPEED_INCREMENT
 
-    def test_Increase_speed_called_two_times_should_be_triple_initial_speed(self, player):
-        player.Increase_speed()
-        player.Increase_speed()
+    def test_increase_speed_called_two_times_should_be_triple_initial_speed(self, player):
+        player.increase_speed()
+        player.increase_speed()
         assert player.walking_speed == 3 * player.WALK_SPEED_INCREMENT
 
-    def test_Increase_speed_called_three_times_should_be_quadruple_initial_speed(self, player):
-        player.Increase_speed()
-        player.Increase_speed()
-        player.Increase_speed()
+    def test_increase_speed_called_three_times_should_be_quadruple_initial_speed(self, player):
+        player.increase_speed()
+        player.increase_speed()
+        player.increase_speed()
         assert player.walking_speed == 4 * player.WALK_SPEED_INCREMENT
 
-    def test_Increase_speed_called_four_times_should_be_maxed_at_twenty(self, player):
-        player.Increase_speed()
-        player.Increase_speed()
-        player.Increase_speed()
-        player.Increase_speed()
+    def test_increase_speed_called_four_times_should_be_maxed_at_twenty(self, player):
+        player.increase_speed()
+        player.increase_speed()
+        player.increase_speed()
+        player.increase_speed()
         assert player.walking_speed == 4 * player.WALK_SPEED_INCREMENT
 
-    def test_Decrease_speed_called_one_time_should_be_triple_initial_speed(self, player):
+    def test_decrease_speed_called_one_time_should_be_triple_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.Decrease_speed()
+        player.decrease_speed()
         assert player.walking_speed == 3 * player.WALK_SPEED_INCREMENT
 
-    def test_Decrease_speed_called_two_times_should_be_double_initial_speed(self, player):
+    def test_decrease_speed_called_two_times_should_be_double_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.Decrease_speed()
-        player.Decrease_speed()
+        player.decrease_speed()
+        player.decrease_speed()
         assert player.walking_speed == 2 * player.WALK_SPEED_INCREMENT
 
-    def test_Decrease_speed_called_three_times_should_be_initial_speed(self, player):
+    def test_decrease_speed_called_three_times_should_be_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.Decrease_speed()
-        player.Decrease_speed()
-        player.Decrease_speed()
+        player.decrease_speed()
+        player.decrease_speed()
+        player.decrease_speed()
         assert player.walking_speed == 1 * player.WALK_SPEED_INCREMENT
 
-    def test_Decrease_speed_called_four_times_should_be_initial_speed(self, player):
+    def test_decrease_speed_called_four_times_should_be_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.Decrease_speed()
-        player.Decrease_speed()
-        player.Decrease_speed()
-        player.Decrease_speed()
+        player.decrease_speed()
+        player.decrease_speed()
+        player.decrease_speed()
+        player.decrease_speed()
         assert player.walking_speed == 1 * player.WALK_SPEED_INCREMENT
 
     def test_jump_no_vertical_velocity(self, player):
