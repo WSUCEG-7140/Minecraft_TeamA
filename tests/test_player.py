@@ -177,61 +177,61 @@ class TestPlayer:
         assert dy == 0
         assert math.isclose(dz, 1e-15, abs_tol=1e-15)
 
-    def test_speed_up_no_call_should_be_default_speed(self, player):
+    def test_Increase_speed_no_call_should_be_default_speed(self, player):
         assert player.walking_speed == player.WALK_SPEED_INCREMENT
 
-    def test_speed_up_called_one_time_should_be_double_initial_speed(self, player):
-        player.speed_up()
+    def test_Increase_speed_called_one_time_should_be_double_initial_speed(self, player):
+        player.Increase_speed()
         assert player.walking_speed == 2 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_up_called_two_times_should_be_triple_initial_speed(self, player):
-        player.speed_up()
-        player.speed_up()
+    def test_Increase_speed_called_two_times_should_be_triple_initial_speed(self, player):
+        player.Increase_speed()
+        player.Increase_speed()
         assert player.walking_speed == 3 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_up_called_three_times_should_be_quadruple_initial_speed(self, player):
-        player.speed_up()
-        player.speed_up()
-        player.speed_up()
+    def test_Increase_speed_called_three_times_should_be_quadruple_initial_speed(self, player):
+        player.Increase_speed()
+        player.Increase_speed()
+        player.Increase_speed()
         assert player.walking_speed == 4 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_up_called_four_times_should_be_maxed_at_twenty(self, player):
-        player.speed_up()
-        player.speed_up()
-        player.speed_up()
-        player.speed_up()
+    def test_Increase_speed_called_four_times_should_be_maxed_at_twenty(self, player):
+        player.Increase_speed()
+        player.Increase_speed()
+        player.Increase_speed()
+        player.Increase_speed()
         assert player.walking_speed == 4 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_down_called_one_time_should_be_triple_initial_speed(self, player):
+    def test_Decrease_speed_called_one_time_should_be_triple_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.speed_down()
+        player.Decrease_speed()
         assert player.walking_speed == 3 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_down_called_two_times_should_be_double_initial_speed(self, player):
+    def test_Decrease_speed_called_two_times_should_be_double_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.speed_down()
-        player.speed_down()
+        player.Decrease_speed()
+        player.Decrease_speed()
         assert player.walking_speed == 2 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_down_called_three_times_should_be_initial_speed(self, player):
+    def test_Decrease_speed_called_three_times_should_be_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.speed_down()
-        player.speed_down()
-        player.speed_down()
+        player.Decrease_speed()
+        player.Decrease_speed()
+        player.Decrease_speed()
         assert player.walking_speed == 1 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_down_called_four_times_should_be_initial_speed(self, player):
+    def test_Decrease_speed_called_four_times_should_be_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.speed_down()
-        player.speed_down()
-        player.speed_down()
-        player.speed_down()
+        player.Decrease_speed()
+        player.Decrease_speed()
+        player.Decrease_speed()
+        player.Decrease_speed()
         assert player.walking_speed == 1 * player.WALK_SPEED_INCREMENT
 
     def test_jump_no_vertical_velocity(self, player):
         player.jump()
-        assert player.dy == player.JUMP_SPEED
-
+        assert player.dy == player.jump_speed 
+        
     def test_jump_with_vertical_velocity(self, player):
         player.dy = 5
         player.jump()
