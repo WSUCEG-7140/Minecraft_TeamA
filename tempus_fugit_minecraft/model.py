@@ -17,15 +17,10 @@ if sys.version_info[0] >= 3:
 
 
 def normalize(position: tuple) -> tuple:
-    """Accepts `position` of arbitrary precision and returns the block containing that position.
-
-    Parameters
-    ----------
-    position : tuple of len 3
-
-    Returns
-    -------
-    block_position : tuple of ints of len 3
+    """!
+    @brief Accepts `position` of arbitrary precision and returns the block containing that position.
+    @param position : tuple of len 3
+    @returns block_position : tuple of ints of len 3
     """
     x, y, z = position
     x, y, z = (int(round(x)), int(round(y)), int(round(z)))
@@ -33,15 +28,10 @@ def normalize(position: tuple) -> tuple:
 
 
 def sectorize(position: tuple) -> tuple:
-    """Returns a tuple representing the sector for the given `position`.
-
-    Parameters
-    ----------
-    position : tuple of len 3
-
-    Returns
-    -------
-    sector : tuple of len 3
+    """!
+    @brief Returns a tuple representing the sector for the given `position`.
+    @param position : tuple of len 3
+    @returns sector : tuple of len 3
     """
     SECTOR_SIZE = 16  # Size of sectors used to ease block loading.
 
@@ -51,9 +41,14 @@ def sectorize(position: tuple) -> tuple:
 
 
 class Model(object):
-    """A 3D world model for block-based rendering."""
+    """@brief A 3D world model for block-based rendering."""
 
     def __init__(self) -> None:
+        """!
+        @brief init function for Model class
+        @params None
+        @returns None
+        """
         TEXTURE_PATH = 'assets/texture.png'
 
         # A Batch is a collection of vertex lists for batched rendering.
@@ -87,7 +82,11 @@ class Model(object):
         self.background_noise.play_sound()
 
     def _initialize(self, immediate=False) -> None:
-        """Initialize the world by placing all the blocks."""
+        """!
+        @brief Initialize the world by placing all the blocks.
+        @param immediate a flag that tells us if we should immediately place blocks or queue them
+        @returns None
+        """
         n = 80  # 1/2 width and height of world
         s = 1  # step size
         y = 0  # initial y height
@@ -126,25 +125,15 @@ class Model(object):
         self.generate_trees(num_trees=50)
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
-        """Line of sight search from current position. If a block is
+        """!
+        @brief Line of sight search from current position. If a block is
         intersected it is returned, along with the block previously in the line
         of sight. If no block is found, return None, None.
-
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position to check visibility from.
-        vector : tuple of len 3
-            The line of sight vector.
-        max_distance : int
-            How many blocks away to search for a hit.
-
-        Returns
-        -------
-        previous : tuple of len 3
-            The previous block.
-        block : tuple of len 3
-            The hit block.
+        @param position : tuple of len 3 The (x, y, z) position to check visibility from.
+        @param vector : tuple of len 3 The line of sight vector.
+        @param max_distance : int How many blocks away to search for a hit.
+        @returns previous : tuple of len 3 The previous block.
+        @returns block : tuple of len 3 The hit block.
         """
         m = 8
         x, y, z = position
@@ -159,16 +148,10 @@ class Model(object):
         return None, None
 
     def exposed(self, position: tuple) -> bool:
-        """Returns False is given `position` is surrounded on all 6 sides by blocks, True otherwise.
-
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position to check
-
-        Returns
-        -------
-        boolean
+        """!
+        @brief Returns False is given `position` is surrounded on all 6 sides by blocks, True otherwise.
+        @param position : tuple of len 3 The (x, y, z) position to check
+        @returns boolean
         """
         x, y, z = position
         for dx, dy, dz in FACES:
@@ -179,12 +162,10 @@ class Model(object):
     def add_block(self, position: tuple, block: Block, immediate=True) -> None:
         """!
         @brief Add a block with the given `texture` and `position` to the world.
-
         @param position The (x, y, z) position of the block to add.
-        @param texture The coordinates of the texture squares. Use `tex_coords()`
-            to generate.
-        immediate : bool
-            Whether to draw the block immediately.
+        @param texture The coordinates of the texture squares. Use `tex_coords()` to generate.
+        @param immediate : bool Whether to draw the block immediately.
+        @returns None
         """
         if position in self.world:
             self.remove_block(position, immediate)
@@ -196,14 +177,11 @@ class Model(object):
             self.check_neighbors(position)
 
     def remove_block(self, position: tuple, immediate=True) -> None:
-        """Remove the block at the given `position`.
-
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position of the block to remove.
-        immediate : bool
-            Whether to immediately remove block from canvas.
+        """!
+        @brief Remove the block at the given `position`.
+        @param position : tuple of len 3 The (x, y, z) position of the block to remove.
+        @param immediate : bool Whether to immediately remove block from canvas.
+        @returns None
         """
         del self.world[position]
         self.sectors[sectorize(position)].remove(position)
@@ -214,15 +192,13 @@ class Model(object):
             self.check_neighbors(position)
 
     def check_neighbors(self, position: tuple) -> None:
-        """Check all blocks surrounding `position` and ensure their visual
+        """!
+        @brief Check all blocks surrounding `position` and ensure their visual
         state is current. This means hiding blocks that are not exposed and
         ensuring that all exposed blocks are shown. Usually used after a block
         is added or removed.
-
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position to check around.
+        @param position : tuple of len 3 The (x, y, z) position to check around.
+        @returns None
         """
         x, y, z = position
         for dx, dy, dz in FACES:
@@ -237,15 +213,12 @@ class Model(object):
                     self.hide_block(key)
 
     def show_block(self, position: tuple, immediate=True) -> None:
-        """Show the block at the given `position`. This method assumes the
+        """!
+        @brief Show the block at the given `position`. This method assumes the
         block has already been added with add_block()
-
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position of the block to show.
-        immediate : bool
-            Whether to show the block immediately.
+        @param position : tuple of len 3 The (x, y, z) position of the block to show.
+        @param immediate : bool Whether to show the block immediately.
+        @returns None
         """
         if position not in self.world:
             return
@@ -258,15 +231,11 @@ class Model(object):
             self._enqueue(self._show_block, position, block)
 
     def _show_block(self, position: tuple, block: Block) -> None:
-        """Private implementation of the `show_block()` method.
-
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position of the block to show.
-        texture : list of len 3
-            The coordinates of the texture squares. Use `tex_coords()` to
-            generate.
+        """!
+        @brief Private implementation of the `show_block()` method.
+        @param position : tuple of len 3 The (x, y, z) position of the block to show.
+        @param texture : list of len 3 The coordinates of the texture squares. Use `tex_coords()` to generate.
+        @returns None
         """
         x, y, z = position
         vertex_data = cube_vertices(x, y, z, 0.5)
@@ -278,14 +247,11 @@ class Model(object):
                                                ('t2f/static', texture_data))
 
     def hide_block(self, position: tuple, immediate=True) -> None:
-        """Hide the block at the given `position`. Hiding does not remove the block from the world.
-
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position of the block to hide.
-        immediate : bool
-            Whether to immediately remove the block from the canvas.
+        """!
+        @brief Hide the block at the given `position`. Hiding does not remove the block from the world.
+        @param position : tuple of len 3 The (x, y, z) position of the block to hide.
+        @param immediate : bool Whether to immediately remove the block from the canvas.
+        @returns None
         """
         self.shown.pop(position)
         if immediate:
@@ -294,50 +260,41 @@ class Model(object):
             self._enqueue(self._hide_block, position)
 
     def _hide_block(self, position: tuple) -> None:
-        """Private implementation of the `hide_block()` method.
-
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position of the block to hide.
+        """!
+        @brief Private implementation of the `hide_block()` method.
+        @param position : tuple of len 3 The (x, y, z) position of the block to hide.
+        @returns None
         """
         self._shown.pop(position).delete()
 
     def show_sector(self, sector: tuple) -> None:
-        """Ensure all blocks in the given sector that should be shown are drawn to the canvas.
-
-        Parameters
-        ----------
-        sector : tuple of len 3
-            The (x, y, z) coordinates of the sector to show.
+        """!
+        @brief Ensure all blocks in the given sector that should be shown are drawn to the canvas.
+        @param sector : tuple of len 3 The (x, y, z) coordinates of the sector to show.
+        @returns None
         """
         for position in self.sectors.get(sector, []):
             if position not in self.shown and self.exposed(position):
                 self.show_block(position, False)
 
     def hide_sector(self, sector: tuple) -> None:
-        """Ensure all blocks in the given sector that should be hidden are removed from the canvas.
-
-        Parameters
-        ----------
-        sector : tuple of len 3
-            The (x, y, z) coordinates of the sector to hide.
+        """!
+        @brief Ensure all blocks in the given sector that should be hidden are removed from the canvas.
+        @param sector : tuple of len 3 The (x, y, z) coordinates of the sector to hide.
+        @returns None
         """
         for position in self.sectors.get(sector, []):
             if position in self.shown:
                 self.hide_block(position, False)
 
     def change_sectors(self, before: tuple, after: tuple) -> None:
-        """Move from sector `before` to sector `after`. A sector is a
+        """!
+        @brief Move from sector `before` to sector `after`. A sector is a
         contiguous x, y sub-region of world. Sectors are used to speed up
         world rendering.
-
-        Parameters
-        ----------
-        before : tuple of len 3
-            The (x, y, z) sector we are moving from.
-        after : tuple of len 3
-            The (x, y, z) sector we are moving to.
+        @param before : tuple of len 3 The (x, y, z) sector we are moving from.
+        @param after : tuple of len 3 The (x, y, z) sector we are moving to.
+        @returns None
         """
         before_set = set()
         after_set = set()
@@ -361,47 +318,54 @@ class Model(object):
             self.hide_sector(sector)
 
     def _enqueue(self, func: Callable, *args) -> None:
-        """Add `func` to the internal queue.
-
-        Parameters
-        ----------
-        func : Callable
-            The function to add to the queue.
-        args
-            The arguments to pass to the function.
+        """!
+        @brief Add `func` to the internal queue.
+        @param func : Callable The function to add to the queue.
+        @param args The arguments to pass to the function.
+        @returns None
         """
         self.queue.append((func, args))
 
     def _dequeue(self) -> None:
-        """Pop the top function from the internal queue and call it."""
+        """!
+        @brief Pop the top function from the internal queue and call it.
+        @param None
+        @returns None
+        """
         func, args = self.queue.popleft()
         func(*args)
 
     def process_queue(self) -> None:
-        """Process the entire queue while taking periodic breaks. This allows
+        """!
+        @brief Process the entire queue while taking periodic breaks. This allows
         the game loop to run smoothly. The queue contains calls to
         _show_block() and _hide_block() so this method should be called if
         add_block() or remove_block() was called with immediate=False.
-        """
+        @param None
+        @returns None
+         """
         start = time.perf_counter()
         while self.queue and time.perf_counter() - start < 1.0 / TICKS_PER_SEC:
             self._dequeue()
 
     def process_entire_queue(self) -> None:
-        """Process the entire queue with no breaks."""
+        """!
+        @brief Process the entire queue with no breaks.
+        @param None
+        @returns None
+        """
         while self.queue:
             self._dequeue()
 
-    #issue20; #issue28
     @staticmethod
     def generate_clouds_positions(world_size: int, num_of_clouds=250) -> list:
         """!
         @brief Generate sky cloud positions.
-
         @param world_size Half the world's size.
         @param num_of_clouds Number of clouds (default is 250).
-
-        @return clouds list of lists representing cloud blocks coordinates.
+        @returns clouds list of lists representing cloud blocks coordinates.
+        @see issue 20
+        @see issue 28
         """
         game_margin = world_size
         clouds = list()
@@ -420,14 +384,12 @@ class Model(object):
             clouds.append(single_cloud)
         return clouds
 
-    #issue20; #issue28
     def place_cloud_blocks(self, clouds):
         """!
-        @breif represent cloud block's coordinates in the sky.
-
+        @brief represent cloud block's coordinates in the sky.
         @param clouds list of lists; each inner list contains cloud block's coordinates.
-
-        @return None, but draw a cloud block at its corresponding coordinates.
+        @returns None, but draw a clouds block at its corresponding coordinates.
+        @see issue 20 and 28
         """
         cloud_types = [LIGHT_CLOUD, DARK_CLOUD]
         for cloud in clouds:
@@ -435,40 +397,46 @@ class Model(object):
             for x, y, z in cloud:
                 self.add_block((x, y, z), cloud_color, immediate=False)
 
-    #issue57
-    def can_pass_through_block(self, player_current_coords):
+    def can_pass_through_block(self, player_current_coords: tuple) -> bool:
         """!
         @brief Check if the block at the given palyer_current_coords is a cloud block.
-
         @param player_current_coords Current (x,y,z) corrdinates for the player.
-
-        @return True if the coordinates correspond to a cloud block, False otherwise.
+        @returns True if the coordinates correspond to a cloud block, False otherwise.
+        @see issue 57
         """
         block = self.world.get(player_current_coords)
         return block is None or not block.is_collidable
-
-    #issue 68
-    def handle_secondary_action(self):
+    
+    def handle_secondary_action(self) -> None:
+        """!
+        @brief Handles the player's secondary action
+        @param None
+        @returns None
+        @see issue 68
+        """
         vector = self.player.get_sight_vector()
         position, previous = self.hit_test(self.player.position, vector)
         if previous and position and self.world[position].can_build_on:
             self.add_block(previous, self.player.block)
 
-    #issue 68
-    def handle_primary_action(self):
+    def handle_primary_action(self) -> None:
+        """!
+        @brief Handles the player's primary action
+        @param None
+        @returns None
+        @see issue 68
+        """
         vector = self.player.get_sight_vector()
         position, _ = self.hit_test(self.player.position, vector)
         if position and self.world[position].is_breakable:
             self.remove_block(position)
 
-    #issue 68
     def update(self, dt: float) -> None:
-        """This method is scheduled to be called repeatedly by the pyglet clock.
-
-        Parameters
-        ----------
-        dt : float
-            The change in time (seconds) since the last call.
+        """!
+        @brief This method is scheduled to be called repeatedly by the pyglet clock.
+        @param dt : float The change in time (seconds) since the last call.
+        @returns None
+        @see issue 68
         """
         self.process_queue()
         sector = sectorize(self.player.position)
@@ -485,22 +453,14 @@ class Model(object):
         for _ in xrange(moves):
             self.player.update(dt / moves, self.collide)
 
-    #issue 68
     def collide(self, position: tuple, height: int) -> tuple:
-        """Checks to see if the player at the given `position` and `height`
+        """!
+        @brief Checks to see if the player at the given `position` and `height`
         is colliding with any blocks in the world.
-
-        Parameters
-        ----------
-        position : tuple of len 3
-            The (x, y, z) position to check for collisions at.
-        height : int or float
-            The height of the player.
-
-        Returns
-        -------
-        position : tuple of len 3
-            The new position of the player taking into account collisions.
+        @param position : tuple of len 3 The (x, y, z) position to check for collisions at.
+        @param height : int or float The height of the player.
+        @returns position : tuple of len 3 The new position of the player taking into account collisions.
+        @see issue 68
         """
         # How much overlap with a dimension of a surrounding block you need to
         # have to count as a collision. If 0, touching terrain at all counts as
@@ -530,33 +490,68 @@ class Model(object):
                         self.player.dy = 0
                     break
         return tuple(p)
-
-    #issue 68
-    def handle_adjust_vision(self, dx, dy):
+    
+    def handle_adjust_vision(self, dx: int, dy: int) -> None:
+        """!
+        @brief Handles the change of the vision field when the player moves their head
+        @param dx The x change in the field of vision (relative to the previous motion)
+        @param dy The y change in the field of vision (relative to the previous motion)
+        @returns None
+        @see issue 68
+        """
         self.player.adjust_sight(dx, dy)
 
-    #issue 68
-    def handle_change_active_block(self, index):
+    def handle_change_active_block(self, index: int) -> None:
+        """!
+        @brief Switches between active blocks held by the player
+        @param index The value of the current active block in the player's inventory
+        @returns None
+        @see issue 68
+        """
         self.player.select_active_item(index)
 
-    #issue 68
-    def handle_speed_change(self, increase):
+    def handle_speed_change(self, increase: bool) -> None:
+        """!
+        @brief Handles the speed change event
+        @param increase A boolean indicator of whether we increase or decrease the speed
+        @returns None
+        @see issue 68
+        """
         if increase:
             self.player.speed_up()
         else:
             self.player.speed_down()
 
-    #issue 68
-    def handle_jump(self):
+    def handle_jump(self) -> None:
+        """!
+        @brief Handles the jump event
+        @param None
+        @returns None
+        @see issue 68
+        """
         self.player.jump()
-
-    #issue 68
-    def handle_flight_toggle(self):
+    
+    def handle_flight_toggle(self) -> None:
+        """!
+        @brief Handles the flight toggle event
+        @param None
+        @returns None
+        @see issue 68
+        """
         self.player.toggle_flight()
 
-    #issue 68
-    def handle_movement(self, forward, backward, left, right):
+    def handle_movement(self, forward, backward, left, right) -> None:
+        """!
+        @brief Movement handler (directs the movement of the player)
+        @param forward Tri-state value of 1, 0, -1 indicating if we are going to be moving forward, staying constant, or stopping
+        @param backward Tri-state value of 1, 0, -1 indicating if we are going to be moving backward staying constant, or stopping
+        @param left Tri-state value of 1, 0, -1 indicating if we are going to be moving left, staying constant, or stopping
+        @param right Tri-state value of 1, 0, -1 indicating if we are going to be moving right, staying constant, or stopping
+        @returns None
+        @see issue 68
+        """
         def handle_movement_for_direction(direction, move, stop):
+            # private helper for consistently applying direction
             if direction != 0:
                 if direction == 1:
                     move()
@@ -575,18 +570,16 @@ class Model(object):
         elif descending != 0:
             self.player.descend = True if descending == 1 else False
 
-    #issue80
+
     def generate_trees(self, num_trees=100):
         """!
         @brief Generate trees' (trunks and leavs) positions.
-
         @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
         @details list trees appends each single_tree list.
         @details the trees are set to be built on SAND and GRASS only.
-
         @param num_trees Number of clouds (default is 100).
-
         @return trees list of lists representing trees blocks (single tree=list_trunks , list_leaves) coordinates.
+        @see issue 80
         """
         suggested_places_for_trees = []
         trees = list()
@@ -605,32 +598,27 @@ class Model(object):
                 single_tree=[]
                 base_x, base_y, base_z = random.choice(suggested_places_for_trees)
                 suggested_places_for_trees.remove((base_x, base_y, base_z))
-                single_tree = self.generate_single_tree(base_x,base_y+1,base_z, trunk_hight=5)
+                single_tree = self.generate_single_tree(base_x,base_y+1,base_z, trunk_height=5)
                 trees.append(single_tree)
             else:
                 break
         return trees
-
-    #issue80
-    def generate_single_tree(self, x, y, z, trunk_hight=4):
+    
+    def generate_single_tree(self, x, y, z, trunk_height=4):
         """!
-        @breif represent trees' components.
-
+        @brief represent trees' components.
         @details Tree components are Trunks and Leaves.
         @details The function returns 2 lists: list of trunks, list of leaves.
-
         @param x,y,z The coordinates of the position of the tree to be built at.
-        @param trunk_hight Number of trunks (stems) in the tree (default=4).
-        @param
-
-
-        @return [single_stem,single_leaves], coordinates for the tree components.
+        @param trunk_height Number of trunks (stems) in the tree (default=4).
+        @returns [single_stem,single_leaves], coordinates for the tree components.
+        @see issue 80
         """
         single_stem = []
         single_leaves = []
 
         # Create trunks
-        for stem in range(trunk_hight):
+        for stem in range(trunk_height):
             self.add_block((x, y + stem, z), TREE_TRUNK, immediate=False)
             single_stem.append((x, y + stem, z))
 
@@ -638,6 +626,6 @@ class Model(object):
         for dx in range(-2,3):
             for dy in range(0,3):
                 for dz in range(-2,3):
-                    self.add_block((x + dx, y + trunk_hight + dy, z + dz), TREE_LEAVES, immediate=False)
-                    single_leaves.append((x + dx, y + trunk_hight + dy, z + dz))
+                    self.add_block((x + dx, y + trunk_height + dy, z + dz), TREE_LEAVES, immediate=False)
+                    single_leaves.append((x + dx, y + trunk_height + dy, z + dz))
         return [single_stem,single_leaves]

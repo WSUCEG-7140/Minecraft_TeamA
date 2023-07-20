@@ -1,10 +1,17 @@
+from typing import Callable
 from tempus_fugit_minecraft.utilities import WORLD_SIZE
 from tempus_fugit_minecraft.block import BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
 import math
 
 
 class Player:
-    def __init__(self):
+    def __init__(self) -> None:
+        """!
+        @brief Initializes an instance of the Player class
+        @param None
+        @return None
+        @see issue 67
+        """
         # About the height of a block.
         self.MAX_JUMP_HEIGHT = 1.0
         self.MAX_FALL_SPEED = 50
@@ -51,7 +58,12 @@ class Player:
         self.block = self.inventory[0]
 
     def get_sight_vector(self) -> tuple:
-        """Returns the current line of sight vector indicating the direction the player is looking."""
+        """!
+        @brief Returns the current line of sight vector indicating the direction the player is looking.
+        @param None
+        @return A tuple representing the 3D vector the player is looking toward
+        @see issue 67
+        """
         x, y = self.rotation
         # y ranges from -90 to 90, or -pi/2 to pi/2, so m ranges from 0 to 1 and
         # is 1 when looking ahead parallel to the ground and 0 when looking
@@ -65,12 +77,11 @@ class Player:
         return dx, dy, dz
 
     def get_motion_vector(self) -> tuple:
-        """Returns the current motion vector indicating the velocity of the player.
-
-        Returns
-        -------
-        vector : tuple of len 3
-            Tuple containing the velocity in x, y, and z respectively.
+        """!
+        @brief Returns the current motion vector indicating the velocity of the player.
+        @param None
+        @return A tuple containing the velocity in x, y, and z respectively.
+        @see issue 67
         """
         if any(self.strafe):
             x, y = self.rotation
@@ -102,47 +113,127 @@ class Player:
         return dx, dy, dz
 
     def speed_up(self) -> None:
-        """Increases the walking speed of the player."""
+        """!
+        @brief Increases the walking speed of the player.
+        @param None
+        @return None
+        @see issue 67
+        @see issue 38
+        """
         if self.walking_speed <= 15:
             self.walking_speed += self.WALK_SPEED_INCREMENT
 
-    def speed_down(self):
+    def speed_down(self) -> None:
+        """!
+        @brief Decreases the walking speed of the player
+        @param None
+        @return None
+        @see issue 67
+        @see issue 38
+        """
         if self.walking_speed > 5:
             self.walking_speed -= self.WALK_SPEED_INCREMENT
 
-    def move_forward(self):
+    def move_forward(self) -> None:
+        """!
+        @brief Move one space to the front
+        @param None
+        @return None
+        @see issue 67
+        """
         self.strafe[0] -= 1
-
-    def move_backward(self):
+    
+    def move_backward(self) -> None:
+        """!
+        @brief Move one space to the rear
+        @param None
+        @return None
+        @see issue 67
+        """
         self.strafe[0] += 1
 
-    def move_left(self):
+    def move_left(self) -> None:
+        """!
+        @brief Move one space to the left
+        @param None
+        @return None
+        @see issue 67
+        """
         self.strafe[1] -= 1
 
-    def move_right(self):
+    def move_right(self) -> None:
+        """!
+        @brief Move one space to the right
+        @param None
+        @return None
+        @see issue 67
+        """
         self.strafe[1] += 1
 
-    def jump(self):
+    def jump(self) -> None:
+        """!
+        @brief If the user is grounded, jump
+        @param None
+        @return None
+        @see issue 67
+        """
         if self.dy == 0:
             self.dy = self.JUMP_SPEED
 
-    def select_active_item(self, index):
+    def select_active_item(self, index: int) -> None:
+        """!
+        @brief Selects the active item in the player's inventory
+        @param index The current index of the inventory
+        @return None
+        @see issue 67
+        """
         selected_index = index % len(self.inventory)
         self.block = self.inventory[selected_index]
 
-    def stop_forward(self):
+    def stop_forward(self) -> None:
+        """!
+        @brief Stops movement to the front
+        @param None
+        @return None
+        @see issue 67
+        """
         self.strafe[0] += 1
-
-    def stop_backward(self):
+    
+    def stop_backward(self) -> None:
+        """!
+        @brief Stops movement to the rear
+        @param None
+        @return None
+        @see issue 67
+        """
         self.strafe[0] -= 1
 
-    def stop_left(self):
+    def stop_left(self) -> None:
+        """!
+        @brief Stops movement to the left
+        @param None
+        @return None
+        @see issue 67
+        """
         self.strafe[1] += 1
 
-    def stop_right(self):
+    def stop_right(self) -> None:
+        """!
+        @brief Stops movement to the right
+        @param None
+        @return None
+        @see issue 67
+        """
         self.strafe[1] -= 1
 
-    def adjust_sight(self, dx, dy):
+    def adjust_sight(self, dx: int, dy: int) -> None:
+        """!
+        @brief Adjusts the sight vector of the player
+        @param dx The relative x axis movement of the mouse
+        @param dy The relative y axis movement of the mouse
+        @return None
+        @see issue 67
+        """
         x, y = self.rotation
         m = 0.15
         x = dx * m + x
@@ -150,21 +241,34 @@ class Player:
         y = max(-90, min(90, y))
         self.rotation = (x, y)
 
-    def current_speed(self):
+    def current_speed(self) -> float:
+        """!
+        @brief Gets the current walking or flying speed
+        @param None
+        @return None
+        @see issue 67
+        """
         return self.FLYING_SPEED if self.flying else self.walking_speed
-
-    def toggle_flight(self):
+    
+    def toggle_flight(self) -> None:
+        """! 
+        @brief Toggles flight in game
+        @params None
+        @return None
+        @see issue 67
+        """
         self.flying = not self.flying
 
-    #issue 68, 82
-    def update(self, dt: float, collision_checker) -> None:
-        """Private implementation of the `update()` method. This is where most
+    def update(self, dt: float, collision_checker: Callable[[tuple, int], tuple]) -> None:
+        """!
+        @brief Private implementation of the `update()` method. This is where most
         of the motion logic lives, along with gravity and collision detection.
-
-        Parameters
-        ----------
-        dt : float
-            The change in time (seconds) since the last call.
+        @param dt : float The change in time (seconds) since the last call.
+        @param collision_checker Takes in a new player position and the player height,
+        then returns a new position adjusted for any potential block collisions
+        @return None
+        @see issue 68
+        @see issue 82
         """
         # walking
         speed = self.current_speed()
@@ -193,16 +297,14 @@ class Player:
         # collisions
         x, y, z = self.position
         self.position = collision_checker((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
-
-    #issue25
-    def check_player_within_world_boundaries(self):
+    
+    def check_player_within_world_boundaries(self) -> None:
         """!
-        @brief Ensure that the player character remains within the
-            confines of the defined game world.
-
+        @brief Ensure that the player character remains within the 
+        confines of the defined game world.
         @param None
-
         @return None
+        @see issue 25
         """
         x,y,z = self.position
 
@@ -210,17 +312,13 @@ class Player:
         z = self.keep_player_within_coordinates(z , boundary_size=WORLD_SIZE)
         self.position = (x,y,z)
 
-    #issue25
-    def keep_player_within_coordinates(self, dimension, boundary_size):
+    def keep_player_within_coordinates(self, dimension: int, boundary_size: int) -> int:
         """!
-        @brief check whether the dimention (usually x or z) is
-            within the boundary size.
-
-        @param dimension represent a player dimention (x,y, or z)
-        @param boundary_size represent the size of the world
-            withing the walls.
-
+        @brief check whether the dimension (usually x or z) is within the boundary size.
+        @param dimension represent a player dimension (x,y, or z)
+        @param boundary_size represent the size of the world withing the walls.
         @return The dimension adjusted to be within the boundary size.
+        @see issue 25
         """
         if dimension > boundary_size:
             return boundary_size
