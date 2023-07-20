@@ -490,9 +490,9 @@ class Model(object):
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         if increase:
-            self.player.speed_up()
+            self.player.Increase_speed()
         else:
-            self.player.speed_down()
+            self.player.Decrease_speed()
 
     def handle_jump(self) -> None:
         """!
