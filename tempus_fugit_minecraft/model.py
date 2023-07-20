@@ -359,8 +359,7 @@ class Model(object):
             self._dequeue()
 
     #issue20; #issue28; #issue44; #issue84
-    @staticmethod
-    def generate_clouds_positions(world_size: int, num_of_clouds=int((WORLD_SIZE * 3.75))) -> list:
+    def generate_clouds_positions(self, world_size: int, num_of_clouds=int((WORLD_SIZE * 3.75))) -> list:
         """!
         @brief Generate sky cloud positions.
         @param world_size Half the world's size.
@@ -377,12 +376,10 @@ class Model(object):
             cloud_center_y = random.choice([18,20,22,24,26])
             s = random.randint(3, 6)                                    # 2 * s is the side length of the cloud
 
-            single_cloud = []
-            for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
-                for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
-                    if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
-                        continue
-                    single_cloud.append((x, cloud_center_y, z))
+            single_cloud = self.generate_single_cloud(cloud_center_x,
+                                                      cloud_center_y,
+                                                      cloud_center_z,
+                                                      s)
             clouds.append(single_cloud)
         return clouds
 
@@ -611,6 +608,7 @@ class Model(object):
     def generate_single_tree(self, x, y, z, trunk_height=4):
         """!
         @brief represent trees' components.
+        
         @details Tree components are Trunks and Leaves.
         @details The function returns 2 lists: list of trunks, list of leaves.
         @param x,y,z The coordinates of the position of the tree to be built at.
@@ -633,3 +631,26 @@ class Model(object):
                     self.add_block((x + dx, y + trunk_height + dy, z + dz), TREE_LEAVES, immediate=False)
                     single_leaves.append((x + dx, y + trunk_height + dy, z + dz))
         return [single_stem,single_leaves]
+    
+    #issue84
+    def generate_single_cloud(self, cloud_center_x,cloud_center_y,cloud_center_z,s) -> list:
+        """!
+        @brief generate a single cloud (list of cloud blocks).
+        
+        @param cloud_center_x Represents the x-coordinate center of the cloud.
+        @param cloud_center_x Represents the y-coordinate (height) center of the cloud.
+        @param cloud_center_x Represents the z-coordinate center of the cloud.
+        @param s represent number of blocks drawn from center - goes in each direction around the center.
+        
+        @return single_cloud A list that contains list of blocks' coordinates that represent a cloud.
+        """
+        
+        single_cloud = []
+        for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
+                for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
+                    if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
+                        continue
+                    single_cloud.append((x, cloud_center_y, z))
+        
+        return single_cloud
+    
