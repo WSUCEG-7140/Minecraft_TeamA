@@ -6,6 +6,7 @@ class Block:
         self.is_collidable = is_collidable
         self.can_build_on = can_build_on
 
+
 def tex_coord(x: int, y: int, n=4) -> tuple:
     """Return the bounding vertices of the texture square.
 
@@ -48,6 +49,7 @@ def tex_coords(top: tuple, bottom: tuple, side: tuple) -> list:
     result.extend(bottom)
     result.extend(side * 4)
     return result
+
 
 GRASS = Block("GRASS", ((1, 0), (0, 1), (0, 0)))
 SAND = Block("SAND", ((1, 1), (1, 1), (1, 1)))

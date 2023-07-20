@@ -1,13 +1,13 @@
 from pyglet.gl import *
-import pyglet.graphics as graphics
 import cmath as math
 from ctypes import *
-from tempus_fugit_minecraft.utilities import *
 
-'''!Function to convert a vector of numbers to a vector of c_float.
-    @Param A vector with numbers'''
+
 def to_cfloat(vector):
+    '''!Function to convert a vector of numbers to a vector of c_float.
+        @Param A vector with numbers'''
     return (c_float * len(vector))(*vector)
+
 
 class Shaders():
     def __init__(self, model):
@@ -26,15 +26,15 @@ class Shaders():
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
         return 1
-    
+
     def enable_lighting(self):
         glEnable(GL_LIGHTING)
-    
+
     def disable_lighting(self):
         glDisable(GL_LIGHTING)
-        
+
     @staticmethod
     def normal_3D_vector_calc(vector):
         threeDVector = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
         return threeDVector
-    
+

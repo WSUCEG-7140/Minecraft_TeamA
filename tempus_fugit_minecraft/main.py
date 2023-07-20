@@ -4,6 +4,7 @@ from pyglet import app
 from pyglet.gl import *
 from tempus_fugit_minecraft.window import Window, WINDOW_WIDTH, WINDOW_HEIGHT
 
+
 def setup_fog() -> None:
     """Configure the OpenGL fog properties."""
     # Enable fog. Fog "blends a fog color with each rasterized pixel fragment's

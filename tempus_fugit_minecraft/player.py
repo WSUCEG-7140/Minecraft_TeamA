@@ -1,11 +1,12 @@
-from tempus_fugit_minecraft.utilities import WHOLE_WORLD_SIZE, WORLD_SIZE
+from tempus_fugit_minecraft.utilities import WORLD_SIZE
 from tempus_fugit_minecraft.block import BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
 import math
+
 
 class Player:
     def __init__(self):
         # About the height of a block.
-        self.MAX_JUMP_HEIGHT = 1.0 
+        self.MAX_JUMP_HEIGHT = 1.0
         self.MAX_FALL_SPEED = 50
         self.FLYING_SPEED = 15
         self.GRAVITY = 20.0
@@ -23,6 +24,8 @@ class Player:
         self.walking_speed = self.WALK_SPEED_INCREMENT
         # When flying gravity has no effect and speed is increased.
         self.flying = False
+        self.ascend = False
+        self.descend = False
         # Strafing is moving lateral to the direction you are facing,
         # e.g. moving to the left or right while continuing to face forward.
         #
@@ -60,7 +63,7 @@ class Player:
         dx = math.cos(math.radians(x - 90)) * m
         dz = math.sin(math.radians(x - 90)) * m
         return dx, dy, dz
-    
+
     def get_motion_vector(self) -> tuple:
         """Returns the current motion vector indicating the velocity of the player.
 
@@ -97,7 +100,7 @@ class Player:
             dx = 0.0
             dz = 0.0
         return dx, dy, dz
-    
+
     def speed_up(self) -> None:
         """Increases the walking speed of the player."""
         if self.walking_speed <= 15:
@@ -109,7 +112,7 @@ class Player:
 
     def move_forward(self):
         self.strafe[0] -= 1
-    
+
     def move_backward(self):
         self.strafe[0] += 1
 
@@ -129,7 +132,7 @@ class Player:
 
     def stop_forward(self):
         self.strafe[0] += 1
-    
+
     def stop_backward(self):
         self.strafe[0] -= 1
 
@@ -149,11 +152,11 @@ class Player:
 
     def current_speed(self):
         return self.FLYING_SPEED if self.flying else self.walking_speed
-    
+
     def toggle_flight(self):
         self.flying = not self.flying
 
-    #issue 68
+    #issue 68, 82
     def update(self, dt: float, collision_checker) -> None:
         """Private implementation of the `update()` method. This is where most
         of the motion logic lives, along with gravity and collision detection.
@@ -169,6 +172,7 @@ class Player:
         dx, dy, dz = self.get_motion_vector()
         # New position in space, before accounting for gravity.
         dx, dy, dz = dx * d, dy * d, dz * d
+
         # gravity
         if not self.flying:
             # Update your vertical speed: if you are falling, speed up until you
@@ -177,41 +181,50 @@ class Player:
             self.dy -= dt * self.GRAVITY
             self.dy = max(self.dy, -self.MAX_FALL_SPEED)
             dy += self.dy * dt
+        else:
+            # The direction will either add or subtract one, or both, if the
+            # ascending or descending properties are true, the result of
+            # this will be -1, 0 or 1 which will change the direction of dy.
+            direction = 0
+            direction += 1 if self.ascend else 0
+            direction -= 1 if self.descend else 0
+            dy += direction * dt * self.FLYING_SPEED
+
         # collisions
         x, y, z = self.position
         self.position = collision_checker((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
-    
+
     #issue25
     def check_player_within_world_boundaries(self):
         """!
-        @brief Ensure that the player character remains within the 
+        @brief Ensure that the player character remains within the
             confines of the defined game world.
-        
+
         @param None
-        
+
         @return None
         """
         x,y,z = self.position
 
         x = self.keep_player_within_coordinates(x , boundary_size=WORLD_SIZE)
-        z = self.keep_player_within_coordinates(z , boundary_size=WORLD_SIZE)        
+        z = self.keep_player_within_coordinates(z , boundary_size=WORLD_SIZE)
         self.position = (x,y,z)
 
     #issue25
-    def keep_player_within_coordinates(self, dimention, boundary_size):
+    def keep_player_within_coordinates(self, dimension, boundary_size):
         """!
-        @brief check whether the dimention (usually x or z) is 
+        @brief check whether the dimention (usually x or z) is
             within the boundary size.
-        
-        @param dimention represent a player dimention (x,y, or z)
-        @param boundary_size represent the size of the world 
+
+        @param dimension represent a player dimention (x,y, or z)
+        @param boundary_size represent the size of the world
             withing the walls.
-        
+
         @return The dimension adjusted to be within the boundary size.
         """
-        if dimention > boundary_size:
+        if dimension > boundary_size:
             return boundary_size
-        elif dimention < -boundary_size:
+        elif dimension < -boundary_size:
             return -boundary_size
         else:
-            return dimention
+            return dimension

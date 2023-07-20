@@ -93,7 +93,11 @@ See the [wiki](https://github.com/fogleman/Minecraft/wiki) for this project to i
 - Space: jump
 - Tab: toggle flying mode
 - Q: Increase speed
-- E: Descrease speed
+- E: Decrease speed
+
+While flying:
+- Left Shift: move down
+- Space: move up
 
 ### Building
 

@@ -1,20 +1,18 @@
 import math
 import sys
 
-from pyglet import window, text, graphics
 from pyglet.gl import *
 from pyglet.window import key, mouse
 from tempus_fugit_minecraft.utilities import *
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.shaders import Shaders
-from tempus_fugit_minecraft.player import Player
-
 
 WINDOW_WIDTH = 800
 WINDOW_HEIGHT = 600
 
 if sys.version_info[0] >= 3:
     xrange = range
+
 
 class Window(pyglet.window.Window):
     """A window class for a game environment.
@@ -41,7 +39,7 @@ class Window(pyglet.window.Window):
         # Instance of the model that handles the world.
         self.model = Model()
 
-        #Instance of the shaders in the world
+        # Instance of the shaders in the world
         '''Placed in Windows for being a OpenGL related Class. Solves issue #7'''
         self.shaders = Shaders(self.model)
         self.shaders.turn_on_environment_light()
@@ -115,26 +113,26 @@ class Window(pyglet.window.Window):
             The change in time since the last call.
         """
         if not self.paused:
-            self.model.update(dt)    
+            self.model.update(dt)
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """!
-        @brief Called when a mouse button is pressed. See pyglet docs for 
+        @brief Called when a mouse button is pressed. See pyglet docs for
             button and modifier mappings.
-        
-        @details If right-click on non-clouds texture, add_block() is called. 
-            Otherwise, the method is not called.
-        
-        @details If left-click on non-brick texture, remove_block() is called. 
+
+        @details If right-click on non-clouds texture, add_block() is called.
             Otherwise, the method is not called.
 
-        @param x, y The coordinates of the mouse click. Always center of 
+        @details If left-click on non-brick texture, remove_block() is called.
+            Otherwise, the method is not called.
+
+        @param x, y The coordinates of the mouse click. Always center of
             the screen if the mouse is captured.
-        @param button Number representing mouse button that was clicked. 
+        @param button Number representing mouse button that was clicked.
             1 = left button, 4 = right button.
-        @param modifiers Number representing any modifying keys that 
+        @param modifiers Number representing any modifying keys that
             were pressed when the mouse button was clicked.
-        
+
         @return None
         """
         if self.paused:
@@ -219,16 +217,23 @@ class Window(pyglet.window.Window):
             self.model.handle_change_active_block(index)
             return
 
-        if symbol in [ key.Q, key.E ]:
+        if symbol in [key.Q, key.E]:
             increase_speed = symbol == key.Q
             self.model.handle_speed_change(increase_speed)
             return
-        
+
         if symbol == key.TAB:
             self.model.handle_flight_toggle()
-        
+
+        elif symbol == key.LSHIFT:
+            if self.model.player.flying:
+                self.model.handle_flight(0, 1)
+
         if symbol == key.SPACE:
-            self.model.handle_jump()
+            if self.model.player.flying:
+                self.model.handle_flight(1, 0)
+            else:
+                self.model.handle_jump()
 
         forward = 1 if symbol == key.W else 0
         backward = 1 if symbol == key.S else 0
@@ -248,6 +253,7 @@ class Window(pyglet.window.Window):
         self.set_exclusive_mouse(True)
         self.shaders.enable_lighting()
 
+    #issue 82
     def on_key_release(self, symbol: int, modifiers: int) -> None:
         """Called when the player releases a key. See pyglet docs for key
         mappings.
@@ -265,6 +271,12 @@ class Window(pyglet.window.Window):
         right = -1 if symbol == key.D else 0
 
         self.model.handle_movement(forward, backward, left, right)
+
+        if self.model.player.flying:
+            if symbol == key.SPACE:
+                self.model.handle_flight(-1, 0)
+            elif symbol == key.LSHIFT:
+                self.model.handle_flight(0, -1)
 
     def on_resize(self, width: int, height: int) -> None:
         """Called when the window is resized to a new `width` and `height`.
@@ -384,7 +396,7 @@ class Window(pyglet.window.Window):
         self.quit_label.draw()
 
     def draw_focused_block(self) -> None:
-        """ Draw black edges around the block that is currently under the crosshairs."""
+        """Draw black edges around the block that is currently under the crosshairs."""
         vector = self.model.player.get_sight_vector()
         block, _ = self.model.hit_test(self.model.player.position, vector)
         if block:

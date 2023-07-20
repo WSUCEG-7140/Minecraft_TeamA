@@ -6,8 +6,8 @@ from collections import deque
 from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
-from tempus_fugit_minecraft.block import Block,BRICK, STONE, GRASS, SAND, LIGHT_CLOUD,DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
-from tempus_fugit_minecraft.utilities import cube_vertices, WORLD_SIZE, FACES, TICKS_PER_SEC
+from tempus_fugit_minecraft.block import Block, BRICK, STONE, GRASS, SAND, LIGHT_CLOUD, DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
+from tempus_fugit_minecraft.utilities import cube_vertices, FACES, TICKS_PER_SEC
 from tempus_fugit_minecraft.player import Player
 from typing import Callable
 from tempus_fugit_minecraft import sound_list
@@ -55,7 +55,7 @@ class Model(object):
 
     def __init__(self) -> None:
         TEXTURE_PATH = 'assets/texture.png'
-        
+
         # A Batch is a collection of vertex lists for batched rendering.
         self.batch = Batch()
 
@@ -124,7 +124,6 @@ class Model(object):
         clouds = self.generate_clouds_positions(n, num_of_clouds=150)
         self.place_cloud_blocks(clouds)
         self.generate_trees(num_trees=50)
-
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
         """Line of sight search from current position. If a block is
@@ -250,7 +249,7 @@ class Model(object):
         """
         if position not in self.world:
             return
-        
+
         block = self.world[position]
         self.shown[position] = block
         if immediate:
@@ -398,10 +397,10 @@ class Model(object):
     def generate_clouds_positions(world_size: int, num_of_clouds=250) -> list:
         """!
         @brief Generate sky cloud positions.
-        
+
         @param world_size Half the world's size.
         @param num_of_clouds Number of clouds (default is 250).
-        
+
         @return clouds list of lists representing cloud blocks coordinates.
         """
         game_margin = world_size
@@ -430,24 +429,24 @@ class Model(object):
 
         @return None, but draw a cloud block at its corresponding coordinates.
         """
-        cloud_types = [LIGHT_CLOUD,DARK_CLOUD]
+        cloud_types = [LIGHT_CLOUD, DARK_CLOUD]
         for cloud in clouds:
             cloud_color = random.choice(cloud_types)
-            for x,y,z in cloud:
-                self.add_block((x,y,z) , cloud_color , immediate=False)
+            for x, y, z in cloud:
+                self.add_block((x, y, z), cloud_color, immediate=False)
 
     #issue57
     def can_pass_through_block(self, player_current_coords):
         """!
         @brief Check if the block at the given palyer_current_coords is a cloud block.
-        
+
         @param player_current_coords Current (x,y,z) corrdinates for the player.
-        
+
         @return True if the coordinates correspond to a cloud block, False otherwise.
         """
         block = self.world.get(player_current_coords)
         return block is None or not block.is_collidable
-    
+
     #issue 68
     def handle_secondary_action(self):
         vector = self.player.get_sight_vector()
@@ -478,9 +477,9 @@ class Model(object):
             if self.sector is None:
                 self.process_entire_queue()
             self.sector = sector
-        
+
         self.player.check_player_within_world_boundaries()
-        
+
         moves = 8
         dt = min(dt, 0.2)
         for _ in xrange(moves):
@@ -531,7 +530,7 @@ class Model(object):
                         self.player.dy = 0
                     break
         return tuple(p)
-    
+
     #issue 68
     def handle_adjust_vision(self, dx, dy):
         self.player.adjust_sight(dx, dy)
@@ -550,7 +549,7 @@ class Model(object):
     #issue 68
     def handle_jump(self):
         self.player.jump()
-    
+
     #issue 68
     def handle_flight_toggle(self):
         self.player.toggle_flight()
@@ -563,24 +562,30 @@ class Model(object):
                     move()
                 else:
                     stop()
-        
+
         handle_movement_for_direction(forward, self.player.move_forward, self.player.stop_forward)
         handle_movement_for_direction(backward, self.player.move_backward, self.player.stop_backward)
         handle_movement_for_direction(left, self.player.move_left, self.player.stop_left)
         handle_movement_for_direction(right, self.player.move_right, self.player.stop_right)
 
+    #issue 82
+    def handle_flight(self, ascending, descending):
+        if ascending != 0:
+            self.player.ascend = True if ascending == 1 else False
+        elif descending != 0:
+            self.player.descend = True if descending == 1 else False
 
     #issue80
     def generate_trees(self, num_trees=100):
         """!
         @brief Generate trees' (trunks and leavs) positions.
-        
+
         @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
         @details list trees appends each single_tree list.
         @details the trees are set to be built on SAND and GRASS only.
-        
+
         @param num_trees Number of clouds (default is 100).
-        
+
         @return trees list of lists representing trees blocks (single tree=list_trunks , list_leaves) coordinates.
         """
         suggested_places_for_trees = []
@@ -588,14 +593,13 @@ class Model(object):
         grass_list = [coords for coords , block in self.world.items() if block == GRASS and coords[1]<=0]
         min_grass_level = min(ground[1] for ground in grass_list)
         ground_grass_list = [ground for ground in grass_list if ground[1] == min_grass_level]
-        
-        
+
         for coords in ground_grass_list:
             x,y,z = coords
             does_grass_have_block_above_it = all([(x, y+j, z) not in self.world for j in range(1,10)])
             if does_grass_have_block_above_it:
                 suggested_places_for_trees.append(coords)
-        
+
         for _ in range(num_trees):
             if suggested_places_for_trees:
                 single_tree=[]
@@ -606,30 +610,30 @@ class Model(object):
             else:
                 break
         return trees
-    
+
     #issue80
     def generate_single_tree(self, x, y, z, trunk_hight=4):
         """!
         @breif represent trees' components.
-        
+
         @details Tree components are Trunks and Leaves.
         @details The function returns 2 lists: list of trunks, list of leaves.
 
         @param x,y,z The coordinates of the position of the tree to be built at.
         @param trunk_hight Number of trunks (stems) in the tree (default=4).
-        @param 
-        
-        
+        @param
+
+
         @return [single_stem,single_leaves], coordinates for the tree components.
         """
         single_stem = []
         single_leaves = []
-        
+
         # Create trunks
         for stem in range(trunk_hight):
             self.add_block((x, y + stem, z), TREE_TRUNK, immediate=False)
             single_stem.append((x, y + stem, z))
-        
+
         # Create leaves
         for dx in range(-2,3):
             for dy in range(0,3):
@@ -637,4 +641,3 @@ class Model(object):
                     self.add_block((x + dx, y + trunk_hight + dy, z + dz), TREE_LEAVES, immediate=False)
                     single_leaves.append((x + dx, y + trunk_hight + dy, z + dz))
         return [single_stem,single_leaves]
-    
