@@ -490,15 +490,24 @@ class Model(object):
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         if increase:
-            self.player.Increase_speed()
+            self.player.increase_speed()
         else:
-            self.player.Decrease_speed()
+            self.player.decrease_speed()
 
     def handle_jump(self) -> None:
         """!
         @brief Handles the jump event
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
+     #Issue 39
+    def handle_jump_change(self, increase):
+        if increase:
+            self.player.increase_jump()
+        else:
+            self.player.decrease_jump()
+
+    #Issue 68
+    def handle_jump(self):
         self.player.jump()
 
     def handle_flight_toggle(self) -> None:
