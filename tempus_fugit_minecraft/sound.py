@@ -8,6 +8,7 @@ class Sound:
             @param string The file path for the sound file'''
         self.sound_file_path = file_path
         self.player = media.Player()
+        self.sound_file = None
         if file_path != None:
             self.sound_file = media.load(file_path)
 
@@ -26,3 +27,9 @@ class Sound:
             self.player.play()
         return 1
 
+
+class BackgroundSound(Sound):
+    '''Subclass of sound for sounds that will be repeated'''
+    def __init__(self, file_path=None):
+        super().__init__(file_path)
+        self.player.loop = True
