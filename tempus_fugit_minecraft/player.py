@@ -110,7 +110,7 @@ class Player:
         return dx, dy, dz
  
     """Issue #71 """
-    def Increase_speed(self) -> None:
+    def increase_speed(self) -> None:
         """!
         @brief Increases the walking speed of the player.
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
@@ -120,7 +120,7 @@ class Player:
             self.walking_speed += self.WALK_SPEED_INCREMENT
  
     """Issue #71 """   
-    def Decrease_speed(self) -> None:
+    def decrease_speed(self) -> None:
         """!
         @brief Decreases the walking speed of the player
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
@@ -130,7 +130,7 @@ class Player:
             self.walking_speed -= self.WALK_SPEED_INCREMENT
    
     #Issue #39
-    def Increase_jump(self) -> None:       
+    def increase_jump(self) -> None:       
             if self.jump_speed <= 15: 
                 self.jump_speed += 5
     #Issue #39
