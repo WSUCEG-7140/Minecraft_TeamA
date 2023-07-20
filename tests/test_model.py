@@ -5,7 +5,7 @@ from unittest.mock import patch
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.player import Player
 from tempus_fugit_minecraft.block import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
-from tempus_fugit_minecraft.utilities import WHOLE_WORLD_SIZE
+from tempus_fugit_minecraft.utilities import WORLD_SIZE
 import random
 
 
@@ -26,7 +26,7 @@ class TestModel:
 
     #issue20
     def test_light_clouds_created_dynamically(self, model):
-        clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE, 100)
+        clouds = model.generate_clouds_positions(WORLD_SIZE, 100)
         for cloud in clouds:
             for x, c, z in cloud:
                 model.add_block((x, c, z), LIGHT_CLOUD, immediate=True)
@@ -35,8 +35,8 @@ class TestModel:
     #issue20; #issue28
     def test_cloud_positions(self):
         model = Model()
-        model.generate_clouds_positions(WHOLE_WORLD_SIZE, 100)
-        clouds_limitations = WHOLE_WORLD_SIZE + 2*6  # + 2*6 to ensure that the test will cover cloud block outside the world
+        model.generate_clouds_positions(WORLD_SIZE, 100)
+        clouds_limitations = WORLD_SIZE + 2*6  # + 2*6 to ensure that the test will cover cloud block outside the world
         cloud_blocks = [coord for coord, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         for block in cloud_blocks:
             assert -clouds_limitations <= block[0] <= clouds_limitations
@@ -45,7 +45,7 @@ class TestModel:
     #issue20; #issue28
     def test_cloud_height(self):
         model = Model()
-        model.generate_clouds_positions(WHOLE_WORLD_SIZE, 100)
+        model.generate_clouds_positions(WORLD_SIZE, 100)
         clouds = [coord for coord, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         for cloud_coordinates in clouds:
             assert cloud_coordinates[1] >= 18
@@ -59,7 +59,7 @@ class TestModel:
 
     #issue28
     def test_dark_clouds_created_dynamically(self, model):
-        clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE, 200)
+        clouds = model.generate_clouds_positions(WORLD_SIZE, 200)
         for cloud in clouds:
             for x, c, z in cloud:
                 model.add_block((x, c, z), DARK_CLOUD, immediate=True)
@@ -68,7 +68,7 @@ class TestModel:
     #issue20; #issue28
     def test_draw_clouds_in_the_sky_and_count_blocks(self):
         model = Model()
-        clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE, 150)
+        clouds = model.generate_clouds_positions(WORLD_SIZE, 150)
         model.place_cloud_blocks(clouds)
         cloud_blocks = [coordinates for coordinates, block in model.world.items() if block in [LIGHT_CLOUD, DARK_CLOUD]]
         assert len(cloud_blocks) >= sum(len(cloud) for cloud in clouds)
@@ -76,7 +76,7 @@ class TestModel:
     #issue44; #issue84
     def test_build_clouds_in_different_layers_in_the_sky(self):
         model = Model()
-        clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE)
+        clouds = model.generate_clouds_positions(WORLD_SIZE)
         model.place_cloud_blocks(clouds)
         for cloud in clouds:
             first_block_in_the_cloud = cloud[0]
@@ -86,7 +86,7 @@ class TestModel:
     #issue44; #issue84
     def test_build_dark_and_light_clouds_in_different_layers_in_the_sky(self):
         model = Model()
-        clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE)
+        clouds = model.generate_clouds_positions(WORLD_SIZE)
         model.place_cloud_blocks(clouds)
         for cloud in clouds:
             for coords in cloud:
@@ -131,7 +131,7 @@ class TestModel:
 
     #issue42
     def test_click_mouse_to_add_block_to_clouds(self, model):
-        model.clouds = model.generate_clouds_positions(WHOLE_WORLD_SIZE, 150)
+        model.clouds = model.generate_clouds_positions(WORLD_SIZE, 150)
         x, y, z = model.clouds[0][0]
 
         with patch.object(model, 'add_block', return_value=None) as add_block_method:
@@ -295,8 +295,8 @@ class TestModel:
     #issue80
     def test_generate_trees_default_values(self, model):
         model.world.clear()
-        for x in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
-            for z in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
+        for x in range(-WORLD_SIZE,WORLD_SIZE):
+            for z in range(-WORLD_SIZE,WORLD_SIZE):
                 model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
 
 
@@ -310,8 +310,8 @@ class TestModel:
 
     # #issue80
     def test_generate_trees_custom_values(self, model):
-        for x in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
-            for z in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
+        for x in range(-WORLD_SIZE,WORLD_SIZE):
+            for z in range(-WORLD_SIZE,WORLD_SIZE):
                 model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
 
         trees = model.generate_trees(250)
@@ -323,8 +323,8 @@ class TestModel:
 
     # #issue80
     def test_check_tree_built_on_grass_or_sand(self, model):
-        for x in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
-            for z in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
+        for x in range(-WORLD_SIZE,WORLD_SIZE):
+            for z in range(-WORLD_SIZE,WORLD_SIZE):
                 model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
 
         trees = model.generate_trees()
@@ -336,8 +336,8 @@ class TestModel:
 
     # #issue80
     def test_tree_built_on_top_of_ground_level_grass_or_sand(self, model):
-        for x in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
-            for z in range(-WHOLE_WORLD_SIZE,WHOLE_WORLD_SIZE):
+        for x in range(-WORLD_SIZE,WORLD_SIZE):
+            for z in range(-WORLD_SIZE,WORLD_SIZE):
                 model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
 
         trees = model.generate_trees(50)

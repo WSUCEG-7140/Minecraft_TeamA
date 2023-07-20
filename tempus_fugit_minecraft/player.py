@@ -1,5 +1,5 @@
 from typing import Callable
-from tempus_fugit_minecraft.utilities import WHOLE_WORLD_SIZE
+from tempus_fugit_minecraft.utilities import WORLD_SIZE
 from tempus_fugit_minecraft.block import BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
 import math
 
@@ -309,12 +309,12 @@ class Player:
         """
         x,y,z = self.position
 
-        x = self.keep_player_within_coordinates(x , boundary_size=WHOLE_WORLD_SIZE)
-        z = self.keep_player_within_coordinates(z , boundary_size=WHOLE_WORLD_SIZE)        
+        x = self.keep_player_within_coordinates(x , boundary_size=WORLD_SIZE)
+        z = self.keep_player_within_coordinates(z , boundary_size=WORLD_SIZE)        
         self.position = (x,y,z)
 
     #issue25; #issue84
-    def keep_player_within_coordinates(self, dimension, boundary_size=WHOLE_WORLD_SIZE):
+    def keep_player_within_coordinates(self, dimension, boundary_size=WORLD_SIZE):
         """!
         @brief check whether the dimension (usually x or z) is within the boundary size.
         @param dimension represent a player dimension (x,y, or z)

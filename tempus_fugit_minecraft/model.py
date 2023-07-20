@@ -7,7 +7,7 @@ from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
 from tempus_fugit_minecraft.block import Block,BRICK, STONE, GRASS, SAND, LIGHT_CLOUD,DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
-from tempus_fugit_minecraft.utilities import cube_vertices, WHOLE_WORLD_SIZE, FACES, TICKS_PER_SEC
+from tempus_fugit_minecraft.utilities import cube_vertices, WORLD_SIZE, FACES, TICKS_PER_SEC
 from tempus_fugit_minecraft.player import Player
 from typing import Callable
 from tempus_fugit_minecraft import sound_list
@@ -91,18 +91,18 @@ class Model(object):
         
         s = 1  # step size
         y = 0  # initial y height
-        for x in xrange(-WHOLE_WORLD_SIZE, WHOLE_WORLD_SIZE + 1, s):
-            for z in xrange(-WHOLE_WORLD_SIZE, WHOLE_WORLD_SIZE + 1, s):
+        for x in xrange(-WORLD_SIZE, WORLD_SIZE + 1, s):
+            for z in xrange(-WORLD_SIZE, WORLD_SIZE + 1, s):
                 # create a layer stone and grass everywhere.
                 self.add_block((x, y - 2, z), GRASS, immediate=immediate)
                 self.add_block((x, y - 3, z), STONE, immediate=immediate)
-                if x in (-WHOLE_WORLD_SIZE, WHOLE_WORLD_SIZE) or z in (-WHOLE_WORLD_SIZE, WHOLE_WORLD_SIZE):
+                if x in (-WORLD_SIZE, WORLD_SIZE) or z in (-WORLD_SIZE, WORLD_SIZE):
                     # create outer walls.
                     for dy in xrange(-2, 3):
                         self.add_block((x, y + dy, z), STONE, immediate=immediate)
 
         # generate the hills randomly
-        o = WHOLE_WORLD_SIZE - 10
+        o = WORLD_SIZE - 10
         for _ in xrange(260):
             a = random.randint(-o, o)  # x position of the hill
             b = random.randint(-o, o)  # z position of the hill
@@ -121,7 +121,7 @@ class Model(object):
                         self.add_block((x, y, z), t, immediate=immediate)
                 s -= d  # decrement side length so hills taper off
 
-        clouds = self.generate_clouds_positions(world_size=WHOLE_WORLD_SIZE)
+        clouds = self.generate_clouds_positions(world_size=WORLD_SIZE)
         self.place_cloud_blocks(clouds)
         self.generate_trees()
 

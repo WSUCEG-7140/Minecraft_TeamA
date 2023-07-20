@@ -1,7 +1,7 @@
 import pytest
 import math
 from tempus_fugit_minecraft.player import Player
-from tempus_fugit_minecraft.utilities import WHOLE_WORLD_SIZE
+from tempus_fugit_minecraft.utilities import WORLD_SIZE
 from tempus_fugit_minecraft.block import BRICK, GRASS, SAND
 
 
@@ -368,42 +368,42 @@ class TestPlayer:
 
     # #issue25; #issue84
     def test_check_player_at_boundaries(self, player: Player):
-        player.position = (WHOLE_WORLD_SIZE , 20, WHOLE_WORLD_SIZE)
+        player.position = (WORLD_SIZE , 20, WORLD_SIZE)
         player.check_player_within_world_boundaries()
-        assert player.position == (WHOLE_WORLD_SIZE , 20, WHOLE_WORLD_SIZE)
+        assert player.position == (WORLD_SIZE , 20, WORLD_SIZE)
 
     #issue25; #issue84
     def test_player_out_of_world_boundaries(self, player: Player):
-        player.position = ((-WHOLE_WORLD_SIZE-100) , 25 , (WHOLE_WORLD_SIZE+120))
+        player.position = ((-WORLD_SIZE-100) , 25 , (WORLD_SIZE+120))
         player.check_player_within_world_boundaries()
-        assert player.position == (-WHOLE_WORLD_SIZE , 25 , WHOLE_WORLD_SIZE)
+        assert player.position == (-WORLD_SIZE , 25 , WORLD_SIZE)
 
-        player.position = ((WHOLE_WORLD_SIZE+25) , 25 , (-WHOLE_WORLD_SIZE-5))
+        player.position = ((WORLD_SIZE+25) , 25 , (-WORLD_SIZE-5))
         player.check_player_within_world_boundaries()
-        assert player.position == (WHOLE_WORLD_SIZE , 25 , -WHOLE_WORLD_SIZE)
+        assert player.position == (WORLD_SIZE , 25 , -WORLD_SIZE)
 
     #issue25; #issue84
     def test_player_out_of_world_in_x_coordinate(self, player: Player):
-        player.position = ((WHOLE_WORLD_SIZE+2) , 125 , 15)
+        player.position = ((WORLD_SIZE+2) , 125 , 15)
         player.check_player_within_world_boundaries()
-        assert player.position == (WHOLE_WORLD_SIZE , 125 , 15)
+        assert player.position == (WORLD_SIZE , 125 , 15)
 
-        player.position = ((-WHOLE_WORLD_SIZE-200) , 125 , 15)
+        player.position = ((-WORLD_SIZE-200) , 125 , 15)
         player.check_player_within_world_boundaries()
-        assert player.position == (-WHOLE_WORLD_SIZE , 125 , 15)
+        assert player.position == (-WORLD_SIZE , 125 , 15)
 
     #issue25; #issue84
     def test_player_out_of_world_in_z_coordinate(self, player: Player):
-        player.position = (79 , 125 , (WHOLE_WORLD_SIZE+2))
+        player.position = (79 , 125 , (WORLD_SIZE+2))
         player.check_player_within_world_boundaries()
-        assert player.position == (79 , 125 , WHOLE_WORLD_SIZE)
+        assert player.position == (79 , 125 , WORLD_SIZE)
 
-        player.position = (79 , 125 , (-WHOLE_WORLD_SIZE-120))
+        player.position = (79 , 125 , (-WORLD_SIZE-120))
         player.check_player_within_world_boundaries()
-        assert player.position == (79 , 125 , -WHOLE_WORLD_SIZE)
+        assert player.position == (79 , 125 , -WORLD_SIZE)
 
     #issue25; #issue84
     def test_player_in_y_coordinate(self, player: Player):
-        player.position = (79 , (WHOLE_WORLD_SIZE+1000) , 0)
+        player.position = (79 , (WORLD_SIZE+1000) , 0)
         player.check_player_within_world_boundaries()
-        assert player.position == (79 , (WHOLE_WORLD_SIZE+1000) , 0)
+        assert player.position == (79 , (WORLD_SIZE+1000) , 0)
