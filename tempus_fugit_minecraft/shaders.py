@@ -38,18 +38,6 @@ class Shaders():
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
-
-        '''lightpos_x = to_cfloat([-1, 0, 0, 0.])
-        glLightfv(GL_LIGHT1, GL_POSITION, lightpos_x)
-        glLightfv(GL_LIGHT1, GL_AMBIENT, self.ambient)
-        glLightfv(GL_LIGHT1, GL_DIFFUSE, self.diffuse)
-        glLightfv(GL_LIGHT1, GL_SPECULAR, self.specular)
-
-        lightpos_z = to_cfloat([0, 0, -1, 0.])
-        glLightfv(GL_LIGHT2, GL_POSITION, lightpos_z)
-        glLightfv(GL_LIGHT2, GL_AMBIENT, self.ambient)
-        glLightfv(GL_LIGHT2, GL_DIFFUSE, self.diffuse)
-        glLightfv(GL_LIGHT2, GL_SPECULAR, self.specular)'''
         return 1
     
     def enable_lighting(self):
