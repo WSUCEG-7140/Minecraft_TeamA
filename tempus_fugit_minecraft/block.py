@@ -8,7 +8,7 @@ class Block:
         @param is_collidable A flag indicating if this type of block will prevent the player from moving through it. Default is True.
         @param can_build_on A flag indicating if the player can place blocks off of this block type. Default is True.
         @return An instance of the Block class
-        @see issue 47
+        @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
         """
         self.name = name
         self.texture_coordinates = tex_coords(*texture_coordinates)
@@ -23,8 +23,8 @@ def tex_coord(x: int, y: int, n=4) -> tuple:
     @param x The x coordinate of the texture square
     @param y The y coordinate of the texture square
     @param n The size of the texture atlas. Default is 4.
-    @returns A tuple with the vertices of the texture square.
-    @see issue 47
+    @return A tuple with the vertices of the texture square.
+    @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
     """
     m = 1.0 / n
     dx = x * m
@@ -38,8 +38,8 @@ def tex_coords(top: tuple, bottom: tuple, side: tuple) -> list:
     @param top A tuple of coordinates on which the top texture of the block is.
     @param bottom A tuple of coordinates on which the bottom texture of the block is.
     @param side A tuple of coordinates on which the side texture of the block is.
-    @returns The texture coordinates for the top, bottom, and sites of a block in a list.
-    @see issue 47
+    @return The texture coordinates for the top, bottom, and sites of a block in a list.
+    @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
     """
     top = tex_coord(*top)
     bottom = tex_coord(*bottom)
