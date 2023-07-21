@@ -352,11 +352,11 @@ class TestModel:
         for block_coords in cloud:
             assert block_coords[1] == y
     
+    #test84
     def test_generate_cloud_returns_list_of_tuples(self, model):
         x,y,z = 4,5,3
         cloud = model.generate_single_cloud(cloud_center_x=x,cloud_center_y=y,cloud_center_z=z,s=3)
         assert isinstance(cloud,list)
         for block in cloud:
             assert isinstance(block, tuple) and len(block) == 3
-
-            
+    

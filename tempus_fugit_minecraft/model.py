@@ -264,7 +264,7 @@ class Model(object):
         """!
         @brief Private implementation of the `hide_block()` method.
         @param position : tuple of len 3 The (x, y, z) position of the block to hide.
-        @returns None
+        @return None
         """
         self._shown.pop(position).delete()
 
@@ -272,7 +272,7 @@ class Model(object):
         """!
         @brief Ensure all blocks in the given sector that should be shown are drawn to the canvas.
         @param sector : tuple of len 3 The (x, y, z) coordinates of the sector to show.
-        @returns None
+        @return None
         """
         for position in self.sectors.get(sector, []):
             if position not in self.shown and self.exposed(position):
@@ -282,7 +282,7 @@ class Model(object):
         """!
         @brief Ensure all blocks in the given sector that should be hidden are removed from the canvas.
         @param sector : tuple of len 3 The (x, y, z) coordinates of the sector to hide.
-        @returns None
+        @return None
         """
         for position in self.sectors.get(sector, []):
             if position in self.shown:
@@ -295,7 +295,7 @@ class Model(object):
         world rendering.
         @param before : tuple of len 3 The (x, y, z) sector we are moving from.
         @param after : tuple of len 3 The (x, y, z) sector we are moving to.
-        @returns None
+        @return None
         """
         before_set = set()
         after_set = set()
@@ -323,7 +323,7 @@ class Model(object):
         @brief Add `func` to the internal queue.
         @param func : Callable The function to add to the queue.
         @param args The arguments to pass to the function.
-        @returns None
+        @return None
         """
         self.queue.append((func, args))
 
@@ -331,7 +331,7 @@ class Model(object):
         """!
         @brief Pop the top function from the internal queue and call it.
         @param None
-        @returns None
+        @return None
         """
         func, args = self.queue.popleft()
         func(*args)
@@ -343,7 +343,7 @@ class Model(object):
         _show_block() and _hide_block() so this method should be called if
         add_block() or remove_block() was called with immediate=False.
         @param None
-        @returns None
+        @return None
          """
         start = time.perf_counter()
         while self.queue and time.perf_counter() - start < 1.0 / TICKS_PER_SEC:
@@ -353,7 +353,7 @@ class Model(object):
         """!
         @brief Process the entire queue with no breaks.
         @param None
-        @returns None
+        @return None
         """
         while self.queue:
             self._dequeue()
@@ -363,10 +363,12 @@ class Model(object):
         """!
         @brief Generate sky cloud positions.
         @param world_size Half the world's size.
-        @param num_of_clouds Number of clouds (default is 250).
-        @returns clouds list of lists representing cloud blocks coordinates.
-        @see issue 20
-        @see issue 28
+        @param num_of_clouds Number of clouds (default is "WORLD_SIZE * 3.75").
+        @return clouds list of lists representing cloud blocks coordinates.
+        @see [Issue#20](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/20)
+        @see [Issue#28](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/28)
+        @see [Issue#44](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/44)
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         game_margin = world_size
         clouds = list()
@@ -383,13 +385,14 @@ class Model(object):
             clouds.append(single_cloud)
         return clouds
 
-    #issue20; #issue28
+    
     def place_cloud_blocks(self, clouds) -> None:
         """!
         @brief represent cloud block's coordinates in the sky.
         @param clouds list of lists; each inner list contains cloud block's coordinates.
-        @returns None, but draw a clouds block at its corresponding coordinates.
-        @see issue 20 and 28
+        @return None, but draw a clouds block at its corresponding coordinates.
+        @see [Issue#20](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/20)
+        @see [Issue#28](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/28)
         """
         cloud_types = [LIGHT_CLOUD, DARK_CLOUD]
         for cloud in clouds:
@@ -401,8 +404,8 @@ class Model(object):
         """!
         @brief Check if the block at the given palyer_current_coords is a cloud block.
         @param player_current_coords Current (x,y,z) corrdinates for the player.
-        @returns True if the coordinates correspond to a cloud block, False otherwise.
-        @see issue 57
+        @return True if the coordinates correspond to a cloud block, False otherwise.
+        @see [Issue#57](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/57)
         """
         block = self.world.get(player_current_coords)
         return block is None or not block.is_collidable
@@ -411,8 +414,8 @@ class Model(object):
         """!
         @brief Handles the player's secondary action
         @param None
-        @returns None
-        @see issue 68
+        @return None
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.player.get_sight_vector()
         position, previous = self.hit_test(self.player.position, vector)
@@ -423,8 +426,8 @@ class Model(object):
         """!
         @brief Handles the player's primary action
         @param None
-        @returns None
-        @see issue 68
+        @return None
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.player.get_sight_vector()
         position, _ = self.hit_test(self.player.position, vector)
@@ -435,8 +438,8 @@ class Model(object):
         """!
         @brief This method is scheduled to be called repeatedly by the pyglet clock.
         @param dt : float The change in time (seconds) since the last call.
-        @returns None
-        @see issue 68
+        @return None
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.process_queue()
         sector = sectorize(self.player.position)
@@ -459,8 +462,8 @@ class Model(object):
         is colliding with any blocks in the world.
         @param position : tuple of len 3 The (x, y, z) position to check for collisions at.
         @param height : int or float The height of the player.
-        @returns position : tuple of len 3 The new position of the player taking into account collisions.
-        @see issue 68
+        @return position : tuple of len 3 The new position of the player taking into account collisions.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         # How much overlap with a dimension of a surrounding block you need to
         # have to count as a collision. If 0, touching terrain at all counts as
@@ -496,8 +499,8 @@ class Model(object):
         @brief Handles the change of the vision field when the player moves their head
         @param dx The x change in the field of vision (relative to the previous motion)
         @param dy The y change in the field of vision (relative to the previous motion)
-        @returns None
-        @see issue 68
+        @return None
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.player.adjust_sight(dx, dy)
 
@@ -505,8 +508,8 @@ class Model(object):
         """!
         @brief Switches between active blocks held by the player
         @param index The value of the current active block in the player's inventory
-        @returns None
-        @see issue 68
+        @return None
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.player.select_active_item(index)
 
@@ -514,8 +517,8 @@ class Model(object):
         """!
         @brief Handles the speed change event
         @param increase A boolean indicator of whether we increase or decrease the speed
-        @returns None
-        @see issue 68
+        @return None
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         if increase:
             self.player.speed_up()
@@ -526,8 +529,8 @@ class Model(object):
         """!
         @brief Handles the jump event
         @param None
-        @returns None
-        @see issue 68
+        @return None
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.player.jump()
     
@@ -535,8 +538,8 @@ class Model(object):
         """!
         @brief Handles the flight toggle event
         @param None
-        @returns None
-        @see issue 68
+        @return None
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.player.toggle_flight()
 
@@ -547,8 +550,8 @@ class Model(object):
         @param backward Tri-state value of 1, 0, -1 indicating if we are going to be moving backward staying constant, or stopping
         @param left Tri-state value of 1, 0, -1 indicating if we are going to be moving left, staying constant, or stopping
         @param right Tri-state value of 1, 0, -1 indicating if we are going to be moving right, staying constant, or stopping
-        @returns None
-        @see issue 68
+        @return None
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         def handle_movement_for_direction(direction, move, stop):
             # private helper for consistently applying direction
@@ -580,7 +583,8 @@ class Model(object):
         @details the trees are set to be built on SAND and GRASS only.
         @param num_trees Number of clouds (default is 100).
         @return trees list of lists representing trees blocks (single tree=list_trunks , list_leaves) coordinates.
-        @see issue 80
+        @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/80)
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         suggested_places_for_trees = []
         trees = list()
@@ -613,8 +617,8 @@ class Model(object):
         @details The function returns 2 lists: list of trunks, list of leaves.
         @param x,y,z The coordinates of the position of the tree to be built at.
         @param trunk_height Number of trunks (stems) in the tree (default=4).
-        @returns [single_stem,single_leaves], coordinates for the tree components.
-        @see issue 80
+        @return [single_stem,single_leaves], coordinates for the tree components.
+        @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         single_stem = []
         single_leaves = []
@@ -632,7 +636,6 @@ class Model(object):
                     single_leaves.append((x + dx, y + trunk_height + dy, z + dz))
         return [single_stem,single_leaves]
     
-    #issue84
     def generate_single_cloud(self, cloud_center_x,cloud_center_y,cloud_center_z,s) -> list:
         """!
         @brief generate a single cloud (list of cloud blocks).
@@ -643,6 +646,7 @@ class Model(object):
         @param s represent number of blocks drawn from center - goes in each direction around the center.
         
         @return single_cloud A list that contains list of blocks' coordinates that represent a cloud.
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         
         single_cloud = []
