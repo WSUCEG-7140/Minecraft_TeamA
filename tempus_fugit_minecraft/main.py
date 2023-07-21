@@ -9,7 +9,7 @@ def setup_fog() -> None:
     """!
     @brief Configure the OpenGL fog properties.
     @param None
-    @returns None
+    @return None
     """
     # Enable fog. Fog "blends a fog color with each rasterized pixel fragment's
     # post-texturing color."
@@ -30,7 +30,7 @@ def setup() -> None:
     """!
     @brief Basic OpenGL configuration.
     @param None
-    @returns None
+    @return None
     """
     # Set the color of "clear", i.e. the sky, in rgba.
     glClearColor(0.5, 0.69, 1.0, 1)
@@ -50,7 +50,7 @@ def main() -> None:
     """!
     @brief The main method
     @param None
-    @returns None
+    @return None
     """
     window = Window(
         width=WINDOW_WIDTH,
