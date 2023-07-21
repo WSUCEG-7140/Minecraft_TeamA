@@ -13,6 +13,7 @@ def to_cfloat(vector):
 '''!Function to compare two c_float vectors
   @param vector1  The first c_float vector
   @param vector2  The second c_float vector
+  @return 
 '''
 def c_float_vector_is_equal(vector1, vector2):
     count = 0
@@ -53,7 +54,8 @@ class Shaders():
     '''!Solves Issue #12. Adjusts the three types of light's color and intensity
         @Param red  a number that specifies the intensity of red light
         @Param green    a number that specifies the intensity of green light
-        @Param blue     a number that specifies the intensity of blue light 
+        @Param blue     a number that specifies the intensity of blue light
+        @return None
     '''
     def adjust_ambient_light(self, red, green, blue):
         self.ambient = to_cfloat([red, green, blue])
@@ -67,25 +69,39 @@ class Shaders():
         self.specular = to_cfloat([red, green, blue])
         return self.specular
     
-    '''!Solves issue #12 Takes the classes current ambient, diffuse and light values and changes them'''
     def _update_light(self):
+        """!
+        @brief Takes the classes current ambient, diffuse and light values and changes them
+        @param None
+        @return None
+        @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        """
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
     
-    '''!Solves issue#12 Decreases the intensity of light
-        @Param decrease_value   a number that specifies how much to decrease light intensity
-    '''
     def decrease_light_intensity(self, decrease_value):
+        """!
+        @brief Decreases the intensity of light.
+        @Param decrease_value A number that specifies how much to decrease light intensity
+        @return None
+        @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        """
         self.ambient = to_cfloat([color - decrease_value for color in self.ambient])
         self.diffuse = to_cfloat([color - decrease_value for color in self.diffuse])
         self.specular = to_cfloat([color - decrease_value for color in self.specular])
         self._update_light()
     
-    '''!Solves issue#12 Increases the intensity of light
+    '''!Solves issue#12 
         @Param increase_value   a number that specifies how much to decrease light intensity
     '''    
     def increase_light_intensity(self, increase_value):
+        """!
+        @brief Increases the intensity of light.
+        @Param increase_value A number that specifies how much to increase light intensity
+        @return None
+        @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        """
         self.ambient = to_cfloat([color + increase_value for color in self.ambient])
         self.diffuse =  to_cfloat([color + increase_value for color in self.diffuse])
         self.specular =  to_cfloat([color + increase_value for color in self.specular])
