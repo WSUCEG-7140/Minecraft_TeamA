@@ -6,7 +6,7 @@ def cube_vertices(x: float, y: float, z: float, n: float) -> list:
     @param z The z coordinate of the center of the cube
     @param n The size of the cube
     @return A list of verticies of the cube passed in
-    @see issue 47
+    @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
     """
     return [
         x-n,y+n,z-n, x-n,y+n,z+n, x+n,y+n,z+n, x+n,y+n,z-n,  # top
