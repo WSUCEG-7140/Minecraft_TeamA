@@ -1,6 +1,7 @@
 from tempus_fugit_minecraft import sound
 """!
-@brief File to contain all sound variables
+@brief 
+File to contain all sound variables
 """
 
 #Sound Effects
