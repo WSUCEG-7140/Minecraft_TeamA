@@ -10,7 +10,7 @@ class Player:
         @brief Initializes an instance of the Player class
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         # About the height of a block.
         self.MAX_JUMP_HEIGHT = 1.0
@@ -62,7 +62,7 @@ class Player:
         @brief Returns the current line of sight vector indicating the direction the player is looking.
         @param None
         @return A tuple representing the 3D vector the player is looking toward
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         x, y = self.rotation
         # y ranges from -90 to 90, or -pi/2 to pi/2, so m ranges from 0 to 1 and
@@ -81,7 +81,7 @@ class Player:
         @brief Returns the current motion vector indicating the velocity of the player.
         @param None
         @return A tuple containing the velocity in x, y, and z respectively.
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         if any(self.strafe):
             x, y = self.rotation
@@ -117,8 +117,8 @@ class Player:
         @brief Increases the walking speed of the player.
         @param None
         @return None
-        @see issue 67
-        @see issue 38
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
+        @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
         """
         if self.walking_speed <= 15:
             self.walking_speed += self.WALK_SPEED_INCREMENT
@@ -128,8 +128,8 @@ class Player:
         @brief Decreases the walking speed of the player
         @param None
         @return None
-        @see issue 67
-        @see issue 38
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
+        @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
         """
         if self.walking_speed > 5:
             self.walking_speed -= self.WALK_SPEED_INCREMENT
@@ -139,7 +139,7 @@ class Player:
         @brief Move one space to the front
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[0] -= 1
     
@@ -148,7 +148,7 @@ class Player:
         @brief Move one space to the rear
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[0] += 1
 
@@ -157,7 +157,7 @@ class Player:
         @brief Move one space to the left
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[1] -= 1
 
@@ -166,7 +166,7 @@ class Player:
         @brief Move one space to the right
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[1] += 1
 
@@ -175,7 +175,7 @@ class Player:
         @brief If the user is grounded, jump
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         if self.dy == 0:
             self.dy = self.JUMP_SPEED
@@ -185,7 +185,7 @@ class Player:
         @brief Selects the active item in the player's inventory
         @param index The current index of the inventory
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         selected_index = index % len(self.inventory)
         self.block = self.inventory[selected_index]
@@ -195,7 +195,7 @@ class Player:
         @brief Stops movement to the front
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[0] += 1
     
@@ -204,7 +204,7 @@ class Player:
         @brief Stops movement to the rear
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[0] -= 1
 
@@ -213,7 +213,7 @@ class Player:
         @brief Stops movement to the left
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[1] += 1
 
@@ -222,7 +222,7 @@ class Player:
         @brief Stops movement to the right
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[1] -= 1
 
@@ -232,7 +232,7 @@ class Player:
         @param dx The relative x axis movement of the mouse
         @param dy The relative y axis movement of the mouse
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         x, y = self.rotation
         m = 0.15
@@ -246,7 +246,7 @@ class Player:
         @brief Gets the current walking or flying speed
         @param None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         return self.FLYING_SPEED if self.flying else self.walking_speed
     
@@ -255,7 +255,7 @@ class Player:
         @brief Toggles flight in game
         @params None
         @return None
-        @see issue 67
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.flying = not self.flying
 
@@ -267,8 +267,8 @@ class Player:
         @param collision_checker Takes in a new player position and the player height,
         then returns a new position adjusted for any potential block collisions
         @return None
-        @see issue 68
-        @see issue 82
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
+        @see [Issue#82](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/82)
         """
         # walking
         speed = self.current_speed()
@@ -298,14 +298,14 @@ class Player:
         x, y, z = self.position
         self.position = collision_checker((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
     
-    #issue25; #issue84
     def check_player_within_world_boundaries(self) -> None:
         """!
         @brief Ensure that the player character remains within the 
         confines of the defined game world.
         @param None
         @return None
-        @see issue 25
+        @see [Issue#25](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/25)
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         x,y,z = self.position
 
@@ -313,14 +313,14 @@ class Player:
         z = self.keep_player_within_coordinates(z , boundary_size=WORLD_SIZE)        
         self.position = (x,y,z)
 
-    #issue25; #issue84
     def keep_player_within_coordinates(self, dimension, boundary_size=WORLD_SIZE):
         """!
         @brief check whether the dimension (usually x or z) is within the boundary size.
         @param dimension represent a player dimension (x,y, or z)
         @param boundary_size represent the size of the world withing the walls.
         @return The dimension adjusted to be within the boundary size.
-        @see issue 25
+        @see [Issue#25](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/25)
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         if dimension > boundary_size:
             return boundary_size
