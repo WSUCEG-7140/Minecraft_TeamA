@@ -60,8 +60,7 @@ class Window(pyglet.window.Window):
         self.game_clock = pyglet.clock.get_default()
         self.game_time = 0
         self.schedule_time = 5
-        self.game_clock.schedule_interval(self.update_day_night, \
-            self.schedule_time)
+        self.game_clock.schedule_interval(self.update_day_night, self.schedule_time)
 
         self.paused = False
 
@@ -135,8 +134,7 @@ class Window(pyglet.window.Window):
         if not self.paused:
             self.model.update(dt)
 
-    def on_mouse_press(self, x: int, y: int, button: int, \
-                        modifiers: int) -> None:
+    def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """!
         @brief 
         Called when a mouse button is pressed. See pyglet docs for 
@@ -164,8 +162,7 @@ class Window(pyglet.window.Window):
             elif self.within_label(x, y, self.quit_label):
                 self.close()
         elif self.exclusive:
-            if (button == mouse.RIGHT) or ((button == mouse.LEFT) and \
-                (modifiers & key.MOD_CTRL)):
+            if (button == mouse.RIGHT) or ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
                 self.model.handle_secondary_action()
                 
             elif button == pyglet.window.mouse.LEFT:
@@ -184,8 +181,7 @@ class Window(pyglet.window.Window):
         
         @return bool
         """
-        x_within_range = label.x - label.width // 2 <= x <= label.x + \
-            label.width // 2
+        x_within_range = label.x - label.width // 2 <= x <= label.x + label.width // 2
         y_within_range = label.y <= y <= label.y + label.height // 2
         return x_within_range and y_within_range
 
@@ -203,8 +199,7 @@ class Window(pyglet.window.Window):
         @return None
         """
         if self.paused:
-            if self.within_label(x, y, self.resume_label) or \
-                self.within_label(x, y, self.quit_label):
+            if self.within_label(x, y, self.resume_label) or self.within_label(x, y, self.quit_label):
                 self.set_mouse_cursor(self.get_system_mouse_cursor(self.CURSOR_HAND))
             
             else:
@@ -243,8 +238,7 @@ class Window(pyglet.window.Window):
             return
 
         if symbol in self.num_keys:
-            index = (symbol - self.num_keys[0]) % \
-                len(self.model.player.inventory)
+            index = (symbol - self.num_keys[0]) % len(self.model.player.inventory)
             self.model.handle_change_active_block(index)
             return
 
@@ -452,8 +446,7 @@ class Window(pyglet.window.Window):
         pyglet.graphics.draw(
             4,
             GL_QUADS,
-            ('v2i', (0, 0, WINDOW_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, \
-                WINDOW_HEIGHT)),
+            ('v2i', (0, 0, WINDOW_WIDTH, 0, WINDOW_WIDTH, WINDOW_HEIGHT, 0, WINDOW_HEIGHT)),
             ('c4f', background_color * 4)
         )
 

@@ -1,7 +1,5 @@
 class Block:
-    def __init__(self, name: str, texture_coordinates: tuple, \
-            is_breakable : bool = True, is_collidable : bool = True, \
-            can_build_on : bool = True) -> None:
+    def __init__(self, name: str, texture_coordinates: tuple, is_breakable : bool = True, is_collidable : bool = True, can_build_on : bool = True) -> None:
         """! 
         @brief 
         Initializes an instance of a Block class
@@ -73,13 +71,8 @@ def tex_coords(top: tuple, bottom: tuple, side: tuple) -> list:
 GRASS = Block("GRASS", ((1, 0), (0, 1), (0, 0)))
 SAND = Block("SAND", ((1, 1), (1, 1), (1, 1)))
 BRICK = Block("BRICK", ((2, 0), (2, 0), (2, 0)))
-STONE = Block("STONE", ((2, 1), (2, 1), (2, 1)), is_breakable=False, \
-        can_build_on=True)
-LIGHT_CLOUD = Block("LIGHT_CLOUD", ((3, 0), (3, 0), (3, 0)), \
-        is_breakable=False, is_collidable=False, can_build_on=False)
-DARK_CLOUD = Block("DARK_CLOUD", ((3, 1), (3, 1), (3, 1)), \
-        is_breakable=False, is_collidable=False, can_build_on=False)
-TREE_TRUNK = Block("TREE_TRUNK", ((1, 2), (1, 2), (2, 2)), \
-        is_breakable=True, is_collidable=True, can_build_on=True)
-TREE_LEAVES = Block("TREE_LEAVES", ((0, 2), (0, 2), (0, 2)), \
-        is_breakable=True, is_collidable=False, can_build_on=True)
+STONE = Block("STONE", ((2, 1), (2, 1), (2, 1)), is_breakable=False, can_build_on=True)
+LIGHT_CLOUD = Block("LIGHT_CLOUD", ((3, 0), (3, 0), (3, 0)), is_breakable=False, is_collidable=False, can_build_on=False)
+DARK_CLOUD = Block("DARK_CLOUD", ((3, 1), (3, 1), (3, 1)), is_breakable=False, is_collidable=False, can_build_on=False)
+TREE_TRUNK = Block("TREE_TRUNK", ((1, 2), (1, 2), (2, 2)), is_breakable=True, is_collidable=True, can_build_on=True)
+TREE_LEAVES = Block("TREE_LEAVES", ((0, 2), (0, 2), (0, 2)), is_breakable=True, is_collidable=False, can_build_on=True)

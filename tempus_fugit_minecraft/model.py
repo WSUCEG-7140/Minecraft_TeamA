@@ -103,12 +103,10 @@ class Model(object):
                 # create a layer stone and grass everywhere.
                 self.add_block((x, y - 2, z), GRASS, immediate=immediate)
                 self.add_block((x, y - 3, z), STONE, immediate=immediate)
-                if x in (-WORLD_SIZE, WORLD_SIZE) or z in (-WORLD_SIZE, \
-                    WORLD_SIZE):
+                if x in (-WORLD_SIZE, WORLD_SIZE) or z in (-WORLD_SIZE,WORLD_SIZE):
                     # create outer walls.
                     for dy in xrange(-2, 3):
-                        self.add_block((x, y + dy, z), STONE, \
-                            immediate=immediate)
+                        self.add_block((x, y + dy, z), STONE, immediate=immediate)
 
         # generate the hills randomly
         o = WORLD_SIZE - 10
@@ -404,8 +402,7 @@ class Model(object):
             self._dequeue()
 
     #issue20; #issue28; #issue44; #issue84
-    def generate_clouds_positions(self, world_size: int, \
-        num_of_clouds=int((WORLD_SIZE * 3.75))) -> list:
+    def generate_clouds_positions(self, world_size: int, num_of_clouds=int((WORLD_SIZE * 3.75))) -> list:
         """!
         @brief 
         Generate sky cloud positions.
@@ -549,8 +546,7 @@ class Model(object):
                     player_currnet_coords = list(np)
                     player_currnet_coords[1] -= dy
                     player_currnet_coords[i] += face[i]
-                    if self.can_pass_through_block(player_current_coords=\
-                        tuple(player_currnet_coords)):
+                    if self.can_pass_through_block(player_current_coords= tuple(player_currnet_coords)):
                         continue
                     p[i] -= (d - pad) * face[i]
                     if face == (0, -1, 0) or face == (0, 1, 0):
@@ -642,14 +638,10 @@ class Model(object):
                 else:
                     stop()
 
-        handle_movement_for_direction(forward, self.player.move_forward, \
-            self.player.stop_forward)
-        handle_movement_for_direction(backward, self.player.move_backward, \
-            self.player.stop_backward)
-        handle_movement_for_direction(left, self.player.move_left, \
-            self.player.stop_left)
-        handle_movement_for_direction(right, self.player.move_right, \
-            self.player.stop_right)
+        handle_movement_for_direction(forward, self.player.move_forward, self.player.stop_forward)
+        handle_movement_for_direction(backward, self.player.move_backward, self.player.stop_backward)
+        handle_movement_for_direction(left, self.player.move_left, self.player.stop_left)
+        handle_movement_for_direction(right, self.player.move_right, self.player.stop_right)
 
     #issue 82
     def handle_flight(self, ascending, descending):
@@ -677,27 +669,22 @@ class Model(object):
         """
         suggested_places_for_trees = []
         trees = list()
-        grass_list = [coords for coords , block in self.world.items() \
-            if block == GRASS and coords[1]<=0]
+        grass_list = [coords for coords , block in self.world.items() if block == GRASS and coords[1]<=0]
         min_grass_level = min(ground[1] for ground in grass_list)
-        ground_grass_list = [ground for ground in grass_list if \
-            ground[1] == min_grass_level]
+        ground_grass_list = [ground for ground in grass_list if ground[1] == min_grass_level]
 
         for coords in ground_grass_list:
             x,y,z = coords
-            does_not_grass_have_block_above_it = all([(x, y+j, z) not in \
-                self.world for j in range(1,10)])
+            does_not_grass_have_block_above_it = all([(x, y+j, z) not in self.world for j in range(1,10)])
             if does_not_grass_have_block_above_it:
                 suggested_places_for_trees.append(coords)
 
         for _ in range(num_trees):
             if suggested_places_for_trees:
                 single_tree=[]
-                base_x, base_y, base_z = \
-                    random.choice(suggested_places_for_trees)
+                base_x, base_y, base_z = random.choice(suggested_places_for_trees)
                 suggested_places_for_trees.remove((base_x, base_y, base_z))
-                single_tree = self.generate_single_tree(base_x,base_y+1,base_z,\
-                    trunk_height=5)
+                single_tree = self.generate_single_tree(base_x,base_y+1,base_z, trunk_height=5)
                 trees.append(single_tree)
             else:
                 break
@@ -731,13 +718,11 @@ class Model(object):
         for dx in range(-2,3):
             for dy in range(0,3):
                 for dz in range(-2,3):
-                    self.add_block((x + dx, y + trunk_height + dy, z + dz), \
-                        TREE_LEAVES, immediate=False)
+                    self.add_block((x + dx, y + trunk_height + dy, z + dz), TREE_LEAVES, immediate=False)
                     single_leaves.append((x + dx, y + trunk_height + dy, z + dz))
         return [single_stem,single_leaves]
     
-    def generate_single_cloud(self, cloud_center_x,cloud_center_y,\
-                                cloud_center_z,s) -> list:
+    def generate_single_cloud(self, cloud_center_x,cloud_center_y, cloud_center_z,s) -> list:
         """!
         @brief 
         generate a single cloud (list of cloud blocks).
@@ -759,8 +744,7 @@ class Model(object):
         single_cloud = []
         for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
                 for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
-                    if (x - cloud_center_x) ** 2 + \
-                        (z - cloud_center_z) ** 2 > (s + 1) ** 2:
+                    if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
                         continue
                     single_cloud.append((x, cloud_center_y, z))
         
