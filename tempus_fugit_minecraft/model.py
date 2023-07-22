@@ -500,7 +500,7 @@ class Model(object):
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
      #Issue 39
-    def handle_jump_change(self, increase):
+    def handle_jump_change(self, increase) -> None:
         if increase:
             self.player.increase_jump()
         else:
