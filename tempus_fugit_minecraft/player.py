@@ -298,6 +298,7 @@ class Player:
         x, y, z = self.position
         self.position = collision_checker((x + dx, y + dy, z + dz), self.PLAYER_HEIGHT)
     
+    #issue25; #issue84
     def check_player_within_world_boundaries(self) -> None:
         """!
         @brief Ensure that the player character remains within the 
@@ -309,10 +310,11 @@ class Player:
         x,y,z = self.position
 
         x = self.keep_player_within_coordinates(x , boundary_size=WORLD_SIZE)
-        z = self.keep_player_within_coordinates(z , boundary_size=WORLD_SIZE)
+        z = self.keep_player_within_coordinates(z , boundary_size=WORLD_SIZE)        
         self.position = (x,y,z)
 
-    def keep_player_within_coordinates(self, dimension: int, boundary_size: int) -> int:
+    #issue25; #issue84
+    def keep_player_within_coordinates(self, dimension, boundary_size=WORLD_SIZE):
         """!
         @brief check whether the dimension (usually x or z) is within the boundary size.
         @param dimension represent a player dimension (x,y, or z)
