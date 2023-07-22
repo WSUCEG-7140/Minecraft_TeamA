@@ -500,7 +500,12 @@ class Model(object):
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
      #Issue 39
-    def handle_jump_change(self, increase) -> None:
+    def handle_jump_change(self, increase: bool) -> None:
+        """!
+        @brief Handles the jump speed change event
+        @param increase A boolean indicator of whether we increase or decrease the jump speed
+        @returns None
+        """
         if increase:
             self.player.increase_jump()
         else:
