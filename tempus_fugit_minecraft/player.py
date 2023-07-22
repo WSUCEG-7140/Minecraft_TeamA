@@ -20,6 +20,8 @@ class Player:
         self.MAX_FALL_SPEED = 50
         self.FLYING_SPEED = 15
         self.GRAVITY = 20.0
+        self.MAX_JUMP_SPEED = 15
+        self.MIN_JUMP_SPEED = 10
         # To derive the formula for calculating jump speed, first solve
         #    v_t = v_0 + a * t
         # for the time at which you achieve maximum height, where a is the acceleration
@@ -131,11 +133,11 @@ class Player:
    
     #Issue #39
     def increase_jump(self) -> None:       
-            if self.jump_speed <= 15: 
+            if self.jump_speed <= self.MAX_JUMP_SPEED: 
                 self.jump_speed += 5
     #Issue #39
     def decrease_jump(self) -> None:
-        if self.jump_speed >= 10:       
+        if self.jump_speed >= self.MIN_JUMP_SPEED:       
             self.jump_speed -= 5
 
     def move_forward(self) -> None:
