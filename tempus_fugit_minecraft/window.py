@@ -154,16 +154,13 @@ class Window(pyglet.window.Window):
 
     @staticmethod
     def within_label(x: int, y: int, label: pyglet.text.Label) -> bool:
-        """Returns True if the given (x, y) coordinates are within the given
-        label.
+        """!
+        Checks whether the given coordinates are within the given label.
 
-        Parameters
-        ----------
-        x, y : int
-            The coordinates of the mouse click.
-
-        label : pyglet.text.Label
-            The label to check against.
+        @param x: The x-coordinate of the mouse click.
+        @param y: The y-coordinate of the mouse click.
+        @param label: The label to check against.
+        @return: Returns True if the (x, y) coordinates are within the label, False otherwise.
         """
         x_within_range = label.x - label.width // 2 <= x <= label.x + label.width // 2
         y_within_range = label.y <= y <= label.y + label.height // 2
@@ -247,14 +244,20 @@ class Window(pyglet.window.Window):
         right = 1 if symbol == key.D else 0
         self.model.handle_movement(forward, backward, left, right)
 
+    #issue22
     def pause_game(self) -> None:
-        """Pauses the game and bring up the pause menu."""
+        """!
+        Pauses the game and bring up the pause menu.
+        """
         self.paused = True
         self.set_mouse_visible(True)
         self.set_exclusive_mouse(False)
 
+    #issue22
     def resume_game(self) -> None:
-        """Resumes the game by restoring the game window to its original state."""
+        """!
+        Resumes the game by restoring the game window to its original state.
+        """
         self.paused = False
         self.set_exclusive_mouse(True)
         self.shaders.enable_lighting()
@@ -309,15 +312,13 @@ class Window(pyglet.window.Window):
         if self.paused:
             self.center_labels(width, height)
 
+    #issue22
     def center_labels(self, width: int, height: int) -> None:
-        """Center the labels when the window size changes.
+        """!
+        Center the labels when the window size changes.
 
-        Parameters
-        ----------
-        width : int
-            The new width of the window.
-        height : int
-            The new height of the window.
+        @param width: The new width of the window.
+        @param height: The new height of the window.
         """
         self.pause_label.x = self.resume_label.x = self.quit_label.x = width // 2
         self.pause_label.y = height // 2
@@ -367,8 +368,10 @@ class Window(pyglet.window.Window):
         if self.paused:
             self.draw_pause_menu()
 
+    #issue22
     def draw_pause_menu(self) -> None:
-        """Draws the components of the pause menu, including the background, the pause text, and the resume and quit
+        """!
+        Draws the components of the pause menu, including the background, the pause text, and the resume and quit
         buttons.
         """
         glPushMatrix()
@@ -426,10 +429,13 @@ class Window(pyglet.window.Window):
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
 
-    '''!Updates the environments lights. Solves issue#12
-        @param dt   the amount of time that has elapsed since the last update to environment lights
-    '''
-    def update_day_night(self, dt: float) -> None:
+    #issue12
+    def update_day_night(self, dt: float) -> float:
+        """!
+        Updates the environments lights.
+
+        @param dt: the amount of time that has elapsed since the last update to environment lights.
+        """
         self.game_time = self.game_time + 1
         hour = math.fmod(self.game_time, 24)
         increase_decrease_value = .2
