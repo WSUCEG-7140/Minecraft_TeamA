@@ -29,9 +29,9 @@ class Player:
         #    s = s_0 + v_0 * t + (a * t^2) / 2
         self.jump_speed = math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT)
         self.PLAYER_HEIGHT = 2
-       
+        self.WALK_SPEED_INCREMENT = 5
 
-        
+        self.walking_speed = self.WALK_SPEED_INCREMENT
         # When flying gravity has no effect and speed is increased.
         self.flying = False
         self.ascend = False
@@ -134,7 +134,7 @@ class Player:
             if self.jump_speed <= 15: 
                 self.jump_speed += 5
     #Issue #39
-    def Decrease_jump(self) -> None:
+    def decrease_jump(self) -> None:
         if self.jump_speed >= 10:       
             self.jump_speed -= 5
 
