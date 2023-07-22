@@ -9,6 +9,7 @@ class Player:
     @brief The Player class handles all attributes and functions 
         concerning the player, including speed adjustments, player 
         position, player sight vector, and more.
+    @return player An instance of Player class.
     """
     def __init__(self) -> None:
         """!

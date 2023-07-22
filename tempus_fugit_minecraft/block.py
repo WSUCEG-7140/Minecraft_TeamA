@@ -1,18 +1,16 @@
 class Block:
     def __init__(self, name: str, texture_coordinates: tuple, is_breakable : bool = True, is_collidable : bool = True, can_build_on : bool = True) -> None:
         """! 
-        @brief 
-        Initializes an instance of a Block class
-        
+        @brief Initializes an instance of a Block class
         @param name The name of the block.
         @param texture_coordinates A tuple of pairs of indicies on the 
-        texture map file of where the texture is.
+            texture map file of where the texture is.
         @param is_breakable A flag indicating if this type of block is 
-        breakable by the player. Default is True.
+            breakable by the player. Default is True.
         @param is_collidable A flag indicating if this type of block 
-        will prevent the player from moving through it. Default is True.
+            will prevent the player from moving through it. Default is True.
         @param can_build_on A flag indicating if the player can place 
-        blocks off of this block type. Default is True.
+            blocks off of this block type. Default is True.
         
         @return An instance of the Block class
         @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
@@ -26,13 +24,10 @@ class Block:
 
 def tex_coord(x: int, y: int, n=4) -> tuple:
     """! 
-    @brief 
-    Return the bounding vertices of the texture square.
-    
+    @brief Return the bounding vertices of the texture square.
     @param x The x coordinate of the texture square
     @param y The y coordinate of the texture square
     @param n The size of the texture atlas. Default is 4.
-    
     @return A tuple with the vertices of the texture square.
     @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
     """
@@ -44,18 +39,16 @@ def tex_coord(x: int, y: int, n=4) -> tuple:
 
 def tex_coords(top: tuple, bottom: tuple, side: tuple) -> list:
     """!
-    @brief 
-    Return a list of the texture squares for the top, bottom and side.
-    
+    @brief Return a list of the texture squares for the top, bottom 
+        and side.    
     @param top A tuple of coordinates on which the top texture of the 
-    block is.
+        block is.
     @param bottom A tuple of coordinates on which the bottom texture of 
-    the block is.
+        the block is.
     @param side A tuple of coordinates on which the side texture of the 
-    block is.
-    
+        block is.
     @return The texture coordinates for the top, bottom, and sites of a 
-    block in a list.
+        block in a list.
     @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
     """
     top = tex_coord(*top)

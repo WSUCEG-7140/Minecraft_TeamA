@@ -17,9 +17,9 @@ if sys.version_info[0] >= 3:
 class Window(pyglet.window.Window):
     """!
     @brief A window class for a game environment.
-    @details This class extends the `pyglet.window.Window` class and 
-        provides functionality for a game environment. It handles player 
-        movement, collisions, rendering, and user input.
+    @details Window class handles player movement, frames, labels on the 
+        screen, and more.
+    @return window An instance of Window class.
     """
 
     def __init__(self, *args, **kwargs):

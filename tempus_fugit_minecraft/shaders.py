@@ -36,6 +36,7 @@ class Shaders():
     """!
     @brief The Shader class holds the attributes and functions 
         responsible for applying lighting and darkness to the game.
+    @return shaders An instance of Shaders class.
     """
     def __init__(self, model):
         self.blockInformation = model._shown
@@ -131,4 +132,3 @@ class Shaders():
     def normal_3D_vector_calc(vector):
         threeDVector = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
         return threeDVector
-

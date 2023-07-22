@@ -43,7 +43,10 @@ def sectorize(position: tuple) -> tuple:
 
 
 class Model(object):
-    """@brief A 3D world model for block-based rendering."""
+    """!
+    @brief A 3D world model for block-based rendering.
+    @return model an instance of Model class.
+    """
 
     def __init__(self) -> None:
         """!
@@ -83,12 +86,12 @@ class Model(object):
         self.background_noise = sound_list.wind_blowing
         self.background_noise.play_sound()
 
-    #issue84
     def _initialize(self, immediate=False) -> None:
         """!
         @brief Initialize the world by placing all the blocks.
         @param immediate True: draw block immediatl; False: do not draw 
             Block immediately. (default=False)
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         
         s = 1  # step size
@@ -347,10 +350,10 @@ class Model(object):
     def process_queue(self) -> None:
         """!
         @brief Process the entire queue while taking periodic breaks. 
-        This allows the game loop to run smoothly. The queue contains 
-        calls to _show_block() and _hide_block() so this method should 
-        be called if add_block() or remove_block() was called 
-        with immediate=False.
+            This allows the game loop to run smoothly. The queue contains 
+            calls to _show_block() and _hide_block() so this method should 
+            be called if add_block() or remove_block() was called 
+            with immediate=False.
          """
         start = time.perf_counter()
         while self.queue and time.perf_counter() - start < 1.0 / TICKS_PER_SEC:
@@ -363,7 +366,6 @@ class Model(object):
         while self.queue:
             self._dequeue()
 
-    #issue20; #issue28; #issue44; #issue84
     def generate_clouds_positions(self, world_size: int, num_of_clouds=int((WORLD_SIZE * 3.75))) -> list:
         """!
         @brief Generate sky cloud positions.
@@ -382,9 +384,8 @@ class Model(object):
             cloud_center_x = random.randint(-game_margin, game_margin)
             cloud_center_z = random.randint(-game_margin, game_margin)
             cloud_center_y = random.choice([18,20,22,24,26])
-            s = random.randint(3, 6) # 2 * s is the side length of
-                                     #the cloud in one direction from 
-                                     # the center of the cloud.
+            s = random.randint(3, 6) # 2 * s is the length of the cloud 
+                                     # from the center of the cloud
 
             single_cloud = self.generate_single_cloud(cloud_center_x,
                                                       cloud_center_y,
@@ -640,12 +641,10 @@ class Model(object):
         single_stem = []
         single_leaves = []
 
-        # Create trunks
         for stem in range(trunk_height):
             self.add_block((x, y + stem, z), TREE_TRUNK, immediate=False)
             single_stem.append((x, y + stem, z))
 
-        # Create leaves
         for dx in range(-2,3):
             for dy in range(0,3):
                 for dz in range(-2,3):
@@ -679,4 +678,3 @@ class Model(object):
                     single_cloud.append((x, cloud_center_y, z))
         
         return single_cloud
-    
