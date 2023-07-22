@@ -8,8 +8,6 @@ from tempus_fugit_minecraft.window import Window, WINDOW_WIDTH, WINDOW_HEIGHT
 def setup_fog() -> None:
     """!
     @brief Configure the OpenGL fog properties.
-    @param None
-    @return None
     """
     # Enable fog. Fog "blends a fog color with each rasterized pixel 
     # fragment's post-texturing color."
@@ -29,8 +27,6 @@ def setup_fog() -> None:
 def setup() -> None:
     """!
     @brief Basic OpenGL configuration.
-    @param None
-    @return None
     """
     # Set the color of "clear", i.e. the sky, in rgba.
     glClearColor(0.5, 0.69, 1.0, 1)
@@ -49,8 +45,6 @@ def setup() -> None:
 def main() -> None:
     """!
     @brief The main method
-    @param None
-    @return None
     """
     window = Window(
         width=WINDOW_WIDTH,

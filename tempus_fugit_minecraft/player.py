@@ -6,18 +6,13 @@ import math
 
 class Player:
     """!
-    @brief 
-    The Player class handles all attributes and functions concerning the player, 
-    including speed adjustments, player position, player sight vector, and more.
+    @brief The Player class handles all attributes and functions 
+        concerning the player, including speed adjustments, player 
+        position, player sight vector, and more.
     """
     def __init__(self) -> None:
         """!
-        @brief 
-        Initializes an instance of the Player class
-        
-        @param None
-        
-        @return None
+        @brief Initializes an instance of the Player class
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         # About the height of a block.
@@ -71,14 +66,10 @@ class Player:
 
     def get_sight_vector(self) -> tuple:
         """!
-        @brief 
-        Returns the current line of sight vector indicating the 
-        direction the player is looking.
-        
-        @param None
-        
+        @brief Returns the current line of sight vector indicating the 
+            direction the player is looking.
         @return A tuple representing the 3D vector the player is looking 
-        toward
+            toward
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         x, y = self.rotation
@@ -95,12 +86,8 @@ class Player:
 
     def get_motion_vector(self) -> tuple:
         """!
-        @brief 
-        Returns the current motion vector indicating the velocity of the 
-        player.
-        
-        @param None
-        
+        @brief Returns the current motion vector indicating the velocity 
+            of the player.        
         @return A tuple containing the velocity in x, y, and z respectively.
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
@@ -135,12 +122,7 @@ class Player:
 
     def speed_up(self) -> None:
         """!
-        @brief 
-        Increases the walking speed of the player.
-        
-        @param None
-        
-        @return None
+        @brief Increases the walking speed of the player.
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
         """
@@ -149,12 +131,7 @@ class Player:
 
     def speed_down(self) -> None:
         """!
-        @brief 
-        Decreases the walking speed of the player
-        
-        @param None
-        
-        @return None
+        @brief Decreases the walking speed of the player
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
         """
@@ -163,60 +140,35 @@ class Player:
 
     def move_forward(self) -> None:
         """!
-        @brief 
-        Move one space to the front
-        
-        @param None
-        
-        @return None
+        @brief Move one space to the front
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[0] -= 1
     
     def move_backward(self) -> None:
         """!
-        @brief 
-        Move one space to the rear
-        
-        @param None
-        
-        @return None
+        @brief Move one space to the rear
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[0] += 1
 
     def move_left(self) -> None:
         """!
-        @brief 
-        Move one space to the left
-        
-        @param None
-        
-        @return None
+        @brief Move one space to the left
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[1] -= 1
 
     def move_right(self) -> None:
         """!
-        @brief 
-        Move one space to the right
-        
-        @param None
-        
-        @return None
+        @brief Move one space to the right
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[1] += 1
 
     def jump(self) -> None:
         """!
-        @brief 
-        If the user is grounded, jump
-        
-        @param None
-        
-        @return None
+        @brief If the user is grounded, jump
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         if self.dy == 0:
@@ -224,12 +176,8 @@ class Player:
 
     def select_active_item(self, index: int) -> None:
         """!
-        @brief 
-        Selects the active item in the player's inventory
-        
+        @brief Selects the active item in the player's inventory
         @param index The current index of the inventory
-        
-        @return None
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         selected_index = index % len(self.inventory)
@@ -237,61 +185,37 @@ class Player:
 
     def stop_forward(self) -> None:
         """!
-        @brief 
-        Stops movement to the front
-        
-        @param None
-        
-        @return None
+        @brief Stops movement to the front
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[0] += 1
     
     def stop_backward(self) -> None:
         """!
-        @brief 
-        Stops movement to the rear
-        
-        @param None
-        
-        @return None
+        @brief Stops movement to the rear
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[0] -= 1
 
     def stop_left(self) -> None:
         """!
-        @brief 
-        Stops movement to the left
-        
-        @param None
-        
-        @return None
+        @brief Stops movement to the left
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[1] += 1
 
     def stop_right(self) -> None:
         """!
-        @brief 
-        Stops movement to the right
-        
-        @param None
-        
-        @return None
+        @brief Stops movement to the right
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.strafe[1] -= 1
 
     def adjust_sight(self, dx: int, dy: int) -> None:
         """!
-        @brief 
-        Adjusts the sight vector of the player
-        
+        @brief Adjusts the sight vector of the player        
         @param dx The relative x axis movement of the mouse
         @param dy The relative y axis movement of the mouse
-        
-        @return None
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         x, y = self.rotation
@@ -303,42 +227,27 @@ class Player:
 
     def current_speed(self) -> float:
         """!
-        @brief 
-        Gets the current walking or flying speed
-        
-        @param None
-        
-        @return None
+        @brief Gets the current walking or flying speed
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         return self.FLYING_SPEED if self.flying else self.walking_speed
     
     def toggle_flight(self) -> None:
         """! 
-        @brief 
-        Toggles flight in game
-        
-        @params None
-        
-        @return None
+        @brief Toggles flight in game
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         self.flying = not self.flying
 
     def update(self, dt: float, collision_checker: Callable[[tuple, int], tuple]) -> None:
         """!
-        @brief 
-        Private implementation of the `update()` method. This is where 
-        most of the motion logic lives, along with gravity and collision 
-        detection.
-        
-        @param dt The change in time (seconds) since the last 
-        call.
+        @brief Private implementation of the `update()` method. This is 
+            where most of the motion logic lives, along with gravity and 
+            collision detection.
+        @param dt The change in time (seconds) since the last call.
         @param collision_checker Takes in a new player position and the 
-        player height, then returns a new position adjusted for any 
-        potential block collisions
-        
-        @return None
+            player height, then returns a new position adjusted for any 
+            potential block collisions
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         @see [Issue#82](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/82)
         """
@@ -373,13 +282,8 @@ class Player:
     
     def check_player_within_world_boundaries(self) -> None:
         """!
-        @brief 
-        Ensure that the player character remains within the 
-        confines of the defined game world.
-        
-        @param None
-        
-        @return None
+        @brief Ensure that the player character remains within the 
+            confines of the defined game world.
         @see [Issue#25](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/25)
         @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
@@ -391,13 +295,11 @@ class Player:
 
     def keep_player_within_coordinates(self, dimension, boundary_size=WORLD_SIZE):
         """!
-        @brief 
-        check whether the dimension (usually x or z) is within the 
-        boundary size.
-        
+        @brief check whether the dimension (usually x or z) is within 
+            the boundary size.
         @param dimension represent a player dimension (x,y, or z)
-        @param boundary_size represent the size of the world withing the walls.
-        
+        @param boundary_size represent the size of the world withing 
+            the walls.
         @return The dimension adjusted to be within the boundary size.
         @see [Issue#25](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/25)
         @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)

@@ -1,7 +1,7 @@
 def cube_vertices(x: float, y: float, z: float, n: float) -> list:
     """!
-    @brief 
-    Return the vertices of the cube at position x, y, z with size 2*n.
+    @brief Return the vertices of the cube at position x, y, z with 
+        size 2*n.
     
     @param x The x coordinate of the center of the cube
     @param y The y coordinate of the center of the cube 
