@@ -5,7 +5,8 @@ from ctypes import *
 
 def to_cfloat(vector):
     """!
-    @brief Function to convert a vector of numbers to a vector of c_float.
+    @brief Function to convert a vector of numbers to a vector of c_float. OpenGL requires numeric values
+        to be of the c_float type.
     @Param vector A vector with numbers
     @return A c_float class vector
     """
@@ -14,7 +15,7 @@ def to_cfloat(vector):
     
 def c_float_vector_is_equal(vector1, vector2):
     """!
-    @brief Compare two c_float vectors and check if they are equal.
+    @brief Compare two c_float vectors and check if they are equal. Used to check if the lighting values have changed.
     @param vector1  The first c_float vector
     @param vector2  The second c_float vector
     @return A boolean depending on if the two c_float vectors are equal or not
@@ -51,6 +52,7 @@ class Shaders():
         @brief Activates the OpenGL light and sets up the enivronmental lighting at the top of the minecraft world.
         The light is aimed downwards with infinite range. 
         @return Returns a 1 to signify completion of the job function
+        @see (https://www.khronos.org/opengl/wiki/How_lighting_works)
         @see [Issue#7](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/7)
         """
         glEnable(GL_LIGHTING)
@@ -67,7 +69,8 @@ class Shaders():
         """!
         @brief This function enables GL_LIGHTING. GL_LIGHTING is what enables lighting effects.
         This enables the shadow and highlight effects.
-        https://www.khronos.org/opengl/wiki/How_lighting_works
+        @see (https://www.khronos.org/opengl/wiki/How_lighting_works)
+        @see [Issue#7](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/7)
         """
         glEnable(GL_LIGHTING)
 
@@ -75,7 +78,8 @@ class Shaders():
         """!
         @brief This function switches GL_LIGHTING. This turns off the lighting effects. All the 
             shadow and the highlight effects will dissapear.
-        https://www.khronos.org/opengl/wiki/How_lighting_works
+        @see (https://www.khronos.org/opengl/wiki/How_lighting_works)
+        @see [Issue#7](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/7)
         """
         glDisable(GL_LIGHTING)
 

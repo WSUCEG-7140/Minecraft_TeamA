@@ -9,6 +9,7 @@ class Sound:
             @param  player  Pyglet media player class that handles sound
             @param sound_file   Sound file that will be used for the class
             @return Returns an initialization of the Sound class with the specified name
+            @see (https://pyglet.readthedocs.io/en/latest/programming_guide/media.html)
             @see [issue#17] (https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/17)
         '''
         self.sound_file_path = file_path
