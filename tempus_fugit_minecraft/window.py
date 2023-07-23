@@ -27,8 +27,8 @@ class Window(pyglet.window.Window):
         @breif This method sets all the default vaules for the instance.
         @param args
         @param kwargs
-        @see [Issue#7] (https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/7)
-        @see [Issue#12] (https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#7](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/7)
+        @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
         """
         super(Window, self).__init__(*args, **kwargs)
 
@@ -162,6 +162,7 @@ class Window(pyglet.window.Window):
         @param y The y-coordinates of the mouse click.
         @param label The label to check against.
         @return bool
+        @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
         x_within_range = label.x - label.width // 2 <= x <= label.x + label.width // 2
         y_within_range = label.y <= y <= label.y + label.height // 2
@@ -245,6 +246,7 @@ class Window(pyglet.window.Window):
     def pause_game(self) -> None:
         """!
         @brief Pauses the game and bring up the pause menu.
+        @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
         self.paused = True
         self.set_mouse_visible(True)
@@ -254,6 +256,7 @@ class Window(pyglet.window.Window):
         """!
         @brief Resumes the game by restoring the game window to its 
             original state.
+        @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
         self.paused = False
         self.set_exclusive_mouse(True)
@@ -307,6 +310,7 @@ class Window(pyglet.window.Window):
         @brief Center the labels when the window size changes.
         @param width The new width of the window.
         @param height The new height of the window.
+        @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
         self.pause_label.x = self.resume_label.x = self.quit_label.x = width // 2
         self.pause_label.y = height // 2
@@ -366,6 +370,7 @@ class Window(pyglet.window.Window):
         """!
         @brief Draws the components of the pause menu, including the 
             background, the pause text, and the resume and quit buttons.
+        @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
         glPushMatrix()
         glLoadIdentity()
@@ -435,7 +440,7 @@ class Window(pyglet.window.Window):
         
         @param dt the amount of time that has elapsed since the last 
             update to environment lights.
-        @see [Issue#12] (https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
         """
         self.game_time = self.game_time + 1
         hour = math.fmod(self.game_time, 24)
