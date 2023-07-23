@@ -636,7 +636,7 @@ class Model(object):
             (default=4).
         @return [single_stem,single_leaves], coordinates for the tree 
             components.
-        @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
+        @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/80)
         """
         single_stem = []
         single_leaves = []
