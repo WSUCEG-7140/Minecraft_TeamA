@@ -267,7 +267,7 @@ class Window(pyglet.window.Window):
         @param symbol Number representing the key that was pressed.
         @param modifiers Number representing any modifying keys that 
             were pressed.
-        @see [Issue82](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/89)
+        @see [Issue82](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/82)
         """
         forward = -1 if symbol == key.W else 0
         backward = -1 if symbol == key.S else 0
