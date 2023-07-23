@@ -1,43 +1,21 @@
 import random
 import sys
 import time
-
 from collections import deque
+from typing import Callable
+
 from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
-from tempus_fugit_minecraft.block import Block,BRICK, STONE, GRASS, SAND, LIGHT_CLOUD,DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
-from tempus_fugit_minecraft.utilities import cube_vertices, WORLD_SIZE, FACES, TICKS_PER_SEC
-from tempus_fugit_minecraft.player import Player
-from typing import Callable
+
 from tempus_fugit_minecraft import sound_list
+from tempus_fugit_minecraft.block import Block
+from tempus_fugit_minecraft.player import Player
+from tempus_fugit_minecraft.utilities import FACES, TICKS_PER_SEC, cube_vertices
+from tempus_fugit_minecraft.world import World, normalize, sectorize, Position
 
 if sys.version_info[0] >= 3:
     xrange = range
-
-
-def normalize(position: tuple) -> tuple:
-    """!
-    @brief Accepts `position` of arbitrary precision and returns the block containing that position.
-    @param position : tuple of len 3
-    @returns block_position : tuple of ints of len 3
-    """
-    x, y, z = position
-    x, y, z = (int(round(x)), int(round(y)), int(round(z)))
-    return x, y, z
-
-
-def sectorize(position: tuple) -> tuple:
-    """!
-    @brief Returns a tuple representing the sector for the given `position`.
-    @param position : tuple of len 3
-    @returns sector : tuple of len 3
-    """
-    SECTOR_SIZE = 16  # Size of sectors used to ease block loading.
-
-    x, y, z = normalize(position)
-    x, y, z = x // SECTOR_SIZE, y // SECTOR_SIZE, z // SECTOR_SIZE
-    return x, 0, z
 
 
 class Model(object):
@@ -78,52 +56,28 @@ class Model(object):
         self.queue = deque()
 
         self.player = Player()
+        self.generate()
 
-        self._initialize()
         self.background_noise = sound_list.wind_blowing
         self.background_noise.play_sound()
 
-    def _initialize(self, immediate=False) -> None:
+    def generate(self) -> None:
         """!
         @brief Initialize the world by placing all the blocks.
-        @param immediate : True: draw block immediate; False: do not draw Block immediately. (default=False)
         @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
+        @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
-        s = 1  # step size
-        y = 0  # initial y height
-        for x in xrange(-WORLD_SIZE, WORLD_SIZE + 1, s):
-            for z in xrange(-WORLD_SIZE, WORLD_SIZE + 1, s):
-                # create a layer stone and grass everywhere.
-                self.add_block((x, y - 2, z), GRASS, immediate=immediate)
-                self.add_block((x, y - 3, z), STONE, immediate=immediate)
-                if x in (-WORLD_SIZE, WORLD_SIZE) or z in (-WORLD_SIZE, WORLD_SIZE):
-                    # create outer walls.
-                    for dy in xrange(-2, 3):
-                        self.add_block((x, y + dy, z), STONE, immediate=immediate)
-
-        # generate the hills randomly
-        o = WORLD_SIZE - 10
-        for _ in xrange(int((WORLD_SIZE * 1.5))):
-            a = random.randint(-o, o)  # x position of the hill
-            b = random.randint(-o, o)  # z position of the hill
-            c = -1  # base of the hill
-            h = random.randint(1, 6)  # height of the hill
-            s = random.randint(4, 8)  # 2*s the side length of the hill
-            d = 1  # how quickly to taper off the hills
-            t = random.choice([GRASS, SAND, BRICK])
-            for y in xrange(c, c + h):
-                for x in xrange(a - s, a + s + 1):
-                    for z in xrange(b - s, b + s + 1):
-                        if (x - a) ** 2 + (z - b) ** 2 > (s + 1) ** 2:
-                            continue
-                        if (x - 0) ** 2 + (z - 0) ** 2 < 5 ** 2:
-                            continue
-                        self.add_block((x, y, z), t, immediate=immediate)
-                s -= d  # decrement side length so hills taper off
-
-        clouds = self.generate_clouds_positions(world_size=WORLD_SIZE)
-        self.place_cloud_blocks(clouds)
-        self.generate_trees()
+        def add_blocks(blockList: list[tuple[Block, Position]]):
+            for block, position in blockList:
+                self.add_block(position, block, immediate=False)
+                
+        add_blocks(World.generate_base_layer())
+        for hill in World.generate_hills():
+            add_blocks(hill)        
+        for cloud in World.generate_clouds():
+            add_blocks(cloud)
+        for tree in World.generate_trees(self):
+            add_blocks(tree)
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
         """!
@@ -337,45 +291,6 @@ class Model(object):
         while self.queue:
             self._dequeue()
 
-    def generate_clouds_positions(self, world_size: int, num_of_clouds=int((WORLD_SIZE * 3.75))) -> list:
-        """!
-        @brief Generate sky cloud positions.
-        @param world_size Half the world's size.
-        @param num_of_clouds Number of clouds (default is "WORLD_SIZE * 3.75").
-        @return clouds list of lists representing cloud blocks coordinates.
-        @see [Issue#20](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/20)
-        @see [Issue#28](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/28)
-        @see [Issue#44](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/44)
-        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
-        """
-        game_margin = world_size
-        clouds = list()
-        for _ in xrange(num_of_clouds):
-            cloud_center_x = random.randint(-game_margin, game_margin)
-            cloud_center_z = random.randint(-game_margin, game_margin)
-            cloud_center_y = random.choice([18, 20, 22, 24, 26])
-            s = random.randint(3, 6)  # 2 * s is the length of the cloud from the center of the cloud
-
-            single_cloud = self.generate_single_cloud(cloud_center_x,
-                                                      cloud_center_y,
-                                                      cloud_center_z,
-                                                      s)
-            clouds.append(single_cloud)
-        return clouds
-
-    def place_cloud_blocks(self, clouds) -> None:
-        """!
-        @brief represent cloud block's coordinates in the sky.
-        @param clouds list of lists; each inner list contains cloud block's coordinates.
-        @see [Issue#20](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/20)
-        @see [Issue#28](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/28)
-        """
-        cloud_types = [LIGHT_CLOUD, DARK_CLOUD]
-        for cloud in clouds:
-            cloud_color = random.choice(cloud_types)
-            for x, y, z in cloud:
-                self.add_block((x, y, z), cloud_color, immediate=False)
-
     def can_pass_through_block(self, player_current_coords: tuple) -> bool:
         """!
         @brief Check if the block at the given player_current_coords is a cloud block.
@@ -568,82 +483,3 @@ class Model(object):
             self.player.ascend = True if ascending == 1 else False
         elif descending != 0:
             self.player.descend = True if descending == 1 else False
-
-    def generate_trees(self, num_trees=int((WORLD_SIZE * 3.125))):
-        """!
-        @brief Generate trees' (trunks and leaves) positions.
-        @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
-        @details list trees appends each single_tree list.
-        @details the trees are set to be built on SAND and GRASS only.
-        @param num_trees Number of clouds (default is "WORLD_SIZE * 3.125").
-        @return trees list of lists representing trees blocks (single tree=list_trunks , list_leaves) coordinates.
-        @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/80)
-        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
-        """
-        suggested_places_for_trees = []
-        trees = list()
-        grass_list = [coords for coords, block in self.world.items() if block == GRASS and coords[1] <= 0]
-        min_grass_level = min(ground[1] for ground in grass_list)
-        ground_grass_list = [ground for ground in grass_list if ground[1] == min_grass_level]
-
-        for coords in ground_grass_list:
-            x, y, z = coords
-            does_not_grass_have_block_above_it = all([(x, y+j, z) not in self.world for j in range(1, 10)])
-            if does_not_grass_have_block_above_it:
-                suggested_places_for_trees.append(coords)
-
-        for _ in range(num_trees):
-            if suggested_places_for_trees:
-                base_x, base_y, base_z = random.choice(suggested_places_for_trees)
-                suggested_places_for_trees.remove((base_x, base_y, base_z))
-                single_tree = self.generate_single_tree(base_x, base_y+1, base_z, trunk_height=5)
-                trees.append(single_tree)
-            else:
-                break
-        return trees
-
-    def generate_single_tree(self, x, y, z, trunk_height=4):
-        """!
-        @brief represent trees' components.
-        @details Tree components are Trunks and Leaves.
-        @details The function returns 2 lists: list of trunks, list of leaves.
-        @param x : x-coordinate of the position of the tree to be built at.
-        @param y : y-coordinate of the position of the tree to be built at.
-        @param z : z-coordinate of the position of the tree to be built at.
-        @param trunk_height Number of trunks (stems) in the tree (default=4).
-        @return [single_stem,single_leaves], coordinates for the tree components.
-        @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/80)
-        """
-        single_stem = []
-        single_leaves = []
-
-        for stem in range(trunk_height):
-            self.add_block((x, y + stem, z), TREE_TRUNK, immediate=False)
-            single_stem.append((x, y + stem, z))
-
-        for dx in range(-2, 3):
-            for dy in range(0, 3):
-                for dz in range(-2, 3):
-                    self.add_block((x + dx, y + trunk_height + dy, z + dz), TREE_LEAVES, immediate=False)
-                    single_leaves.append((x + dx, y + trunk_height + dy, z + dz))
-        return [single_stem, single_leaves]
-
-    @staticmethod
-    def generate_single_cloud(cloud_center_x, cloud_center_y, cloud_center_z, s) -> list:
-        """!
-        @brief generate a single cloud (list of cloud blocks).
-        @param cloud_center_x Represents the x-coordinate center of the cloud.
-        @param cloud_center_y Represents the y-coordinate (height) center of the cloud.
-        @param cloud_center_z Represents the z-coordinate center of the cloud.
-        @param s represent number of blocks drawn from center - goes in each direction around the center.
-        @return single_cloud A list that contains list of blocks' coordinates that represent a cloud.
-        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
-        """
-        single_cloud = []
-        for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
-            for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
-                if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
-                    continue
-                single_cloud.append((x, cloud_center_y, z))
-
-        return single_cloud
