@@ -436,7 +436,8 @@ class Window(pyglet.window.Window):
 
     def update_day_night(self, dt: float) -> None:
         """!
-        @brief Updates the environments lights.
+        @brief Updates the environments lights. When time elapses, the lighting will change.
+            from the ingame time between 0-11 light decreases while from 12-23 light increases
         
         @param dt the amount of time that has elapsed since the last 
             update to environment lights.
