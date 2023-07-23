@@ -18,7 +18,8 @@ if sys.version_info[0] >= 3:
 
 def normalize(position: tuple) -> tuple:
     """!
-    @brief Accepts `position` of arbitrary precision and returns the block containing that position.
+    @brief Accepts `position` of arbitrary precision and returns the 
+        block containing that position.
     @param position : tuple of len 3
     @returns block_position : tuple of ints of len 3
     """
@@ -29,7 +30,8 @@ def normalize(position: tuple) -> tuple:
 
 def sectorize(position: tuple) -> tuple:
     """!
-    @brief Returns a tuple representing the sector for the given `position`.
+    @brief Returns a tuple representing the sector for the given 
+        `position`.
     @param position : tuple of len 3
     @returns sector : tuple of len 3
     """
@@ -41,13 +43,14 @@ def sectorize(position: tuple) -> tuple:
 
 
 class Model(object):
-    """@brief A 3D world model for block-based rendering."""
+    """!
+    @brief A 3D world model for block-based rendering.
+    @return model an instance of Model class.
+    """
 
     def __init__(self) -> None:
         """!
         @brief init function for Model class
-        @params None
-        @returns None
         """
         TEXTURE_PATH = 'assets/texture.png'
 
@@ -61,18 +64,20 @@ class Model(object):
         # This defines all the blocks that are currently in the world.
         self.world = {}
 
-        # Same mapping as `world` but only contains blocks that are shown.
+        # Same mapping as `world` but only contains blocks that are 
+        # shown.
         self.shown = {}
 
-        # Mapping from position to a pyglet `VertexList` for all shown blocks.
+        # Mapping from position to a pyglet `VertexList` for all shown 
+        # blocks.
         self._shown = {}
 
         # Mapping from sector to a list of positions inside that sector.
         self.sector = None
         self.sectors = {}
 
-        # Simple function queue implementation. The queue is populated with
-        # _show_block() and _hide_block() calls
+        # Simple function queue implementation. The queue is populated 
+        # with _show_block() and _hide_block() calls
         self.queue = deque()
 
         self.player = Player()
@@ -81,12 +86,12 @@ class Model(object):
         self.background_noise = sound_list.wind_blowing
         self.background_noise.play_sound()
 
-    #issue84
     def _initialize(self, immediate=False) -> None:
         """!
         @brief Initialize the world by placing all the blocks.
-        @param immediate True: draw block immediatl; False: do not draw Block immediately. (default=False)
-        @return None
+        @param immediate True: draw block immediatl; False: do not draw 
+            Block immediately. (default=False)
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         
         s = 1  # step size
@@ -96,7 +101,7 @@ class Model(object):
                 # create a layer stone and grass everywhere.
                 self.add_block((x, y - 2, z), GRASS, immediate=immediate)
                 self.add_block((x, y - 3, z), STONE, immediate=immediate)
-                if x in (-WORLD_SIZE, WORLD_SIZE) or z in (-WORLD_SIZE, WORLD_SIZE):
+                if x in (-WORLD_SIZE, WORLD_SIZE) or z in (-WORLD_SIZE,WORLD_SIZE):
                     # create outer walls.
                     for dy in xrange(-2, 3):
                         self.add_block((x, y + dy, z), STONE, immediate=immediate)
@@ -108,7 +113,7 @@ class Model(object):
             b = random.randint(-o, o)  # z position of the hill
             c = -1  # base of the hill
             h = random.randint(1, 6)  # height of the hill
-            s = random.randint(4, 8)  # 2 * s is the side length of the hill
+            s = random.randint(4, 8)  # 2*s the side length of the hill
             d = 1  # how quickly to taper off the hills
             t = random.choice([GRASS, SAND, BRICK])
             for y in xrange(c, c + h):
@@ -127,10 +132,11 @@ class Model(object):
 
     def hit_test(self, position: tuple, vector: tuple, max_distance=8) -> tuple:
         """!
-        @brief Line of sight search from current position. If a block is
-        intersected it is returned, along with the block previously in the line
-        of sight. If no block is found, return None, None.
-        @param position : tuple of len 3 The (x, y, z) position to check visibility from.
+        @brief Line of sight search from current position. If a block is 
+            intersected it is returned, along with the block previously 
+            in the line of sight. If no block is found, return None, None.
+        @param position : tuple of len 3 The (x, y, z) position to check 
+            visibility from.
         @param vector : tuple of len 3 The line of sight vector.
         @param max_distance : int How many blocks away to search for a hit.
         @returns previous : tuple of len 3 The previous block.
@@ -150,7 +156,8 @@ class Model(object):
 
     def exposed(self, position: tuple) -> bool:
         """!
-        @brief Returns False is given `position` is surrounded on all 6 sides by blocks, True otherwise.
+        @brief Returns False is given `position` is surrounded on all 6 
+            sides by blocks, True otherwise.
         @param position : tuple of len 3 The (x, y, z) position to check
         @returns boolean
         """
@@ -162,11 +169,12 @@ class Model(object):
 
     def add_block(self, position: tuple, block: Block, immediate=True) -> None:
         """!
-        @brief Add a block with the given `texture` and `position` to the world.
+        @brief Add a block with the given `texture` and `position` to 
+            the world.
         @param position The (x, y, z) position of the block to add.
-        @param texture The coordinates of the texture squares. Use `tex_coords()` to generate.
+        @param texture The coordinates of the texture squares. Use 
+            `tex_coords()` to generate.
         @param immediate : bool Whether to draw the block immediately.
-        @returns None
         """
         if position in self.world:
             self.remove_block(position, immediate)
@@ -180,9 +188,10 @@ class Model(object):
     def remove_block(self, position: tuple, immediate=True) -> None:
         """!
         @brief Remove the block at the given `position`.
-        @param position : tuple of len 3 The (x, y, z) position of the block to remove.
-        @param immediate : bool Whether to immediately remove block from canvas.
-        @returns None
+        @param position : tuple of len 3 The (x, y, z) position of the 
+            block to remove.
+        @param immediate : bool Whether to immediately remove block from 
+            canvas.
         """
         del self.world[position]
         self.sectors[sectorize(position)].remove(position)
@@ -194,12 +203,12 @@ class Model(object):
 
     def check_neighbors(self, position: tuple) -> None:
         """!
-        @brief Check all blocks surrounding `position` and ensure their visual
-        state is current. This means hiding blocks that are not exposed and
-        ensuring that all exposed blocks are shown. Usually used after a block
-        is added or removed.
-        @param position : tuple of len 3 The (x, y, z) position to check around.
-        @returns None
+        @brief Check all blocks surrounding `position` and ensure their 
+            visual state is current. This means hiding blocks that are 
+            not exposed and ensuring that all exposed blocks are shown. 
+            Usually used after a block is added or removed.
+        @param position tuple of len 3 The (x, y, z) position to check 
+            around.
         """
         x, y, z = position
         for dx, dy, dz in FACES:
@@ -215,11 +224,11 @@ class Model(object):
 
     def show_block(self, position: tuple, immediate=True) -> None:
         """!
-        @brief Show the block at the given `position`. This method assumes the
-        block has already been added with add_block()
-        @param position : tuple of len 3 The (x, y, z) position of the block to show.
+        @brief Show the block at the given `position`. This method 
+            assumes the block has already been added with add_block()
+        @param position : tuple of len 3 The (x, y, z) position of the 
+            block to show.
         @param immediate : bool Whether to show the block immediately.
-        @returns None
         """
         if position not in self.world:
             return
@@ -234,9 +243,10 @@ class Model(object):
     def _show_block(self, position: tuple, block: Block) -> None:
         """!
         @brief Private implementation of the `show_block()` method.
-        @param position : tuple of len 3 The (x, y, z) position of the block to show.
-        @param texture : list of len 3 The coordinates of the texture squares. Use `tex_coords()` to generate.
-        @returns None
+        @param position : tuple of len 3 The (x, y, z) position of the 
+            block to show.
+        @param texture : list of len 3 The coordinates of the texture 
+            squares. Use `tex_coords()` to generate.
         """
         x, y, z = position
         vertex_data = cube_vertices(x, y, z, 0.5)
@@ -249,10 +259,12 @@ class Model(object):
 
     def hide_block(self, position: tuple, immediate=True) -> None:
         """!
-        @brief Hide the block at the given `position`. Hiding does not remove the block from the world.
-        @param position : tuple of len 3 The (x, y, z) position of the block to hide.
-        @param immediate : bool Whether to immediately remove the block from the canvas.
-        @returns None
+        @brief Hide the block at the given `position`. Hiding does not 
+            remove the block from the world.
+        @param position : tuple of len 3 The (x, y, z) position of the 
+            block to hide.
+        @param immediate : bool Whether to immediately remove the block 
+            from the canvas.
         """
         self.shown.pop(position)
         if immediate:
@@ -263,16 +275,17 @@ class Model(object):
     def _hide_block(self, position: tuple) -> None:
         """!
         @brief Private implementation of the `hide_block()` method.
-        @param position : tuple of len 3 The (x, y, z) position of the block to hide.
-        @returns None
+        @param position : tuple of len 3 The (x, y, z) position of the 
+            block to hide.
         """
         self._shown.pop(position).delete()
 
     def show_sector(self, sector: tuple) -> None:
         """!
-        @brief Ensure all blocks in the given sector that should be shown are drawn to the canvas.
-        @param sector : tuple of len 3 The (x, y, z) coordinates of the sector to show.
-        @returns None
+        @brief Ensure all blocks in the given sector that should be 
+            shown are drawn to the canvas.
+        @param sector : tuple of len 3 The (x, y, z) coordinates of the 
+            sector to show.
         """
         for position in self.sectors.get(sector, []):
             if position not in self.shown and self.exposed(position):
@@ -280,9 +293,10 @@ class Model(object):
 
     def hide_sector(self, sector: tuple) -> None:
         """!
-        @brief Ensure all blocks in the given sector that should be hidden are removed from the canvas.
-        @param sector : tuple of len 3 The (x, y, z) coordinates of the sector to hide.
-        @returns None
+        @brief Ensure all blocks in the given sector that should be 
+            hidden are removed from the canvas.
+        @param sector : tuple of len 3 The (x, y, z) coordinates of the 
+            sector to hide.
         """
         for position in self.sectors.get(sector, []):
             if position in self.shown:
@@ -290,12 +304,12 @@ class Model(object):
 
     def change_sectors(self, before: tuple, after: tuple) -> None:
         """!
-        @brief Move from sector `before` to sector `after`. A sector is a
-        contiguous x, y sub-region of world. Sectors are used to speed up
-        world rendering.
-        @param before : tuple of len 3 The (x, y, z) sector we are moving from.
+        @brief Move from sector `before` to sector `after`. A sector is 
+            a contiguous x, y sub-region of world. Sectors are used to 
+            speed up world rendering.
+        @param before : tuple of len 3 The (x, y, z) sector we are 
+            moving from.
         @param after : tuple of len 3 The (x, y, z) sector we are moving to.
-        @returns None
         """
         before_set = set()
         after_set = set()
@@ -323,27 +337,23 @@ class Model(object):
         @brief Add `func` to the internal queue.
         @param func : Callable The function to add to the queue.
         @param args The arguments to pass to the function.
-        @returns None
         """
         self.queue.append((func, args))
 
     def _dequeue(self) -> None:
         """!
         @brief Pop the top function from the internal queue and call it.
-        @param None
-        @returns None
         """
         func, args = self.queue.popleft()
         func(*args)
 
     def process_queue(self) -> None:
         """!
-        @brief Process the entire queue while taking periodic breaks. This allows
-        the game loop to run smoothly. The queue contains calls to
-        _show_block() and _hide_block() so this method should be called if
-        add_block() or remove_block() was called with immediate=False.
-        @param None
-        @returns None
+        @brief Process the entire queue while taking periodic breaks. 
+            This allows the game loop to run smoothly. The queue contains 
+            calls to _show_block() and _hide_block() so this method should 
+            be called if add_block() or remove_block() was called 
+            with immediate=False.
          """
         start = time.perf_counter()
         while self.queue and time.perf_counter() - start < 1.0 / TICKS_PER_SEC:
@@ -352,21 +362,21 @@ class Model(object):
     def process_entire_queue(self) -> None:
         """!
         @brief Process the entire queue with no breaks.
-        @param None
-        @returns None
         """
         while self.queue:
             self._dequeue()
 
-    #issue20; #issue28; #issue44; #issue84
     def generate_clouds_positions(self, world_size: int, num_of_clouds=int((WORLD_SIZE * 3.75))) -> list:
         """!
         @brief Generate sky cloud positions.
         @param world_size Half the world's size.
-        @param num_of_clouds Number of clouds (default is 250).
-        @returns clouds list of lists representing cloud blocks coordinates.
-        @see issue 20
-        @see issue 28
+        @param num_of_clouds Number of clouds 
+            (default is "WORLD_SIZE * 3.75").
+        @return clouds list of lists representing cloud blocks coordinates.
+        @see [Issue#20](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/20)
+        @see [Issue#28](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/28)
+        @see [Issue#44](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/44)
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         game_margin = world_size
         clouds = list()
@@ -374,7 +384,8 @@ class Model(object):
             cloud_center_x = random.randint(-game_margin, game_margin)
             cloud_center_z = random.randint(-game_margin, game_margin)
             cloud_center_y = random.choice([18,20,22,24,26])
-            s = random.randint(3, 6)                                    # 2 * s is the side length of the cloud
+            s = random.randint(3, 6) # 2 * s is the length of the cloud 
+                                     # from the center of the cloud
 
             single_cloud = self.generate_single_cloud(cloud_center_x,
                                                       cloud_center_y,
@@ -383,13 +394,14 @@ class Model(object):
             clouds.append(single_cloud)
         return clouds
 
-    #issue20; #issue28
+    
     def place_cloud_blocks(self, clouds) -> None:
         """!
         @brief represent cloud block's coordinates in the sky.
-        @param clouds list of lists; each inner list contains cloud block's coordinates.
-        @returns None, but draw a clouds block at its corresponding coordinates.
-        @see issue 20 and 28
+        @param clouds list of lists; each inner list contains cloud 
+            block's coordinates.
+        @see [Issue#20](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/20)
+        @see [Issue#28](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/28)
         """
         cloud_types = [LIGHT_CLOUD, DARK_CLOUD]
         for cloud in clouds:
@@ -399,10 +411,13 @@ class Model(object):
 
     def can_pass_through_block(self, player_current_coords: tuple) -> bool:
         """!
-        @brief Check if the block at the given palyer_current_coords is a cloud block.
-        @param player_current_coords Current (x,y,z) corrdinates for the player.
-        @returns True if the coordinates correspond to a cloud block, False otherwise.
-        @see issue 57
+        @brief Check if the block at the given palyer_current_coords is 
+            a cloud block.
+        @param player_current_coords Current (x,y,z) corrdinates for the 
+            player.
+        @return True if the coordinates correspond to a cloud block, 
+            False otherwise.
+        @see [Issue#57](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/57)
         """
         block = self.world.get(player_current_coords)
         return block is None or not block.is_collidable
@@ -410,9 +425,7 @@ class Model(object):
     def handle_secondary_action(self) -> None:
         """!
         @brief Handles the player's secondary action
-        @param None
-        @returns None
-        @see issue 68
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.player.get_sight_vector()
         position, previous = self.hit_test(self.player.position, vector)
@@ -422,9 +435,7 @@ class Model(object):
     def handle_primary_action(self) -> None:
         """!
         @brief Handles the player's primary action
-        @param None
-        @returns None
-        @see issue 68
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.player.get_sight_vector()
         position, _ = self.hit_test(self.player.position, vector)
@@ -433,10 +444,10 @@ class Model(object):
 
     def update(self, dt: float) -> None:
         """!
-        @brief This method is scheduled to be called repeatedly by the pyglet clock.
+        @brief This method is scheduled to be called repeatedly by the 
+            pyglet clock.
         @param dt : float The change in time (seconds) since the last call.
-        @returns None
-        @see issue 68
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.process_queue()
         sector = sectorize(self.player.position)
@@ -455,17 +466,20 @@ class Model(object):
 
     def collide(self, position: tuple, height: int) -> tuple:
         """!
-        @brief Checks to see if the player at the given `position` and `height`
-        is colliding with any blocks in the world.
-        @param position : tuple of len 3 The (x, y, z) position to check for collisions at.
+        @brief Checks to see if the player at the given `position` and 
+            `height` is colliding with any blocks in the world.
+        @param position : tuple of len 3 The (x, y, z) position to check 
+            for collisions at.
         @param height : int or float The height of the player.
-        @returns position : tuple of len 3 The new position of the player taking into account collisions.
-        @see issue 68
+        @return position : tuple of len 3 The new position of the player 
+            taking into account collisions.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
-        # How much overlap with a dimension of a surrounding block you need to
-        # have to count as a collision. If 0, touching terrain at all counts as
-        # a collision. If .49, you sink into the ground, as if walking through
-        # tall grass. If >= .5, you'll fall through the ground.
+        # How much overlap with a dimension of a surrounding block you 
+        # need to have to count as a collision. If 0, touching terrain 
+        # at all counts as a collision. If .49, you sink into the 
+        # ground, as if walking through tall grass. If >= .5, you'll 
+        # fall through the ground.
         pad = 0.25
         p = list(position)
         np = normalize(position)
@@ -481,7 +495,7 @@ class Model(object):
                     player_currnet_coords = list(np)
                     player_currnet_coords[1] -= dy
                     player_currnet_coords[i] += face[i]
-                    if self.can_pass_through_block(player_current_coords=tuple(player_currnet_coords)):
+                    if self.can_pass_through_block(player_current_coords= tuple(player_currnet_coords)):
                         continue
                     p[i] -= (d - pad) * face[i]
                     if face == (0, -1, 0) or face == (0, 1, 0):
@@ -493,29 +507,31 @@ class Model(object):
     
     def handle_adjust_vision(self, dx: int, dy: int) -> None:
         """!
-        @brief Handles the change of the vision field when the player moves their head
-        @param dx The x change in the field of vision (relative to the previous motion)
-        @param dy The y change in the field of vision (relative to the previous motion)
-        @returns None
-        @see issue 68
+        @brief Handles the change of the vision field when the player 
+            moves their head
+        @param dx The x change in the field of vision (relative to the 
+            previous motion)
+        @param dy The y change in the field of vision (relative to the 
+            previous motion)
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.player.adjust_sight(dx, dy)
 
     def handle_change_active_block(self, index: int) -> None:
         """!
         @brief Switches between active blocks held by the player
-        @param index The value of the current active block in the player's inventory
-        @returns None
-        @see issue 68
+        @param index The value of the current active block in the 
+            player's inventory
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.player.select_active_item(index)
 
     def handle_speed_change(self, increase: bool) -> None:
         """!
         @brief Handles the speed change event
-        @param increase A boolean indicator of whether we increase or decrease the speed
-        @returns None
-        @see issue 68
+        @param increase A boolean indicator of whether we increase or 
+            decrease the speed
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         if increase:
             self.player.speed_up()
@@ -525,30 +541,29 @@ class Model(object):
     def handle_jump(self) -> None:
         """!
         @brief Handles the jump event
-        @param None
-        @returns None
-        @see issue 68
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.player.jump()
     
     def handle_flight_toggle(self) -> None:
         """!
         @brief Handles the flight toggle event
-        @param None
-        @returns None
-        @see issue 68
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.player.toggle_flight()
 
     def handle_movement(self, forward, backward, left, right) -> None:
         """!
         @brief Movement handler (directs the movement of the player)
-        @param forward Tri-state value of 1, 0, -1 indicating if we are going to be moving forward, staying constant, or stopping
-        @param backward Tri-state value of 1, 0, -1 indicating if we are going to be moving backward staying constant, or stopping
-        @param left Tri-state value of 1, 0, -1 indicating if we are going to be moving left, staying constant, or stopping
-        @param right Tri-state value of 1, 0, -1 indicating if we are going to be moving right, staying constant, or stopping
-        @returns None
-        @see issue 68
+        @param forward Tri-state value of 1, 0, -1 indicating if we are 
+            going to be moving forward, staying constant, or stopping
+        @param backward Tri-state value of 1, 0, -1 indicating if we are 
+            going to be moving backward staying constant, or stopping
+        @param left Tri-state value of 1, 0, -1 indicating if we are 
+            going to be moving left, staying constant, or stopping
+        @param right Tri-state value of 1, 0, -1 indicating if we are 
+            going to be moving right, staying constant, or stopping
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         def handle_movement_for_direction(direction, move, stop):
             # private helper for consistently applying direction
@@ -575,12 +590,15 @@ class Model(object):
     def generate_trees(self, num_trees=int((WORLD_SIZE * 3.125))):
         """!
         @brief Generate trees' (trunks and leavs) positions.
-        @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
+        @details single_tree is a list contains 2 lists of coordinates: 
+            list of trunks, and list of leaves.
         @details list trees appends each single_tree list.
         @details the trees are set to be built on SAND and GRASS only.
-        @param num_trees Number of clouds (default is 100).
-        @return trees list of lists representing trees blocks (single tree=list_trunks , list_leaves) coordinates.
-        @see issue 80
+        @param num_trees Number of clouds (default is "WORLD_SIZE * 3.125").
+        @return trees list of lists representing trees blocks (single 
+        tree=list_trunks , list_leaves) coordinates.
+        @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/80)
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         suggested_places_for_trees = []
         trees = list()
@@ -610,21 +628,23 @@ class Model(object):
         @brief represent trees' components.
         
         @details Tree components are Trunks and Leaves.
-        @details The function returns 2 lists: list of trunks, list of leaves.
-        @param x,y,z The coordinates of the position of the tree to be built at.
-        @param trunk_height Number of trunks (stems) in the tree (default=4).
-        @returns [single_stem,single_leaves], coordinates for the tree components.
-        @see issue 80
+        @details The function returns 2 lists: list of trunks, list 
+            of leaves.
+        @param x,y,z The coordinates of the position of the tree to be 
+            built at.
+        @param trunk_height Number of trunks (stems) in the tree 
+            (default=4).
+        @return [single_stem,single_leaves], coordinates for the tree 
+            components.
+        @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/80)
         """
         single_stem = []
         single_leaves = []
 
-        # Create trunks
         for stem in range(trunk_height):
             self.add_block((x, y + stem, z), TREE_TRUNK, immediate=False)
             single_stem.append((x, y + stem, z))
 
-        # Create leaves
         for dx in range(-2,3):
             for dy in range(0,3):
                 for dz in range(-2,3):
@@ -632,17 +652,22 @@ class Model(object):
                     single_leaves.append((x + dx, y + trunk_height + dy, z + dz))
         return [single_stem,single_leaves]
     
-    #issue84
-    def generate_single_cloud(self, cloud_center_x,cloud_center_y,cloud_center_z,s) -> list:
+    def generate_single_cloud(self, cloud_center_x,cloud_center_y, cloud_center_z,s) -> list:
         """!
         @brief generate a single cloud (list of cloud blocks).
         
-        @param cloud_center_x Represents the x-coordinate center of the cloud.
-        @param cloud_center_x Represents the y-coordinate (height) center of the cloud.
-        @param cloud_center_x Represents the z-coordinate center of the cloud.
-        @param s represent number of blocks drawn from center - goes in each direction around the center.
+        @param cloud_center_x Represents the x-coordinate center of the 
+            cloud.
+        @param cloud_center_x Represents the y-coordinate (height) 
+            center of the cloud.
+        @param cloud_center_x Represents the z-coordinate center of the 
+            cloud.
+        @param s represent number of blocks drawn from center - goes in 
+            each direction around the center.
         
-        @return single_cloud A list that contains list of blocks' coordinates that represent a cloud.
+        @return single_cloud A list that contains list of blocks' 
+            coordinates that represent a cloud.
+        @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
         
         single_cloud = []
@@ -653,4 +678,3 @@ class Model(object):
                     single_cloud.append((x, cloud_center_y, z))
         
         return single_cloud
-    
