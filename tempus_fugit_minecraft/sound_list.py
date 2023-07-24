@@ -4,7 +4,6 @@ from tempus_fugit_minecraft import sound
 """
 
 class SoundList():
-
     def __init__(self):
         """!
         @brief The SoundList class will be used to group different types of sounds so that they can all be modified 
@@ -29,6 +28,7 @@ class SoundList():
         except:
             self.dictionary[sound_name] = sound
             return sound
+        
     def adjust_all_volume(self, volume_increment):
         """!
             @brief The adjust_volume function allows for the adjustment of all sounds contained in the class
@@ -37,13 +37,14 @@ class SoundList():
             @param volume_increment A float value that determines how much to adjust the volume. 
         """
         for sound in self.dictionary:
-            if sound.volume + volume_increment > 1:
-                sound.volume = 1
-            elif sound.volume + volume_increment < 0:
-                sound.volume = 0
+            if sound.player.volume + volume_increment > 1:
+                sound.player.volume = 1
+            elif sound.player.volume + volume_increment < 0:
+                sound.player.volume = 0
             else:
-                sound.volume += volume_increment
-    def get_Sound(self, sound_name:str):
+                sound.player.volume += volume_increment
+
+    def get_sound(self, sound_name:str):
         """!
             @brief Grabs the sound with the corresponding name from the sound_list. If it does not exist, return 0
             @param sound_name   A string that is the name of the sound being grabbed
@@ -59,10 +60,11 @@ class SoundList():
 
 #Sound Effects
 sound_effects_list = SoundList()
-rock_hit_sound = sound.Sound("assets/sound/rock_hit.wav")
+sound_effects_list.add_sound_to_dictionary('rock_hit', sound.Sound("assets/sound/rock_hit.wav")) 
 
 #Background Sounds
-wind_blowing = sound.BackgroundSound("assets/sound/wind-blowing-ambience.wav")
+background_sound_list = SoundList()
+background_sound_list.add_sound_to_dictionary('wind_blowing', sound.BackgroundSound("assets/sound/wind-blowing-ambience.wav"))
 
 
     
