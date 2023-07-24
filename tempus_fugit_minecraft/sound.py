@@ -15,7 +15,7 @@ class Sound:
         self.sound_file_path = file_path
         self.player = media.Player()
         self.sound_file = None
-        if file_path != None:
+        if file_path is not None:
             self.sound_file = media.load(file_path)
 
     def load_sound(self, file_path):
