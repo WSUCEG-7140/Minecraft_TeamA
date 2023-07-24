@@ -26,7 +26,9 @@ class SoundList():
         except:
             self.dictionary[sound_name] = sound
             return sound
-    def adjust_volume(self, volume_increment)
+    def adjust_volume(self, volume_increment):
+        return
+
 
 
 #Sound Effects
