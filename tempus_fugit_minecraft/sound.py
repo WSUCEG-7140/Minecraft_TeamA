@@ -9,14 +9,14 @@ class Sound:
     def __init__(self, file_path=None):
         """!
         @brief Initializes the Sound class.
-        @details If a file path is named, uses that to load the sound file        
+        @details If a file path is named, uses that to load the sound file
         @param file_path string The file path for the sound file
         @see [Issue#17](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/17)
         """
         self.sound_file_path = file_path
         self.player = media.Player()
         self.sound_file = None
-        if file_path != None:
+        if file_path is not None:
             self.sound_file = media.load(file_path)
 
     def load_sound(self, file_path):
@@ -42,7 +42,6 @@ class Sound:
 
 
 class BackgroundSound(Sound):
-    
     """!
     @brief Subclass of sound for sounds that will be repeated
     @return wind_blowing An instance of BackgroundSound class.
