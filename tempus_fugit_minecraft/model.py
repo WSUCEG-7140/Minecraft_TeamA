@@ -422,7 +422,7 @@ class Model(object):
         block = self.world.get(player_current_coords)
         return block is None or not block.is_collidable
     
-    def handle_building_action(self) -> None:
+    def handle_secondary_action(self) -> None:
         """!
         @brief Handles the player's secondary action, adding a block.
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
@@ -432,7 +432,7 @@ class Model(object):
         if previous and position and self.world[position].can_build_on:
             self.add_block(previous, self.player.block)
 
-    def handle_breaking_action(self) -> None:
+    def handle_primary_action(self) -> None:
         """!
         @brief Handles the player's primary action, breaking a block
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
