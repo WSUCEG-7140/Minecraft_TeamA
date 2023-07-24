@@ -36,7 +36,7 @@ class SoundList():
                 greater than 1, it will default to 0 or 1.
             @param volume_increment A float value that determines how much to adjust the volume. 
         """
-        for sound in self.dictionary:
+        for sound in self.dictionary.values():
             if sound.player.volume + volume_increment > 1:
                 sound.player.volume = 1
             elif sound.player.volume + volume_increment < 0:

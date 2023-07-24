@@ -35,14 +35,14 @@ class TestSoundList:
         sound_list.add_sound_to_dictionary('rock_hit1', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
         sound_list.add_sound_to_dictionary('rock_hit2', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
         sound_list.add_sound_to_dictionary('rock_hit3', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
-        rock_hit_1_volume = sound_list.dictionary['rock_hit1'].volume
-        rock_hit_2_volume = sound_list.dictionary['rock_hit2'].volume
-        rock_hit_3_volume = sound_list.dictionary['rock_hit3'].volume
-        sound_list.adjust_all_volume(.1)
-        assert rock_hit_1_volume != sound_list.dictionary['rock_hit1'].volume
-        assert rock_hit_2_volume != sound_list.dictionary['rock_hit2'].volume
-        assert rock_hit_3_volume != sound_list.dictionary['rock_hit3'].volume
+        rock_hit_1_volume = sound_list.dictionary['rock_hit1'].player.volume
+        rock_hit_2_volume = sound_list.dictionary['rock_hit2'].player.volume
+        rock_hit_3_volume = sound_list.dictionary['rock_hit3'].player.volume
+        sound_list.adjust_all_volume(-.1)
+        assert rock_hit_1_volume != sound_list.dictionary['rock_hit1'].player.volume
+        assert rock_hit_2_volume != sound_list.dictionary['rock_hit2'].player.volume
+        assert rock_hit_3_volume != sound_list.dictionary['rock_hit3'].player.volume
         sound_list.adjust_all_volume(-1)
-        assert sound_list.dictionary['rock_hit1'].volume == 0
+        assert sound_list.dictionary['rock_hit1'].player.volume == 0
         sound_list.adjust_all_volume(2)
-        assert sound_list.dictionary['rock_hit1'].volume == 1
+        assert sound_list.dictionary['rock_hit1'].player.volume == 1
