@@ -26,6 +26,6 @@ class TestSound:
         assert sound.play_sound()
 
 class TestSoundList:
-    def test_add_sound_to_dictionary(self, sound):
+    def test_add_sound_to_dictionary(self, sound_list):
         sound_list.add_sound_to_dictionary('rock_hit', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
         assert sound_list.dictionary['rock_hit']
