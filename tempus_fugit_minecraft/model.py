@@ -422,9 +422,9 @@ class Model(object):
         block = self.world.get(player_current_coords)
         return block is None or not block.is_collidable
     
-    def handle_secondary_action(self) -> None:
+    def handle_building_action(self) -> None:
         """!
-        @brief Handles the player's secondary action
+        @brief Handles the player's secondary action, adding a block.
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.player.get_sight_vector()
@@ -432,9 +432,9 @@ class Model(object):
         if previous and position and self.world[position].can_build_on:
             self.add_block(previous, self.player.block)
 
-    def handle_primary_action(self) -> None:
+    def handle_breaking_action(self) -> None:
         """!
-        @brief Handles the player's primary action
+        @brief Handles the player's primary action, breaking a block
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.player.get_sight_vector()
@@ -580,6 +580,11 @@ class Model(object):
 
     #issue 82
     def handle_flight(self, ascending, descending):
+        """!
+            @brief Handles if the player is ascending or descending when flying
+            @param ascending    a numeric value that determines if the player is ascending
+            @param descending   a numeric value that determines if the player descending
+        """
         if ascending != 0:
             self.player.ascend = True if ascending == 1 else False
         elif descending != 0:
