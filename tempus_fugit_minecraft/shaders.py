@@ -85,14 +85,22 @@ class Shaders:
 
     def adjust_diffuse_light(self, red, green, blue):
         """!
-        TODO add doxygen docstring
+        @brief Adjusts the diffuse light color.
+        @param red The intensity of the red component of the diffuse light color.
+        @param green The intensity of the green component of the diffuse light color.
+        @param blue The intensity of the blue component of the diffuse light color.
+        @return The adjusted diffuse light color as a list of three elements (red, green, blue).
         """
         self.diffuse = to_cfloat([red, green, blue])
         return self.diffuse
 
     def adjust_specular_light(self, red, green, blue):
         """!
-        TODO add doxygen docstring
+        @brief Adjusts the specular light color.
+        @param red The red component of the specular light color.
+        @param green The green component of the specular light color.
+        @param blue The blue component of the specular light color.
+        @return The updated specular light color as a list of floats.
         """
         self.specular = to_cfloat([red, green, blue])
         return self.specular
@@ -130,5 +138,10 @@ class Shaders:
 
     @staticmethod
     def normal_3D_vector_calc(vector):
+        """!
+        @brief Calculates the magnitude of a 3D vector.
+        @param vector A list representing the 3D vector.
+        @return The magnitude of the vector.
+        """
         threeDVector = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
         return threeDVector

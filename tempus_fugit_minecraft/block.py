@@ -1,4 +1,8 @@
 class Block:
+    """!
+    @brief A class to represent a block in the game.
+    @return An instance of the Block object.
+    """
     def __init__(self, name: str, texture_coordinates: tuple, is_breakable: bool = True, is_collidable: bool = True,
                  can_build_on: bool = True) -> None:
         """!
