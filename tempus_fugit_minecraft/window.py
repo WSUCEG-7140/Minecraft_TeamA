@@ -2,6 +2,8 @@ import math
 import sys
 
 from pyglet.gl import *
+from pyglet.gui import Slider
+from pyglet.image import load, AbstractImage
 from pyglet.window import key, mouse
 from tempus_fugit_minecraft.utilities import *
 from tempus_fugit_minecraft.model import Model
@@ -100,6 +102,28 @@ class Window(pyglet.window.Window):
             x=self.width // 2,
             y=self.height // 2 - 90,
             anchor_x="center",
+        )
+        
+        self.volume_increase_label = pyglet.text.Label(
+            text="Increase Volume",
+            font_name="Arial",
+            font_size=18,
+            width=50,
+            height=35,
+            x=self.width //3,
+            y=self.height - 15,
+            anchor_x="center"
+        )
+
+        self.volume_decrease_label = pyglet.text.Label(
+            text="Decrease Volume",
+            font_name="Arial",
+            font_size=18,
+            width=50,
+            height=35,
+            x=self.width // 3 * 2,
+            y=self.height - 15,
+            anchor_x="center"
         )
 
         # This call schedules the `update()` method to be called
@@ -401,6 +425,8 @@ class Window(pyglet.window.Window):
         self.pause_label.draw()
         self.resume_label.draw()
         self.quit_label.draw()
+        self.volume_decrease_label.draw()
+        self.volume_increase_label.draw()
 
     def draw_focused_block(self) -> None:
         """!

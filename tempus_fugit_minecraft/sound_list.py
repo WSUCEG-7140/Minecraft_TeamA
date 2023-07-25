@@ -55,7 +55,7 @@ class SoundList():
             elif volume < 0:
                 sound.player.volume = 0
             else:
-                sound.player.volume == volume
+                sound.player.volume = volume
 
     def get_sound(self, sound_name:str):
         """!
