@@ -3,7 +3,8 @@ import sys
 
 from pyglet.gl import *
 from pyglet.gui import Slider
-from pyglet.image import load, AbstractImage
+from pyglet.image import load
+from pyglet.sprite import Sprite
 from pyglet.window import key, mouse
 from tempus_fugit_minecraft.utilities import *
 from tempus_fugit_minecraft.model import Model
@@ -61,6 +62,13 @@ class Window(pyglet.window.Window):
         self.game_clock.schedule_interval(self.update_day_night, self.schedule_time)
 
         self.paused = False
+
+        self.volume_slider_image = load('assets/volume_slider.png')
+        self.volume_knob_image = load('assets/volume_knob.png')
+
+        self.volume_control_batch = pyglet.graphics.Batch()
+        self.volume_slider_sprite = Sprite(self.volume_slider_image, x=WINDOW_WIDTH // 16, y=WINDOW_HEIGHT // 8 * 7, batch=self.volume_control_batch)
+        self.volume_knob_sprite = Sprite(self.volume_knob_image, x=WINDOW_WIDTH // 16, y=WINDOW_HEIGHT // 8 * 7, batch=self.volume_control_batch)
 
         # The label that is displayed in the top left of the canvas.
         self.label = pyglet.text.Label(
@@ -425,8 +433,7 @@ class Window(pyglet.window.Window):
         self.pause_label.draw()
         self.resume_label.draw()
         self.quit_label.draw()
-        self.volume_decrease_label.draw()
-        self.volume_increase_label.draw()
+        self.volume_control_batch.draw()
 
     def draw_focused_block(self) -> None:
         """!
