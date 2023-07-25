@@ -105,8 +105,10 @@ While flying:
     - 1: brick
     - 2: grass
     - 3: sand
-    - 4: tree_trunk
-    - 5: tree_leaf
+    - 4: light cloud
+    - 5: dark cloud
+    - 6: tree_trunk
+    - 7: tree_leaf
 
 - Mouse left-click: remove block
 - Mouse right-click: create block
