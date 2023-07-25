@@ -50,8 +50,7 @@ class Window(pyglet.window.Window):
         self.model = Model()
 
         # Instance of the shaders in the world
-        """Placed in Windows for being a OpenGL related Class. Solves 
-            issue #7"""
+        """Placed in Windows for being a OpenGL related Class. Solves issue #7"""
         self.shaders = Shaders(self.model)
         self.shaders.turn_on_environment_light()
 
@@ -63,14 +62,22 @@ class Window(pyglet.window.Window):
 
         self.paused = False
 
-        """Solves issue #"""
+        """Solves issue #99. Properties that are related to volume adjustments"""
         self.volume_slider_image = load('assets/volume_slider.png')
         self.volume_knob_image = load('assets/volume_knob.png')
         self.volume_control_batch = pyglet.graphics.Batch()
         self.volume_back = pyglet.graphics.OrderedGroup(1)
         self.volume_front = pyglet.graphics.OrderedGroup(0)
-        self.volume_slider_sprite = Sprite(self.volume_slider_image, x=WINDOW_WIDTH // 16, y=WINDOW_HEIGHT // 8 * 7, batch=self.volume_control_batch, group=self.volume_back)
-        self.volume_knob_sprite = Sprite(self.volume_knob_image, x=WINDOW_WIDTH // 16, y=WINDOW_HEIGHT // 8 * 7, batch=self.volume_control_batch, group=self.volume_front)
+        self.volume_slider_sprite = Sprite(self.volume_slider_image, 
+                                           x=WINDOW_WIDTH // 16, 
+                                           y=WINDOW_HEIGHT // 8 * 7, 
+                                           batch=self.volume_control_batch, 
+                                           group=self.volume_back)
+        self.volume_knob_sprite = Sprite(self.volume_knob_image, 
+                                         x=WINDOW_WIDTH // 16, 
+                                         y=WINDOW_HEIGHT // 8 * 7, 
+                                         batch=self.volume_control_batch, 
+                                         group=self.volume_front)
         self.full_volume_position = self.volume_knob_sprite.x
 
 
@@ -115,28 +122,6 @@ class Window(pyglet.window.Window):
             y=self.height // 2 - 90,
             anchor_x="center",
         )
-        
-        self.volume_increase_label = pyglet.text.Label(
-            text="Increase Volume",
-            font_name="Arial",
-            font_size=18,
-            width=50,
-            height=35,
-            x=self.width //3,
-            y=self.height - 15,
-            anchor_x="center"
-        )
-
-        self.volume_decrease_label = pyglet.text.Label(
-            text="Decrease Volume",
-            font_name="Arial",
-            font_size=18,
-            width=50,
-            height=35,
-            x=self.width // 3 * 2,
-            y=self.height - 15,
-            anchor_x="center"
-        )
 
         # This call schedules the `update()` method to be called
         # TICKS_PER_SEC. This is the main game event loop.
@@ -176,6 +161,7 @@ class Window(pyglet.window.Window):
             1 = left button, 4 = right button.
         @param modifiers Number representing any modifying keys that
             were pressed when the mouse button was clicked.
+        @see [Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
         """
         if self.paused:
             if self.within_label(x, y, self.resume_label):

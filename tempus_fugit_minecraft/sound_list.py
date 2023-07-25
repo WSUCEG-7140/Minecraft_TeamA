@@ -12,8 +12,9 @@ class SoundList():
             as the value.
         @param default_volume   A float between 0 and 1 that determines the initial volume for all sounds in the sound_list
         @returns An instance of the SoundList class with the specified name.
+        @see [Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
         """
-        self.default_volume = .5
+        self.default_volume = 1
         self.dictionary = dict()
     def add_sound_to_dictionary(self, sound_name:str, sound):
         """!
@@ -21,6 +22,7 @@ class SoundList():
                 as the value. If the sound already exists, it will return 0. If it does not, it will return sound
             @param sound_name   A string value that will be used as the key for the dictionary
             @param sound    A Sound class object that will be used as the value referenced by the key in the dictionary
+            @see [Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
         """
         try:
             self.dictionary[sound_name]
@@ -34,7 +36,8 @@ class SoundList():
             @brief The adjust_volume function allows for the adjustment of all sounds contained in the class
                 If the sum of the current volume of the sound object plus the volume adjustment is less than 0 or
                 greater than 1, it will default to 0 or 1.
-            @param volume_increment A float value that determines how much to adjust the volume. 
+            @param volume_increment A float value that determines how much to adjust the volume.
+            @see [Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
         """
         for sound in self.dictionary.values():
             if sound.player.volume + volume_increment > 1:
@@ -48,6 +51,7 @@ class SoundList():
         """!
             @brief The adjust_volume function allows a direct setting of the volume of all sounds in the class.
             @param volume A float value that determines the volume
+            @see [Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
         """
         for sound in self.dictionary.values():
             if volume > 1:
@@ -62,6 +66,7 @@ class SoundList():
             @brief Grabs the sound with the corresponding name from the sound_list. If it does not exist, return 0
             @param sound_name   A string that is the name of the sound being grabbed
             @return Returns the sound if it exists in the dictionary list. Else returns a 0
+            @see [Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
         """
         try:
             sound = self.dictionary[sound_name]
