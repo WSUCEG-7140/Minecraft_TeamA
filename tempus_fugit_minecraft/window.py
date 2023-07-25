@@ -205,9 +205,9 @@ class Window(pyglet.window.Window):
 
         if symbol in [key.Q, key.E]:
             increase_speed = symbol == key.Q
-            increase_jump = symbol == key.Q
+            increase_jump_speed = symbol == key.Q
             self.model.handle_speed_change(increase_speed)
-            self.model.handle_jump_change(increase_jump)
+            self.model.handle_jump_change(increase_jump_speed)
             return
 
         if symbol == key.TAB:
