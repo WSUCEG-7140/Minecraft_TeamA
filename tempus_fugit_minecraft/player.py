@@ -291,3 +291,27 @@ class Player:
             return -boundary_size
         else:
             return dimension
+
+    def slow_walk(self) -> None:
+        """!
+        @brief Slows the player's walking speed
+        @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
+        @see [Issue#98](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/98)
+        """
+        self.walking_speed = self.walking_speed / 3
+
+    def reset_walk_speed(self) -> None:
+        """!
+        @brief Resets the player's walking speed to the default value
+        @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
+        @see [Issue#98](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/98)
+        """
+        self.walking_speed = 5
+
+    def sprint(self) -> None:
+        """!
+        @brief Increases the player's walking speed
+        @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
+        @see [Issue#98](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/98)
+        """
+        self.walking_speed = self.walking_speed * 2
