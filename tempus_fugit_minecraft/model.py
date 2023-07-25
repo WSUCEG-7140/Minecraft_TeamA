@@ -489,11 +489,7 @@ class Model(object):
         """!
         @brief Handles the speed change event
         @param increase A boolean indicator of whether we increase or decrease the speed
-<<<<<<< HEAD
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
-=======
-        @see issue 68
->>>>>>> 0ad6578 (Doxygen comment+ jump_speed upgrade)
         """
         if increase:
             self.player.increase_speed()
@@ -503,12 +499,7 @@ class Model(object):
     def handle_jump(self) -> None:
         """!
         @brief Handles the jump event
-<<<<<<< HEAD
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
-=======
-        @param None
-        @see issue 68
->>>>>>> 0ad6578 (Doxygen comment+ jump_speed upgrade)
         """
      
     def handle_jump_change(self, increase: bool) -> None:
