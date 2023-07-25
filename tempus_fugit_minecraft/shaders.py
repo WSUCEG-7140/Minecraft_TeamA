@@ -1,18 +1,21 @@
-from pyglet.gl import *
 import cmath as math
 from ctypes import *
+
+from pyglet.gl import *
 
 
 def to_cfloat(vector):
     """!
+
     @brief Function to convert a vector of numbers to a vector of c_float. OpenGL requires numeric values
         to be of the c_float type.
     @Param vector A vector with numbers
     @return A c_float class vector
+
     """
     return (c_float * len(vector))(*vector)
 
-    
+
 def c_float_vector_is_equal(vector1, vector2):
     """!
     @brief Compare two c_float vectors and check if they are equal. Used to check if the lighting values have changed.
@@ -24,14 +27,15 @@ def c_float_vector_is_equal(vector1, vector2):
     if len(vector1) != len(vector2):
         return False
 
-    for float in vector1:
-        if float != vector2[count]:
+    for value in vector1:
+        if value != vector2[count]:
             return False
         else:
             count = count + 1
     return True
 
-class Shaders():
+
+class Shaders:
     """!
     @brief The Shader class holds the attributes and functions 
         responsible for applying lighting and darkness to the game.
@@ -46,7 +50,7 @@ class Shaders():
         self.ambient = to_cfloat([3, 3, 3])
         self.diffuse = to_cfloat([3, 3, 3])
         self.specular = to_cfloat([3, 3, 3])
-        
+
     def turn_on_environment_light(self):
         """!
         @brief Activates the OpenGL light and sets up the enivronmental lighting at the top of the minecraft world.
@@ -57,15 +61,16 @@ class Shaders():
         """
         glEnable(GL_LIGHTING)
         glEnable(GL_LIGHT0)
-        lightpos_y = [0, -1, 0, 0.]
-        lightpos_y = to_cfloat(lightpos_y)
-        glLightfv(GL_LIGHT0, GL_POSITION, lightpos_y)
+        light_pos_y = [0, -1, 0, 0.]
+        light_pos_y = to_cfloat(light_pos_y)
+        glLightfv(GL_LIGHT0, GL_POSITION, light_pos_y)
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
         return 1
 
-    def enable_lighting(self):
+    @staticmethod
+    def enable_lighting():
         """!
         @brief This function enables GL_LIGHTING. GL_LIGHTING is what enables lighting effects.
         This enables the shadow and highlight effects.
@@ -74,7 +79,8 @@ class Shaders():
         """
         glEnable(GL_LIGHTING)
 
-    def disable_lighting(self):
+    @staticmethod
+    def disable_lighting():
         """!
         @brief This function switches GL_LIGHTING. This turns off the lighting effects. All the 
             shadow and the highlight effects will dissapear.
@@ -106,7 +112,7 @@ class Shaders():
         """
         self.diffuse = to_cfloat([red, green, blue])
         return self.diffuse
-    
+
     def adjust_specular_light(self, red, green, blue):
         """!
         @brief Adjusts the three types of light's color and intensity
@@ -118,7 +124,7 @@ class Shaders():
         """
         self.specular = to_cfloat([red, green, blue])
         return self.specular
-    
+
     def _update_light(self):
         """!
         @brief Takes the classes current ambient, diffuse and light 
@@ -128,37 +134,35 @@ class Shaders():
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
         glLightfv(GL_LIGHT0, GL_SPECULAR, self.specular)
-    
+
     def decrease_light_intensity(self, decrease_value):
         """!
         @brief Decreases the intensity of light.
-        @Param decrease_value A number that specifies how much to 
-            decrease light intensity
+        @Param decrease_value A number that specifies how much to decrease light intensity
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
         """
         self.ambient = to_cfloat([color - decrease_value for color in self.ambient])
         self.diffuse = to_cfloat([color - decrease_value for color in self.diffuse])
         self.specular = to_cfloat([color - decrease_value for color in self.specular])
         self._update_light()
-    
+
     def increase_light_intensity(self, increase_value):
         """!
         @brief Increases the intensity of light.
-        @Param increase_value A number that specifies how much to 
-            increase light intensity
+        @Param increase_value A number that specifies how much to increase light intensity
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
         """
         self.ambient = to_cfloat([color + increase_value for color in self.ambient])
-        self.diffuse =  to_cfloat([color + increase_value for color in self.diffuse])
-        self.specular =  to_cfloat([color + increase_value for color in self.specular])
+        self.diffuse = to_cfloat([color + increase_value for color in self.diffuse])
+        self.specular = to_cfloat([color + increase_value for color in self.specular])
         self._update_light()
 
     @staticmethod
     def normal_3D_vector_calc(vector):
         """!
-        @brief A calculation to get the normal 3D vector from a vector
-        @param vector   The vector that will be calculated
-        @return The normal 3D vector.
+        @brief Calculates the magnitude of a 3D vector.
+        @param vector A list representing the 3D vector.
+        @return The magnitude of the vector.
         """
         threeDVector = math.sqrt(vector[0] * vector[0] + vector[1] * vector[1] + vector[2] * vector[2])
         return threeDVector
