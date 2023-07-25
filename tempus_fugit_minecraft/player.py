@@ -296,7 +296,6 @@ class Player:
         """!
         @brief Slows the player's walking speed
         @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
-        @see [Issue#98](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/98)
         """
         self.walking_speed = self.walking_speed / 3
 
@@ -311,7 +310,6 @@ class Player:
     def sprint(self) -> None:
         """!
         @brief Increases the player's walking speed
-        @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
         @see [Issue#98](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/98)
         """
         self.walking_speed = self.walking_speed * 2
