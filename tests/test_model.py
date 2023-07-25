@@ -4,8 +4,8 @@ from unittest.mock import Mock
 from unittest.mock import patch
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.player import Player
+from tempus_fugit_minecraft.block import Block
 from tempus_fugit_minecraft.world import World
-from tempus_fugit_minecraft.block import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
 
 
 @pytest.fixture(scope="class")
@@ -34,26 +34,26 @@ class TestModel:
         """!
         @see [issue#57](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/57)
         """      
-        model.world[(0,50,0)] = LIGHT_CLOUD
+        model.world[(0,50,0)] = Block.LIGHT_CLOUD
         assert model.can_pass_through_block((0,50,0)) == True
 
-        model.world[(0,52,0)] = DARK_CLOUD
+        model.world[(0,52,0)] = Block.DARK_CLOUD
         assert model.can_pass_through_block((0,52,0)) == True
 
     def test_no_pass_through_objects_not_of_type_clouds(self, model):
         """!
         @see [issue#57](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/57)
         """
-        model.world[(0,10,0)] = STONE
+        model.world[(0,10,0)] = Block.STONE
         assert model.can_pass_through_block((0,10,0)) == False
 
-        model.world[(0,20,0)] = BRICK
+        model.world[(0,20,0)] = Block.BRICK
         assert model.can_pass_through_block((0,20,0)) == False
 
-        model.world[(0,30,0)] = GRASS
+        model.world[(0,30,0)] = Block.GRASS
         assert model.can_pass_through_block((0,30,0)) == False
 
-        model.world[(0,40,0)] = SAND
+        model.world[(0,40,0)] = Block.SAND
         assert model.can_pass_through_block((0,40,0)) == False
 
     def test__try_pass_through_different_objects_added_at_same_position(self, model):
@@ -63,13 +63,13 @@ class TestModel:
         block_type = model.world.get((0,100,0))
         assert block_type == None
 
-        model.world[(0,100,0)] = STONE
+        model.world[(0,100,0)] = Block.STONE
         assert model.can_pass_through_block((0,100,0)) == False
 
-        model.world[(0,100,0)] = LIGHT_CLOUD
+        model.world[(0,100,0)] = Block.LIGHT_CLOUD
         assert model.can_pass_through_block((0,100,0)) == True
 
-        model.world[(0,100,0)] = DARK_CLOUD
+        model.world[(0,100,0)] = Block.DARK_CLOUD
         assert model.can_pass_through_block((0,100,0)) == True
 
     def test_click_mouse_to_add_block_to_clouds(self, model):
@@ -156,7 +156,7 @@ class TestModel:
         """!
         @see [issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
-        model.world[(0, 0, 0)] = LIGHT_CLOUD
+        model.world[(0, 0, 0)] = Block.LIGHT_CLOUD
         with patch.object(model, 'hit_test', return_value = ((0, 0, 0), None)) as hit_test_method:
             with patch.object(model, 'add_block', return_value=None) as add_block_method:
                 model.handle_secondary_action()
@@ -164,7 +164,7 @@ class TestModel:
 
     #issue 68
     def test_handle_secondary_action_with_block_and_brick_one_add_block_call(self, model: Model):
-        model.world[(0, 0, 0)] = BRICK
+        model.world[(0, 0, 0)] = Block.BRICK
         with patch.object(model, 'hit_test', return_value = ((0, 0, 0), (1, 1, 1))) as hit_test_method:
             with patch.object(model, 'add_block', return_value=None) as add_block_method:
                 model.handle_secondary_action()
@@ -183,7 +183,7 @@ class TestModel:
         """!
         @see [issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
-        model.world[(0, 0, 0)] = STONE
+        model.world[(0, 0, 0)] = Block.STONE
         with patch.object(model, 'hit_test', return_value = ((0, 0, 0), None)) as hit_test_method:
             with patch.object(model, 'remove_block', return_value=None) as remove_block_method:
                 model.handle_primary_action()
@@ -193,7 +193,7 @@ class TestModel:
         """!
         @see [issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
-        model.world[(0, 0, 0)] = BRICK
+        model.world[(0, 0, 0)] = Block.BRICK
         with patch.object(model, 'hit_test', return_value = ((0, 0, 0), None)) as hit_test_method:
             with patch.object(model, 'remove_block', return_value=None) as remove_block_method:
                 model.handle_primary_action()
@@ -217,7 +217,7 @@ class TestModel:
         """!
         @see [issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
-        model.world[(1, 1, 0)] = BRICK
+        model.world[(1, 1, 0)] = Block.BRICK
         result = model.collide((0.49, 1, 0), model.player.PLAYER_HEIGHT_IN_BLOCKS)
         assert result == (0.25, 1, 0)
 

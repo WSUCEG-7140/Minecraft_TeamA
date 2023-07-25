@@ -2,7 +2,7 @@ import pytest
 import math
 from tempus_fugit_minecraft.player import Player
 from tempus_fugit_minecraft.world import World
-from tempus_fugit_minecraft.block import BRICK, GRASS, SAND, LIGHT_CLOUD, DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
+from tempus_fugit_minecraft.block import Block
 
 
 @pytest.fixture(scope = "class")
@@ -28,14 +28,14 @@ class TestPlayer:
         assert player.rotation_in_degrees == (0, 0)
         assert player.vertical_velocity_in_blocks_per_second == 0
         assert len(player.inventory) == 7
-        assert BRICK in player.inventory
-        assert GRASS in player.inventory
-        assert SAND in player.inventory
-        assert LIGHT_CLOUD in player.inventory
-        assert DARK_CLOUD in player.inventory
-        assert TREE_TRUNK in player.inventory
-        assert TREE_LEAVES in player.inventory
-        assert BRICK == player.selected_block
+        assert Block.BRICK in player.inventory
+        assert Block.GRASS in player.inventory
+        assert Block.SAND in player.inventory
+        assert Block.LIGHT_CLOUD in player.inventory
+        assert Block.DARK_CLOUD in player.inventory
+        assert Block.TREE_TRUNK in player.inventory
+        assert Block.TREE_LEAVES in player.inventory
+        assert Block.BRICK == player.selected_block
         assert player.walking_speed_in_blocks_per_second == 5
 
     def test_get_sight_vector_no_rotation(self, player: Player):

@@ -2,8 +2,7 @@ import random
 
 import pytest
 
-from tempus_fugit_minecraft.block import (BRICK, DARK_CLOUD, GRASS, LIGHT_CLOUD, SAND, STONE, TREE_LEAVES, TREE_TRUNK, 
-                                          Block)
+from tempus_fugit_minecraft.block import Block
 from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.world import World
 
@@ -43,8 +42,8 @@ class TestWorld:
     def test_clouds_created_dynamically(self):
         clouds = World.generate_clouds(World.WIDTH_FROM_ORIGIN_IN_BLOCKS, 100)
         unique_cloud_types = set([ block for cloud in clouds for block, _ in cloud ])
-        assert LIGHT_CLOUD in unique_cloud_types
-        assert DARK_CLOUD in unique_cloud_types
+        assert Block.LIGHT_CLOUD in unique_cloud_types
+        assert Block.DARK_CLOUD in unique_cloud_types
 
     #issue20; #issue28
     def test_cloud_positions(self):
@@ -81,9 +80,9 @@ class TestWorld:
     #issue80
     def test_generate_single_tree_default_values(self):
         tree = World.generate_single_tree(10,0,10)
-        trunk = [ (block, position) for block, position in tree if block == TREE_TRUNK ]
-        leaves = [ (block, position) for block, position in tree if block == TREE_LEAVES ]
-        assert (TREE_TRUNK, (10,0,10)) in trunk
+        trunk = [ (block, position) for block, position in tree if block == Block.TREE_TRUNK ]
+        leaves = [ (block, position) for block, position in tree if block == Block.TREE_LEAVES ]
+        assert (Block.TREE_TRUNK, (10,0,10)) in trunk
         assert len(trunk) == 4
 
         assert len(leaves) == len(tree) - len(trunk)
@@ -94,10 +93,10 @@ class TestWorld:
         trunk_height = 7
         tree = World.generate_single_tree(x,y,z, trunk_height=trunk_height)
 
-        trunk = [ (block, position) for block, position in tree if block == TREE_TRUNK ]
-        leaves = [ (block, position) for block, position in tree if block == TREE_LEAVES ]
+        trunk = [ (block, position) for block, position in tree if block == Block.TREE_TRUNK ]
+        leaves = [ (block, position) for block, position in tree if block == Block.TREE_LEAVES ]
 
-        assert (TREE_TRUNK, (x,y,z)) in trunk
+        assert (Block.TREE_TRUNK, (x,y,z)) in trunk
         assert len(trunk) == trunk_height        
         assert len(leaves) == len(tree) - trunk_height
 
@@ -129,16 +128,16 @@ class TestWorld:
 
         for tree in trees:
             block, (x, y, z) = tree[0]
-            assert block == TREE_TRUNK
+            assert block == Block.TREE_TRUNK
 
             grass_pos = (x, y - 1, z)
-            assert model.world[grass_pos] in [GRASS, SAND]
+            assert model.world[grass_pos] in [Block.GRASS, Block.SAND]
 
-            trunks = [ position for block, position in tree if block == TREE_TRUNK ]
-            leaves = [ position for block, position in tree if block == TREE_LEAVES ]
+            trunks = [ position for block, position in tree if block == Block.TREE_TRUNK ]
+            leaves = [ position for block, position in tree if block == Block.TREE_LEAVES ]
 
-            assert all([ model.world[position] == TREE_TRUNK for position in trunks ])
-            assert all([ model.world[position] == TREE_LEAVES for position in leaves ])
+            assert all([ model.world[position] == Block.TREE_TRUNK for position in trunks ])
+            assert all([ model.world[position] == Block.TREE_LEAVES for position in leaves ])
 
     # issue80
     def test_generate_trees_custom_values(self, model):
@@ -153,16 +152,16 @@ class TestWorld:
 
         for tree in trees:
             block, (x, y, z) = tree[0]
-            assert block == TREE_TRUNK
+            assert block == Block.TREE_TRUNK
 
             grass_pos = (x, y - 1, z)
-            assert model.world[grass_pos] in [GRASS, SAND]
+            assert model.world[grass_pos] in [Block.GRASS, Block.SAND]
 
-            trunks = [ position for block, position in tree if block == TREE_TRUNK ]
-            leaves = [ position for block, position in tree if block == TREE_LEAVES ]
+            trunks = [ position for block, position in tree if block == Block.TREE_TRUNK ]
+            leaves = [ position for block, position in tree if block == Block.TREE_LEAVES ]
 
-            assert all([ model.world[position] == TREE_TRUNK for position in trunks ])
-            assert all([ model.world[position] == TREE_LEAVES for position in leaves ])
+            assert all([ model.world[position] == Block.TREE_TRUNK for position in trunks ])
+            assert all([ model.world[position] == Block.TREE_LEAVES for position in leaves ])
 
     # issue80
     def test_check_tree_built_on_grass_or_sand(self, model):
@@ -173,10 +172,10 @@ class TestWorld:
 
         for tree in trees:
             block, (x, y, z) = tree[0]
-            assert block == TREE_TRUNK
+            assert block == Block.TREE_TRUNK
 
             grass_pos = (x, y - 1, z)
-            assert model.world[grass_pos] in [GRASS, SAND]
+            assert model.world[grass_pos] in [Block.GRASS, Block.SAND]
 
     # issue80
     def test_tree_built_on_top_of_ground_level_grass_or_sand(self, model):
@@ -185,13 +184,13 @@ class TestWorld:
         trees = World.generate_trees(model, 50)
         for single_tree in trees:
             _, (x, y, z) = single_tree[0]
-            assert model.world[(x, y - 1, z)] in [GRASS,SAND]
+            assert model.world[(x, y - 1, z)] in [Block.GRASS,Block.SAND]
 
     def test_generate_hill_blocks_are_either_grass_sand_brick(self):
         hill = World.generate_hill(0, 0)
         block_types = set([ block for block, _ in hill ])
         assert len(block_types) == 1
-        assert list(block_types)[0] in [GRASS, BRICK, SAND]
+        assert list(block_types)[0] in [Block.GRASS, Block.BRICK, Block.SAND]
 
     def test_generate_hill_blocks_y_position_between_minus_one_and_five(self):
         hill = World.generate_hill(0, 0)
@@ -235,9 +234,9 @@ class TestWorld:
 
     def test_generate_base_layer(self):
         base_layer = World.generate_base_layer()
-        grass = [position for block, position in base_layer if block == GRASS]
+        grass = [position for block, position in base_layer if block == Block.GRASS]
         assert len(grass) == (1 + 2 * World.WIDTH_FROM_ORIGIN_IN_BLOCKS) ** 2
-        stone = [position for block, position in base_layer if block == STONE]
+        stone = [position for block, position in base_layer if block == Block.STONE]
         assert len(stone) > (1 + 2 * World.WIDTH_FROM_ORIGIN_IN_BLOCKS) ** 2
         for (_, y, _) in grass:
             assert y == -2
@@ -248,4 +247,4 @@ class TestWorld:
     def __generate_test_terrain(self, model:Model):
         for x in range(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
             for z in range(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
-                model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
+                model.add_block((x, 0, z), random.choice([Block.GRASS,Block.SAND]), immediate=False)

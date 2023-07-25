@@ -7,7 +7,6 @@ from typing import Callable
 from pyglet.gl import GL_QUADS
 from pyglet.graphics import TextureGroup, Batch
 from pyglet import image
-
 from tempus_fugit_minecraft import sound_list
 from tempus_fugit_minecraft.block import Block
 from tempus_fugit_minecraft.player import Player
