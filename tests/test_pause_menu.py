@@ -110,6 +110,7 @@ class TestPauseMenu:
         assert window.resume_label.color == (150, 150, 150, 255)
         assert isinstance(window._mouse_cursor, type(window.get_system_mouse_cursor(window.CURSOR_HAND)))
 
+    #[Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
     def test_on_mouse_drag(self, window):
         window.pause_game()
         window.on_mouse_drag(window.volume_knob_sprite.x + 3, window.volume_knob_sprite.y + 5, 100, 0, pyglet.window.mouse.LEFT, None)

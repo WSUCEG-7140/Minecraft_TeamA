@@ -26,11 +26,13 @@ class TestSound:
         assert sound.play_sound()
 
 class TestSoundList:
+    #[Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
     def test_add_sound_to_dictionary(self, sound_list):
         sound_list.add_sound_to_dictionary('rock_hit', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
         assert sound_list.dictionary['rock_hit']
         assert not sound_list.add_sound_to_dictionary('rock_hit', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
     
+    #[Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
     def test_adjust_all_volume(self, sound_list):
         sound_list.add_sound_to_dictionary('rock_hit1', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
         sound_list.add_sound_to_dictionary('rock_hit2', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
@@ -49,7 +51,8 @@ class TestSoundList:
 
         sound_list.adjust_all_volume(2)
         assert sound_list.dictionary['rock_hit1'].player.volume == 1
-
+        
+    #[Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
     def test_set_all_volume(self, sound_list):
         sound_list.add_sound_to_dictionary('rock_hit1', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
         sound_list.add_sound_to_dictionary('rock_hit2', Sound(parent_directory + "/assets/sound/rock_hit.wav"))
