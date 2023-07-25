@@ -109,3 +109,8 @@ class TestPauseMenu:
         window.on_mouse_motion(window.resume_label.x, window.resume_label.y, 1, 0)
         assert window.resume_label.color == (150, 150, 150, 255)
         assert isinstance(window._mouse_cursor, type(window.get_system_mouse_cursor(window.CURSOR_HAND)))
+
+    def test_on_mouse_drag(self, window):
+        window.pause_game()
+        window.on_mouse_drag(window.volume_knob_sprite.x + 3, window.volume_knob_sprite.y + 5, 100, 0, pyglet.window.mouse.LEFT, None)
+        assert window.volume_knob_sprite.x > window.full_volume_position

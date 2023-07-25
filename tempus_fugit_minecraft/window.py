@@ -189,7 +189,17 @@ class Window(pyglet.window.Window):
             elif button == pyglet.window.mouse.LEFT:
                 self.model.handle_primary_action()
 
-    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+    def on_mouse_drag(self, x, y, dx, dy, buttons=pyglet.window.mouse.LEFT, modifiers=None):
+        """!
+            @brief Mouse drag event for the volume slider, when moving the slider
+            to the right, volume decreases and to the left volume increases.
+            @params x   int value that determines the initial mouse press position on the x axis
+            @params y   int value that determines the initial mouse press position on the y axis
+            @params dx  int value that represents the change in position from inital x position
+            @params dy  int value that represents the change in positoin from inital y position
+            @params buttons The button being pressed on the mouse to activate event conditions
+            @params modifiers   The keyboard key being pressed to activate event conditions
+        """
         if self.full_volume_position < x < self.full_volume_position + self.volume_slider_sprite.width:
             if self.volume_knob_sprite.y < y < self.volume_knob_sprite.y + self.volume_knob_sprite.height:
                 self.volume_knob_sprite.x += dx
