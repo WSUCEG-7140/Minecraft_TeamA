@@ -16,7 +16,7 @@ class Player:
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         # About the height of a block.
-        self.MAX_JUMP_HEIGHT = 1.0
+        self.MAX_JUMP_HEIGHT_BLOCK = 1.0
         self.MAX_FALL_SPEED = 50
         self.FLYING_SPEED = 15
         self.GRAVITY = 20.0
@@ -28,9 +28,9 @@ class Player:
         # for the time at which you achieve maximum height, where a is the acceleration
         # due to gravity and v_t = 0. This gives:
         #    t = - v_0 / a
-        # Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in
+        # Use t and the desired MAX_JUMP_HEIGHT_BLOCK to solve for v_0 (jump speed) in
         #    s = s_0 + v_0 * t + (a * t^2) / 2
-        self.jump_speed = int(math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT))
+        self.jump_speed = int(math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT_BLOCK))
         self.MAX_JUMP_SPEED = self.jump_speed + 10
         self.MIN_JUMP_SPEED = self.jump_speed
         self.PLAYER_HEIGHT = 2
