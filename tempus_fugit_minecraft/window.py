@@ -191,8 +191,10 @@ class Window(pyglet.window.Window):
 
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.full_volume_position < x < self.full_volume_position + self.volume_slider_sprite.width:
-            self.volume_knob_sprite.x += dx
-            self.model.
+            if self.volume_knob_sprite.y < y < self.volume_knob_sprite.y + self.volume_knob_sprite.height:
+                self.volume_knob_sprite.x += dx
+                self.model.background_noise.adjust_all_volume(-dx/self.volume_slider_image.width)
+                self.model.sound_effects.adjust_all_volume(-dx/self.volume_slider_image.width)
 
     @staticmethod
     def within_label(x: int, y: int, label: pyglet.text.Label) -> bool:
