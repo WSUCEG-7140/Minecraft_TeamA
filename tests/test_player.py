@@ -407,3 +407,21 @@ class TestPlayer:
         player.position = (79 , (WORLD_SIZE+1000) , 0)
         player.check_player_within_world_boundaries()
         assert player.position == (79 , (WORLD_SIZE+1000) , 0)
+
+    #issue97
+    def test_slow_walk(self, player):
+        assert player.walking_speed == 5
+        player.slow_walk()
+        assert player.walking_speed == 5/3
+
+    #issue98
+    def test_sprint(self, player):
+        assert player.walking_speed == 5
+        player.sprint()
+        assert player.walking_speed == 10
+
+    #issue97; #issue98
+    def test_reset_walk_speed(self, player):
+        player.walking_speed = 10
+        player.reset_walk_speed()
+        assert player.walking_speed == 5
