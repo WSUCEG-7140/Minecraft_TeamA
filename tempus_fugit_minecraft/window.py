@@ -63,7 +63,7 @@ class Window(pyglet.window.Window):
 
         self.paused = False
 
-        """Solves"""
+        """Solves issue #"""
         self.volume_slider_image = load('assets/volume_slider.png')
         self.volume_knob_image = load('assets/volume_knob.png')
         self.volume_control_batch = pyglet.graphics.Batch()
@@ -192,6 +192,7 @@ class Window(pyglet.window.Window):
     def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         if self.full_volume_position < x < self.full_volume_position + self.volume_slider_sprite.width:
             self.volume_knob_sprite.x += dx
+            self.model.
 
     @staticmethod
     def within_label(x: int, y: int, label: pyglet.text.Label) -> bool:

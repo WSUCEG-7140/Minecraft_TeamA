@@ -83,8 +83,10 @@ class Model(object):
         self.player = Player()
 
         self._initialize()
-        self.background_noise = sound_list.background_sound_list.get_sound('wind_blowing')
-        self.background_noise.play_sound()
+        self.sound_effects = sound_list.sound_effects_list
+        self.background_noise = sound_list.background_sound_list
+        self.current_background_noise = self.background_noise.get_sound('wind_blowing')
+        self.current_background_noise.play_sound()
 
     def _initialize(self, immediate=False) -> None:
         """!
@@ -198,7 +200,7 @@ class Model(object):
         if immediate:
             if position in self.shown:
                 self.hide_block(position)
-                sound_list.sound_effects_list.get_sound('rock_hit').play_sound()
+                self.sound_effects.get_sound('rock_hit').play_sound()
             self.check_neighbors(position)
 
     def check_neighbors(self, position: tuple) -> None:
