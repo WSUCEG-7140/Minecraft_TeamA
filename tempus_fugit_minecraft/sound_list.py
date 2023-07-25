@@ -43,6 +43,19 @@ class SoundList():
                 sound.player.volume = 0
             else:
                 sound.player.volume += volume_increment
+    
+    def set_all_volume(self, volume):
+        """!
+            @brief The adjust_volume function allows a direct setting of the volume of all sounds in the class.
+            @param volume A float value that determines the volume
+        """
+        for sound in self.dictionary.values():
+            if volume > 1:
+                sound.player.volume = 1
+            elif volume < 0:
+                sound.player.volume = 0
+            else:
+                sound.player.volume == volume
 
     def get_sound(self, sound_name:str):
         """!
@@ -55,6 +68,7 @@ class SoundList():
             return sound
         except:
             return 0
+
 
 
 
