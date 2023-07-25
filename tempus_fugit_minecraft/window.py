@@ -441,6 +441,7 @@ class Window(pyglet.window.Window):
         @param dt the amount of time that has elapsed since the last 
             update to environment lights.
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#18](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/18)
         """
         self.game_time = self.game_time + 1
         hour = math.fmod(self.game_time, 24)

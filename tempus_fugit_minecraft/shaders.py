@@ -91,6 +91,7 @@ class Shaders():
         @Param blue a number that specifies the intensity of blue light
         @return returns the c_float vector that corresponds to the ambient
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#18](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/18)
         """
         self.ambient = to_cfloat([red, green, blue])
         return self.ambient
@@ -103,6 +104,7 @@ class Shaders():
         @Param blue a number that specifies the intensity of blue light
         @return returns the c_float vector that corresponds to the diffuse light
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#18](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/18)
         """
         self.diffuse = to_cfloat([red, green, blue])
         return self.diffuse
@@ -115,6 +117,7 @@ class Shaders():
         @Param blue a number that specifies the intensity of blue light
         @return returns the c_float vector that corresponds to the specular light
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#18](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/18)
         """
         self.specular = to_cfloat([red, green, blue])
         return self.specular
@@ -124,6 +127,7 @@ class Shaders():
         @brief Takes the classes current ambient, diffuse and light 
             values and updates the GL_LIGHT0 values
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#18](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/18)
         """
         glLightfv(GL_LIGHT0, GL_AMBIENT, self.ambient)
         glLightfv(GL_LIGHT0, GL_DIFFUSE, self.diffuse)
@@ -135,6 +139,7 @@ class Shaders():
         @Param decrease_value A number that specifies how much to 
             decrease light intensity
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#18](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/18)
         """
         self.ambient = to_cfloat([color - decrease_value for color in self.ambient])
         self.diffuse = to_cfloat([color - decrease_value for color in self.diffuse])
@@ -147,6 +152,7 @@ class Shaders():
         @Param increase_value A number that specifies how much to 
             increase light intensity
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#18](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/18)
         """
         self.ambient = to_cfloat([color + increase_value for color in self.ambient])
         self.diffuse =  to_cfloat([color + increase_value for color in self.diffuse])
