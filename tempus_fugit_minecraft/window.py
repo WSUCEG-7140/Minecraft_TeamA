@@ -63,12 +63,16 @@ class Window(pyglet.window.Window):
 
         self.paused = False
 
+        """Solves"""
         self.volume_slider_image = load('assets/volume_slider.png')
         self.volume_knob_image = load('assets/volume_knob.png')
-
         self.volume_control_batch = pyglet.graphics.Batch()
-        self.volume_slider_sprite = Sprite(self.volume_slider_image, x=WINDOW_WIDTH // 16, y=WINDOW_HEIGHT // 8 * 7, batch=self.volume_control_batch)
-        self.volume_knob_sprite = Sprite(self.volume_knob_image, x=WINDOW_WIDTH // 16, y=WINDOW_HEIGHT // 8 * 7, batch=self.volume_control_batch)
+        self.volume_back = pyglet.graphics.OrderedGroup(1)
+        self.volume_front = pyglet.graphics.OrderedGroup(0)
+        self.volume_slider_sprite = Sprite(self.volume_slider_image, x=WINDOW_WIDTH // 16, y=WINDOW_HEIGHT // 8 * 7, batch=self.volume_control_batch, group=self.volume_back)
+        self.volume_knob_sprite = Sprite(self.volume_knob_image, x=WINDOW_WIDTH // 16, y=WINDOW_HEIGHT // 8 * 7, batch=self.volume_control_batch, group=self.volume_front)
+        self.full_volume_position = self.volume_knob_sprite.x
+
 
         # The label that is displayed in the top left of the canvas.
         self.label = pyglet.text.Label(
@@ -184,6 +188,10 @@ class Window(pyglet.window.Window):
                 
             elif button == pyglet.window.mouse.LEFT:
                 self.model.handle_primary_action()
+
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
+        if self.full_volume_position < x < self.full_volume_position + self.volume_slider_sprite.width:
+            self.volume_knob_sprite.x += dx
 
     @staticmethod
     def within_label(x: int, y: int, label: pyglet.text.Label) -> bool:
