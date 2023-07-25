@@ -114,22 +114,24 @@ class Player:
             dz = 0.0
         return dx, dy, dz
  
-    """Issue #71 """
     def increase_speed(self) -> None:
         """!
         @brief Increases the walking speed of the player.
+        @see [Issue#37](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/37)
+        @see [Issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
-        @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
+        @see [Issue#71](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/71)
         """
         if self.walking_speed <= self.MAX_SPEAD:
             self.walking_speed += self.WALK_SPEED_INCREMENT
- 
-    """Issue #71 """   
+    
     def decrease_speed(self) -> None:
         """!
         @brief Decreases the walking speed of the player
-        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
+        @see [Issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
+        @see [Issue#71](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/71)
         """
         if self.walking_speed > self.MIN_SPEAD:
             self.walking_speed -= self.WALK_SPEED_INCREMENT

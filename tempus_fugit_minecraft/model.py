@@ -390,6 +390,7 @@ class Model(object):
         """!
         @brief Handles the player's secondary action
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
+        @see [Issue#42](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/42)
         """
         vector = self.player.get_sight_vector()
         position, previous = self.hit_test(self.player.position, vector)
@@ -435,6 +436,7 @@ class Model(object):
         @param height : int or float The height of the player.
         @return position : tuple of len 3 The new position of the player taking into account collisions.
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
+        @see [Issue#57](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/57)
         """
         # How much overlap with a dimension of a surrounding block you
         # need to have to count as a collision. If 0, touching terrain

@@ -129,7 +129,8 @@ class Window(pyglet.window.Window):
         @param y The y-coordinates of the mouse click. Always center of the screen if the mouse is captured.
         @param button Number representing mouse button that was clicked. 1 = left button, 4 = right button.
         @param modifiers Number representing any modifying keys that were pressed when the mouse button was clicked.
-        """
+        @see [issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
+         """
         if self.paused:
             if self.within_label(x, y, self.resume_label):
                 self.resume_game()
@@ -163,6 +164,7 @@ class Window(pyglet.window.Window):
         @param y The y-coordinates of the mouse click. Always center of the screen if the mouse is captured.
         @param dx The movement of the mouse.
         @param dy The movement of the mouse.
+        @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
         if self.paused:
             if self.within_label(x, y, self.resume_label) or self.within_label(x, y, self.quit_label):
@@ -298,10 +300,11 @@ class Window(pyglet.window.Window):
         self.resume_label.y = height // 2 - 45
         self.quit_label.y = height // 2 - 90
 
-    """ Issue 68 Configure OpenGL to draw in 2d."""
+    
     def set_2d(self) -> None:
         """!
         @brief Configure OpenGL to draw in 2d.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         width, height = self.get_size()
         glDisable(GL_DEPTH_TEST)
@@ -313,10 +316,10 @@ class Window(pyglet.window.Window):
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
-    """issue#68 Configure OpenGL to draw in 3d."""
     def set_3d(self) -> None:
         """!
         @brief Configure OpenGL to draw in 3d.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         width, height = self.get_size()
         glEnable(GL_DEPTH_TEST)
@@ -333,10 +336,10 @@ class Window(pyglet.window.Window):
         x, y, z = self.model.player.position
         glTranslatef(-x, -y, -z)
 
-    """issue#68 Called by pyglet to draw the canvas."""
     def on_draw(self):
         """!
         @brief Called by pyglet to draw the canvas.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.clear()
         self.set_3d()
@@ -387,10 +390,10 @@ class Window(pyglet.window.Window):
         self.resume_label.draw()
         self.quit_label.draw()
 
-    """ issue#68 Draw black edges around the block that is currently under the crosshairs."""
     def draw_focused_block(self) -> None:
         """!
         @brief Draw black edges around the block that is currently under the crosshair.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.model.player.get_sight_vector()
         block, _ = self.model.hit_test(self.model.player.position, vector)
@@ -402,10 +405,10 @@ class Window(pyglet.window.Window):
             pyglet.graphics.draw(24, GL_QUADS, ('v3f/static', vertex_data))
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
-    """issue#68 Draw the label in the top left of the screen."""
     def draw_label(self) -> None:
         """!
         @brief Draw the label in the top left of the screen.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         x, y, z = self.model.player.position
         self.label.text = '%02d (%.2f, %.2f, %.2f) %d / %d' % (
@@ -413,10 +416,10 @@ class Window(pyglet.window.Window):
             len(self.model._shown), len(self.model.world))
         self.label.draw()
 
-    """issue#68 Draw the crosshairs in the center of the screen."""
     def draw_reticle(self) -> None:
         """!
         @brief Draw the crosshair in the center of the screen.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
