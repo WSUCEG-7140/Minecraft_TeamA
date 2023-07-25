@@ -62,12 +62,12 @@ SAND = Block("SAND", ((1, 1), (1, 1), (1, 1)))
 BRICK = Block("BRICK", ((2, 0), (2, 0), (2, 0)))
 STONE = Block("STONE", ((2, 1), (2, 1), (2, 1)), is_breakable=False, can_build_on=True)
 LIGHT_CLOUD = Block("LIGHT_CLOUD", ((3, 0), (3, 0), (3, 0)), is_breakable=True, is_collidable=False, can_build_on=True)
-"""! issue#33 and issue34 were created on june 19 to let players create clouds anywhere and may build their homes on clouds
-     issue#42 was created on june 21 that block the user to build on clouds!
-     @w1158mxs mentioned on june 22 in issue#42 that will use keys 4,5 to build clouds
+"""! Issue #33 and issue#34 were created on June 19 to let players create clouds anywhere and may build their homes on clouds
+     issue#42 was created on June 21 that block the user to build on clouds!
+     @w1158mxs mentioned on June 22 in issue#42 that will use keys 4,5 to build clouds
      while issue#80 used keys 4,5 for Tree and Leaves.
      @w1158mxs use 6,7 to build clouds
-     @see README.md file if you programmer changed these keys better call 911 
+     @see README.md file if your programmer changed these keys better call 911 
 """
 DARK_CLOUD = Block("DARK_CLOUD", ((3, 1), (3, 1), (3, 1)), is_breakable=False, is_collidable=False, can_build_on=False)
 TREE_TRUNK = Block("TREE_TRUNK", ((1, 2), (1, 2), (2, 2)), is_breakable=True, is_collidable=True, can_build_on=True)
