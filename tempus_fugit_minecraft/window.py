@@ -115,13 +115,13 @@ class Window(pyglet.window.Window):
         super(Window, self).set_exclusive_mouse(exclusive)
         self.exclusive = exclusive
 
-    def update(self, dt: float) -> None:
+    def update(self, delta_time_in_seconds: float) -> None:
         """!
         @brief This method is scheduled to be called repeatedly by the pyglet clock.
-        @param dt The change in time since the last call.
+        @param delta_time_in_seconds The change in time since the last call.
         """
         if not self.paused:
-            self.model.update(dt)
+            self.model.update(delta_time_in_seconds)
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """!
@@ -209,9 +209,9 @@ class Window(pyglet.window.Window):
             return
 
         if symbol in [key.Q, key.E]:
-            increase_speed = symbol == key.Q
+            increase_walk_speed = symbol == key.Q
             increase_jump_speed = symbol == key.Q
-            self.model.handle_speed_change(increase_speed)
+            self.model.handle_walk_speed_change(increase_walk_speed)
             self.model.handle_jump_change(increase_jump_speed)
             return
 
@@ -362,10 +362,10 @@ class Window(pyglet.window.Window):
         gluPerspective(65.0, width / float(height), 0.1, 60.0)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        x, y = self.model.player.rotation
+        x, y = self.model.player.rotation_in_degrees
         glRotatef(x, 0, 1, 0)
         glRotatef(-y, math.cos(math.radians(x)), 0, math.sin(math.radians(x)))
-        x, y, z = self.model.player.position
+        x, y, z = self.model.player.position_in_blocks_from_origin
         glTranslatef(-x, -y, -z)
 
     def on_draw(self):
@@ -428,7 +428,7 @@ class Window(pyglet.window.Window):
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.model.player.get_sight_vector()
-        block, _ = self.model.hit_test(self.model.player.position, vector)
+        block, _ = self.model.hit_test(self.model.player.position_in_blocks_from_origin, vector)
         if block:
             x, y, z = block
             vertex_data = cube_vertices(x, y, z, 0.51)
@@ -442,7 +442,7 @@ class Window(pyglet.window.Window):
         @brief Draw the label in the top left of the screen.
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
-        x, y, z = self.model.player.position
+        x, y, z = self.model.player.position_in_blocks_from_origin
         self.label.text = '%02d (%.2f, %.2f, %.2f) %d / %d' % (
             pyglet.clock.get_fps(), x, y, z,
             len(self.model._shown), len(self.model.world))
@@ -456,12 +456,12 @@ class Window(pyglet.window.Window):
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
 
-    def update_day_night(self, dt: float) -> float:
+    def update_day_night(self, delta_time_in_seconds: float) -> float:
         """!
         @brief Updates the environments lights. When time elapses, the lighting will change.
             From the in game time between 0-11 light decreases while from 12-23 light increases
-        @param dt the amount of time that has elapsed since the last update to environment lights.
-        @return dt the amount of time that has elapsed since the last update to environment lights.
+        @param delta_time_in_seconds the amount of time that has elapsed since the last update to environment lights.
+        @return delta_time_in_seconds the amount of time that has elapsed since the last update to environment lights.
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
         """
         self.game_time = self.game_time + 1
@@ -471,4 +471,4 @@ class Window(pyglet.window.Window):
             self.shaders.decrease_light_intensity(increase_decrease_value)
         else:
             self.shaders.increase_light_intensity(increase_decrease_value)
-        return dt
+        return delta_time_in_seconds

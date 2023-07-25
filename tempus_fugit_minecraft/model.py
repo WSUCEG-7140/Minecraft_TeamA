@@ -309,9 +309,9 @@ class Model(object):
         @see [Issue#42](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/42)
         """
         vector = self.player.get_sight_vector()
-        position, previous = self.hit_test(self.player.position, vector)
+        position, previous = self.hit_test(self.player.position_in_blocks_from_origin, vector)
         if previous and position and self.world[position].can_build_on:
-            self.add_block(previous, self.player.block)
+            self.add_block(previous, self.player.selected_block)
 
     def handle_primary_action(self) -> None:
         """!
@@ -319,18 +319,18 @@ class Model(object):
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.player.get_sight_vector()
-        position, _ = self.hit_test(self.player.position, vector)
+        position, _ = self.hit_test(self.player.position_in_blocks_from_origin, vector)
         if position and self.world[position].is_breakable:
             self.remove_block(position)
 
-    def update(self, dt: float) -> None:
+    def update(self, delta_time_in_seconds: float) -> None:
         """!
         @brief This method is scheduled to be called repeatedly by the pyglet clock.
-        @param dt : float The change in time (seconds) since the last call.
+        @param delta_time_in_seconds : float The change in time (seconds) since the last call.
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.process_queue()
-        sector = sectorize(self.player.position)
+        sector = sectorize(self.player.position_in_blocks_from_origin)
         if sector != self.sector:
             self.change_sectors(self.sector, sector)
             if self.sector is None:
@@ -340,9 +340,9 @@ class Model(object):
         self.player.check_player_within_world_boundaries()
 
         moves = 8
-        dt = min(dt, 0.2)
+        delta_time_in_seconds = min(delta_time_in_seconds, 0.2)
         for _ in xrange(moves):
-            self.player.update(dt / moves, self.collide)
+            self.player.update(delta_time_in_seconds / moves, self.collide)
 
     def collide(self, position: tuple, height: int) -> tuple:
         """!
@@ -381,7 +381,7 @@ class Model(object):
                     if face == (0, -1, 0) or face == (0, 1, 0):
                         # You are colliding with the ground or ceiling, so stop
                         # falling / rising.
-                        self.player.dy = 0
+                        self.player.vertical_velocity_in_blocks_per_second = 0
                     break
         return tuple(p)
 
@@ -402,16 +402,16 @@ class Model(object):
         """
         self.player.select_active_item(index)
 
-    def handle_speed_change(self, increase: bool) -> None:
+    def handle_walk_speed_change(self, increase_walk_speed: bool) -> None:
         """!
         @brief Handles the speed change event
-        @param increase A boolean indicator of whether we increase or decrease the speed
+        @param increase_walk_speed A boolean indicator of whether we increase or decrease the speed
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
-        if increase:
-            self.player.increase_speed()
+        if increase_walk_speed:
+            self.player.increase_walk_speed()
         else:
-            self.player.decrease_speed()
+            self.player.decrease_walk_speed()
 
     def handle_jump(self) -> None:
         """!

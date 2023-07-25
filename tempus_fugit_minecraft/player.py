@@ -15,13 +15,13 @@ class Player:
         @brief Initializes an instance of the Player class
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        # About the height of a block.
-        self.MAX_JUMP_HEIGHT = 1.0
-        self.MAX_FALL_SPEED = 50
-        self.FLYING_SPEED = 15
-        self.GRAVITY = 20.0
-        self.MAX_SPEAD = 15
-        self.MIN_SPEAD = 5
+        self.MAX_JUMP_HEIGHT_IN_BLOCKS = 1.0
+        self.PLAYER_HEIGHT_IN_BLOCKS = 2
+        self.MAX_FALL_SPEED_IN_BLOCKS_PER_SECOND = 50
+        self.FLYING_SPEED_IN_BLOCKS_PER_SECOND = 15
+        self.GRAVITY_IN_BLOCKS_PER_SECOND_SQUARED = 20.0
+        self.MAX_SPEED_IN_BLOCKS_PER_SECOND = 15
+        self.MIN_SPEED_IN_BLOCKS_PER_SECOND = 5
 
         # To derive the formula for calculating jump speed, first solve
         #    v_t = v_0 + a * t
@@ -30,12 +30,13 @@ class Player:
         #    t = - v_0 / a
         # Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in
         #    s = s_0 + v_0 * t + (a * t^2) / 2
-        self.jump_speed = int(math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT))
-        self.MAX_JUMP_SPEED = self.jump_speed + 10
-        self.MIN_JUMP_SPEED = self.jump_speed
-        self.PLAYER_HEIGHT = 2
-        self.WALK_SPEED_INCREMENT = 5
-        self.walking_speed = self.WALK_SPEED_INCREMENT
+        self.INITIAL_JUMP_SPEED_IN_BLOCKS_PER_SECOND = int(math.sqrt(2 * self.GRAVITY_IN_BLOCKS_PER_SECOND_SQUARED * self.MAX_JUMP_HEIGHT_IN_BLOCKS))
+        self.MAX_JUMP_SPEED_IN_BLOCKS_PER_SECOND = self.INITIAL_JUMP_SPEED_IN_BLOCKS_PER_SECOND + 10
+        self.MIN_JUMP_SPEED_IN_BLOCKS_PER_SECOND = self.INITIAL_JUMP_SPEED_IN_BLOCKS_PER_SECOND
+        self.WALK_SPEED_IN_BLOCKS_PER_SECOND = 5
+
+        self.jump_speed_in_blocks_per_second = self.INITIAL_JUMP_SPEED_IN_BLOCKS_PER_SECOND
+        self.walking_speed_in_blocks_per_second = self.WALK_SPEED_IN_BLOCKS_PER_SECOND
        
         # When flying gravity has no effect and speed is increased.
         self.flying = False
@@ -46,22 +47,22 @@ class Player:
 
         # First element is -1 when moving forward, 1 when moving back, and 0 otherwise.
         # The second element is -1 when moving left, 1 when moving right, and 0 otherwise.
-        self.strafe = [0, 0]
+        self.strafe_unit_vector = [0, 0]
         # Current (x, y, z) position in the world, specified with floats. Note that, perhaps unlike in math class,
         # the y-axis is the vertical axis.
-        self.position = (0, 0, 0)
+        self.position_in_blocks_from_origin = (0, 0, 0)
         # First element is rotation of the player in the x-z plane (ground plane) measured from the z-axis down. The
         # second is the rotation angle from the ground plane up. Rotation is in degrees.
 
         # The vertical plane rotation ranges from -90 (looking straight down) to 90 (looking straight up). The
         # horizontal rotation range is unbounded.
-        self.rotation = (0, 0)
+        self.rotation_in_degrees = (0, 0)
         # Velocity in the y (upward) direction.
-        self.dy = 0
+        self.vertical_velocity_in_blocks_per_second = 0
         # A list of blocks the player can place. Hit num keys to cycle.
         self.inventory = [BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES, LIGHT_CLOUD, DARK_CLOUD]
         # The current block the user can place. Hit num keys to cycle.
-        self.block = self.inventory[0]
+        self.selected_block = self.inventory[0]
 
     def get_sight_vector(self) -> tuple:
         """!
@@ -69,7 +70,7 @@ class Player:
         @return A tuple representing the 3D vector the player is looking toward
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        x, y = self.rotation
+        x, y = self.rotation_in_degrees
         # y ranges from -90 to 90, or -pi/2 to pi/2, so m ranges from 0 to 1 and is 1 when looking ahead parallel to
         # the ground and 0 when looking straight up or down.
         m = math.cos(math.radians(y))
@@ -85,19 +86,19 @@ class Player:
         @return A tuple containing the velocity in x, y, and z respectively.
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        if any(self.strafe):
-            x, y = self.rotation
-            strafe = math.degrees(math.atan2(*self.strafe))
+        if any(self.strafe_unit_vector):
+            x, y = self.rotation_in_degrees
+            strafe = math.degrees(math.atan2(*self.strafe_unit_vector))
             y_angle = math.radians(y)
             x_angle = math.radians(x + strafe)
             if self.flying:
                 m = math.cos(y_angle)
                 dy = math.sin(y_angle)
-                if self.strafe[1]:
+                if self.strafe_unit_vector[1]:
                     # Moving left or right.
                     dy = 0.0
                     m = 1
-                if self.strafe[0] > 0:
+                if self.strafe_unit_vector[0] > 0:
                     # Moving backwards.
                     dy *= -1
                 # When you are flying up or down, you have less left and right
@@ -114,7 +115,7 @@ class Player:
             dz = 0.0
         return dx, dy, dz
  
-    def increase_speed(self) -> None:
+    def increase_walk_speed(self) -> None:
         """!
         @brief Increases the walking speed of the player.
         @see [Issue#37](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/37)
@@ -124,10 +125,10 @@ class Player:
         @see [Issue#71](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/71)
 
         """
-        if self.walking_speed <= self.MAX_SPEAD:
-            self.walking_speed += self.WALK_SPEED_INCREMENT
+        if self.walking_speed_in_blocks_per_second <= self.MAX_SPEED_IN_BLOCKS_PER_SECOND:
+            self.walking_speed_in_blocks_per_second += self.WALK_SPEED_IN_BLOCKS_PER_SECOND
     
-    def decrease_speed(self) -> None:
+    def decrease_walk_speed(self) -> None:
         """!
         @brief Decreases the walking speed of the player
         @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
@@ -135,60 +136,60 @@ class Player:
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         @see [Issue#71](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/71)
         """
-        if self.walking_speed > self.MIN_SPEAD:
-            self.walking_speed -= self.WALK_SPEED_INCREMENT
+        if self.walking_speed_in_blocks_per_second > self.MIN_SPEED_IN_BLOCKS_PER_SECOND:
+            self.walking_speed_in_blocks_per_second -= self.WALK_SPEED_IN_BLOCKS_PER_SECOND
    
     def increase_jump_speed(self) -> None:  
         """!
         @brief increase the jump speed of the player
         @see [issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
         """     
-        if self.jump_speed <= self.MAX_JUMP_SPEED: 
-                self.jump_speed = self.jump_speed + 5
+        if self.jump_speed_in_blocks_per_second <= self.MAX_JUMP_SPEED_IN_BLOCKS_PER_SECOND: 
+                self.jump_speed_in_blocks_per_second = self.jump_speed_in_blocks_per_second + 5
             
     def decrease_jump_speed(self) -> None:
         """!
         @brief decreases the jump speed of the player
         @see [issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
         """
-        if self.jump_speed > self.MIN_JUMP_SPEED:       
-            self.jump_speed = self.jump_speed - 5
+        if self.jump_speed_in_blocks_per_second > self.MIN_JUMP_SPEED_IN_BLOCKS_PER_SECOND:       
+            self.jump_speed_in_blocks_per_second = self.jump_speed_in_blocks_per_second - 5
 
     def move_forward(self) -> None:
         """!
         @brief Move one space to the front
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        self.strafe[0] -= 1
+        self.strafe_unit_vector[0] -= 1
 
     def move_backward(self) -> None:
         """!
         @brief Move one space to the rear
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        self.strafe[0] += 1
+        self.strafe_unit_vector[0] += 1
 
     def move_left(self) -> None:
         """!
         @brief Move one space to the left
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        self.strafe[1] -= 1
+        self.strafe_unit_vector[1] -= 1
 
     def move_right(self) -> None:
         """!
         @brief Move one space to the right
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        self.strafe[1] += 1
+        self.strafe_unit_vector[1] += 1
 
     def jump(self) -> None:
         """!
         @brief If the user is grounded, jump
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        if self.dy == 0:
-            self.dy = self.jump_speed
+        if self.vertical_velocity_in_blocks_per_second == 0:
+            self.vertical_velocity_in_blocks_per_second = self.jump_speed_in_blocks_per_second
 
     def select_active_item(self, index: int) -> None:
         """!
@@ -197,35 +198,35 @@ class Player:
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         selected_index = index % len(self.inventory)
-        self.block = self.inventory[selected_index]
+        self.selected_block = self.inventory[selected_index]
 
     def stop_forward(self) -> None:
         """!
         @brief Stops movement to the front
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        self.strafe[0] += 1
+        self.strafe_unit_vector[0] += 1
 
     def stop_backward(self) -> None:
         """!
         @brief Stops movement to the rear
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        self.strafe[0] -= 1
+        self.strafe_unit_vector[0] -= 1
 
     def stop_left(self) -> None:
         """!
         @brief Stops movement to the left
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        self.strafe[1] += 1
+        self.strafe_unit_vector[1] += 1
 
     def stop_right(self) -> None:
         """!
         @brief Stops movement to the right
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        self.strafe[1] -= 1
+        self.strafe_unit_vector[1] -= 1
 
     def adjust_sight(self, dx: int, dy: int) -> None:
         """!
@@ -234,19 +235,19 @@ class Player:
         @param dy The relative y-axis movement of the mouse
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        x, y = self.rotation
+        x, y = self.rotation_in_degrees
         m = 0.15
         x = dx * m + x
         y = dy * m + y
         y = max(-90, min(90, y))
-        self.rotation = (x, y)
+        self.rotation_in_degrees = (x, y)
 
     def current_speed(self) -> float:
         """!
         @brief Gets the current walking or flying speed
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
-        return self.FLYING_SPEED if self.flying else self.walking_speed
+        return self.FLYING_SPEED_IN_BLOCKS_PER_SECOND if self.flying else self.walking_speed_in_blocks_per_second
 
     def toggle_flight(self) -> None:
         """!
@@ -255,11 +256,11 @@ class Player:
         """
         self.flying = not self.flying
 
-    def update(self, dt: float, collision_checker: Callable[[tuple, int], tuple]) -> None:
+    def update(self, delta_time_in_seconds: float, collision_checker: Callable[[tuple, int], tuple]) -> None:
         """!
         @brief Private implementation of the `update()` method. This is where most of the motion logic lives,
             along with gravity and collision detection.
-        @param dt The change in time (seconds) since the last call.
+        @param delta_time_in_seconds The change in time (seconds) since the last call.
         @param collision_checker Takes in a new player position and the player height, then returns a new position
             adjusted for any potential block collisions
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
@@ -267,7 +268,7 @@ class Player:
         """
         # walking
         speed = self.current_speed()
-        d = dt * speed  # distance covered this tick.
+        d = delta_time_in_seconds * speed  # distance covered this tick.
         dx, dy, dz = self.get_motion_vector()
         # New position in space, before accounting for gravity.
         dx, dy, dz = dx * d, dy * d, dz * d
@@ -277,22 +278,22 @@ class Player:
             # Update your vertical speed: if you are falling, speed up
             # until you hit terminal velocity; if you are jumping, slow
             # down until you start falling.
-            self.dy -= dt * self.GRAVITY
-            self.dy = max(self.dy, -self.MAX_FALL_SPEED)
-            dy += self.dy * dt
+            self.vertical_velocity_in_blocks_per_second -= delta_time_in_seconds * self.GRAVITY_IN_BLOCKS_PER_SECOND_SQUARED
+            self.vertical_velocity_in_blocks_per_second = max(self.vertical_velocity_in_blocks_per_second, -self.MAX_FALL_SPEED_IN_BLOCKS_PER_SECOND)
+            dy += self.vertical_velocity_in_blocks_per_second * delta_time_in_seconds
         else:
-            # The direction will either add or subtract one, or both, if
+            # The vertical_direction_modifier will either add or subtract one, or both, if
             # the ascending or descending properties are true, the
             # result of this will be -1, 0 or 1 which will change the
             # direction of dy.
-            direction = 0
-            direction += 1 if self.ascend else 0
-            direction -= 1 if self.descend else 0
-            dy += direction * dt * self.FLYING_SPEED
+            vertical_direction_modifier = 0
+            vertical_direction_modifier += 1 if self.ascend else 0
+            vertical_direction_modifier -= 1 if self.descend else 0
+            dy += vertical_direction_modifier * delta_time_in_seconds * self.FLYING_SPEED_IN_BLOCKS_PER_SECOND
 
         # collisions
-        x, y, z = self.position
-        self.position = collision_checker((x + dx, y + dy, z + dz),  self.PLAYER_HEIGHT)
+        x, y, z = self.position_in_blocks_from_origin
+        self.position_in_blocks_from_origin = collision_checker((x + dx, y + dy, z + dz),  self.PLAYER_HEIGHT_IN_BLOCKS)
 
     def check_player_within_world_boundaries(self) -> None:
         """!
@@ -300,11 +301,11 @@ class Player:
         @see [Issue#25](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/25)
         @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         """
-        x, y, z = self.position
+        x, y, z = self.position_in_blocks_from_origin
 
         x = self.keep_player_within_coordinates(x, boundary_size=World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
         z = self.keep_player_within_coordinates(z, boundary_size=World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
-        self.position = (x, y, z)
+        self.position_in_blocks_from_origin = (x, y, z)
 
     @staticmethod
     def keep_player_within_coordinates(dimension, boundary_size=World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
@@ -329,9 +330,9 @@ class Player:
         @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
         @see [Issue#115](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/115)
         """
-        assert self.walking_speed == 5
-        self.walking_speed = self.walking_speed / 3
-        assert self.walking_speed == 5 / 3
+        assert self.walking_speed_in_blocks_per_second == 5
+        self.walking_speed_in_blocks_per_second = self.walking_speed_in_blocks_per_second / 3
+        assert self.walking_speed_in_blocks_per_second == 5 / 3
 
     def reset_walking_speed(self) -> None:
         """!
@@ -339,11 +340,11 @@ class Player:
         @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
         @see [Issue#98](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/98)
         """
-        self.walking_speed = 5
+        self.walking_speed_in_blocks_per_second = 5
 
     def start_sprinting(self) -> None:
         """!
         @brief Increases the player's walking speed
         @see [Issue#98](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/98)
         """
-        self.walking_speed = self.walking_speed * 2
+        self.walking_speed_in_blocks_per_second = self.walking_speed_in_blocks_per_second * 2
