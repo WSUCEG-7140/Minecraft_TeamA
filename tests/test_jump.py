@@ -12,7 +12,7 @@ class TestJump:
     def teardown(self, window):
         window.model.player.jump_speed = window.model.player.MIN_JUMP_SPEED
 
-    #Issue #39 Test Q key down to increase jump
+    # issue#39 Test Q key down to increase jump speed
     def test_Q_key(self, window): 
         assert int(window.model.player.jump_speed) == int(window.model.player.MIN_JUMP_SPEED)
 
@@ -23,7 +23,7 @@ class TestJump:
             window.on_key_press(pyglet.window.key.Q, Mock())
         assert int(window.model.player.jump_speed) == int(window.model.player.MIN_JUMP_SPEED) + 15
 
-    #Issue #39 Test E key down to decrease jump
+    #issue#39 Test E key down to decrease jump speed
     
     
     def test_E_key(self, window):
