@@ -120,7 +120,9 @@ class Player:
         @see [Issue#37](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/37)
         @see [Issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
+        @see [Issue#37](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/37)
         @see [Issue#71](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/71)
+
         """
         if self.walking_speed <= self.MAX_SPEAD:
             self.walking_speed += self.WALK_SPEED_INCREMENT

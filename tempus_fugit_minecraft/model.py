@@ -388,7 +388,8 @@ class Model(object):
 
     def handle_secondary_action(self) -> None:
         """!
-        @brief Handles the player's secondary action
+        @brief Handles the player's secondary action, adding a block.
+        @see [Issue#42](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/42)
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         @see [Issue#42](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/42)
         """
@@ -399,7 +400,7 @@ class Model(object):
 
     def handle_primary_action(self) -> None:
         """!
-        @brief Handles the player's primary action
+        @brief Handles the player's primary action, breaking a block
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.player.get_sight_vector()
@@ -435,6 +436,7 @@ class Model(object):
         @param position : tuple of len 3 The (x, y, z) position to check for collisions at.
         @param height : int or float The height of the player.
         @return position : tuple of len 3 The new position of the player taking into account collisions.
+        @see [Issue#57](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/57) 
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         @see [Issue#57](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/57)
         """

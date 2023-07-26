@@ -129,8 +129,8 @@ class Window(pyglet.window.Window):
         @param y The y-coordinates of the mouse click. Always center of the screen if the mouse is captured.
         @param button Number representing mouse button that was clicked. 1 = left button, 4 = right button.
         @param modifiers Number representing any modifying keys that were pressed when the mouse button was clicked.
-        @see [issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
-         """
+        @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
+        """
         if self.paused:
             if self.within_label(x, y, self.resume_label):
                 self.resume_game()
@@ -426,7 +426,8 @@ class Window(pyglet.window.Window):
 
     def update_day_night(self, dt: float) -> float:
         """!
-        @brief Updates the environments lights.
+        @brief Updates the environments lights. When time elapses, the lighting will change.
+            From the in game time between 0-11 light decreases while from 12-23 light increases
         @param dt the amount of time that has elapsed since the last update to environment lights.
         @return dt the amount of time that has elapsed since the last update to environment lights.
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
