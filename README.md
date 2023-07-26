@@ -108,6 +108,7 @@ While flying:
     - 4: tree trunk
     - 5: tree leaf
     - 6: Light clouds
+    - 7: Dark clouds
 
 - Mouse left-click: remove block
 - Mouse right-click: create block
