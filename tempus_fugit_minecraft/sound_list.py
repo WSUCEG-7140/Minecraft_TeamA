@@ -1,12 +1,12 @@
-from tempus_fugit_minecraft import sound
 """!
 @brief File to contain all sound variables and the SoundList class that will contain and adjust volume controls.
 """
+from tempus_fugit_minecraft import sound
 
 class SoundList():
     def __init__(self):
         """!
-        @brief The SoundList class will be used to group different types of sounds so that they can all be modified 
+         @brief The SoundList class will be used to group different types of sounds so that they can all be modified 
         at the same time.
         @param dictionary   A dict class object that uses the name of sounds as keys and refers to a Sound class object
             as the value.
@@ -84,6 +84,3 @@ sound_effects_list.add_sound_to_dictionary('rock_hit', sound.Sound("assets/sound
 #Background Sounds
 background_sound_list = SoundList()
 background_sound_list.add_sound_to_dictionary('wind_blowing', sound.BackgroundSound("assets/sound/wind-blowing-ambience.wav"))
-
-
-    

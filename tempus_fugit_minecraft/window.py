@@ -20,14 +20,13 @@ if sys.version_info[0] >= 3:
 class Window(pyglet.window.Window):
     """!
     @brief A window class for a game environment.
-    @details Window class handles player movement, frames, labels on the 
+    @details Window class handles player movement, frames, labels on the
         screen, and more.
     @return window An instance of Window class.
     """
-
     def __init__(self, *args, **kwargs):
         """!
-        @breif This method sets all the default vaules for the instance.
+        @brief This method sets all the default values for the instance.
         @param args
         @param kwargs
         @see [Issue#7](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/7)
@@ -35,18 +34,18 @@ class Window(pyglet.window.Window):
         """
         super(Window, self).__init__(*args, **kwargs)
 
-        # Whether the window exclusively captures the mouse.
+        #Issue 68 Whether the window exclusively captures the mouse.
         self.exclusive = False
 
-        # The crosshairs at the center of the screen.
+        # The crosshair at the center of the screen.
         self.reticle = None
 
-        # Convenience list of num keys.
+        #Issue 68 Convenience list of num keys.
         self.num_keys = [
             key._1, key._2, key._3, key._4, key._5,
             key._6, key._7, key._8, key._9, key._0]
 
-        # Instance of the model that handles the world.
+        #Issue 68 Instance of the model that handles the world.
         self.model = Model()
 
         # Instance of the shaders in the world
@@ -61,7 +60,7 @@ class Window(pyglet.window.Window):
         self.game_clock.schedule_interval(self.update_day_night, self.schedule_time)
 
         self.paused = False
-
+        
         """Solves issue #99. Properties that are related to volume adjustments"""
         self.volume_slider_image = load('assets/volume_slider.png')
         self.volume_knob_image = load('assets/volume_knob.png')
@@ -82,6 +81,8 @@ class Window(pyglet.window.Window):
 
 
         # The label that is displayed in the top left of the canvas.
+        # Issue 68 The label that is displayed in the top left of the canvas.
+
         self.label = pyglet.text.Label(
             text='',
             font_name='Arial',
@@ -129,8 +130,7 @@ class Window(pyglet.window.Window):
 
     def set_exclusive_mouse(self, exclusive: bool) -> None:
         """!
-        @brief If `exclusive` is True, the game will capture the mouse, 
-            if False the game will ignore the mouse.
+        @brief If `exclusive` is True, the game will capture the mouse, if False the game will ignore the mouse.
         @param exclusive Whether the game will capture the mouse or not.
         """
         super(Window, self).set_exclusive_mouse(exclusive)
@@ -138,8 +138,7 @@ class Window(pyglet.window.Window):
 
     def update(self, dt: float) -> None:
         """!
-        @brief This method is scheduled to be called repeatedly by the 
-            pyglet clock.
+        @brief This method is scheduled to be called repeatedly by the pyglet clock.
         @param dt The change in time since the last call.
         """
         if not self.paused:
@@ -147,21 +146,14 @@ class Window(pyglet.window.Window):
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """!
-        @brief Called when a mouse button is pressed. See pyglet docs for 
-            button and modifier mappings.
-        @details If right-click on non-clouds texture, add_block() is 
-            called. Otherwise, the method is not called.
-        @details If left-click on non-brick texture, remove_block() is 
-            called. Otherwise, the method is not called.
-        @param x The x-coordinates of the mouse click. Always center of
-            the screen if the mouse is captured. 
-        @param y The y-coordinates of the mouse click. Always center of
-            the screen if the mouse is captured.
-        @param button Number representing mouse button that was clicked.
-            1 = left button, 4 = right button.
-        @param modifiers Number representing any modifying keys that
-            were pressed when the mouse button was clicked.
-        @see [Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
+        @brief Called when a mouse button is pressed. See pyglet docs for button and modifier mappings.
+        @details If right-click on non-clouds texture, add_block() is called. Otherwise, the method is not called.
+        @details If left-click on non-brick texture, remove_block() is called. Otherwise, the method is not called.
+        @param x The x-coordinates of the mouse click. Always center of the screen if the mouse is captured.
+        @param y The y-coordinates of the mouse click. Always center of the screen if the mouse is captured.
+        @param button Number representing mouse button that was clicked. 1 = left button, 4 = right button.
+        @param modifiers Number representing any modifying keys that were pressed when the mouse button was clicked.
+        @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
         if self.paused:
             if self.within_label(x, y, self.resume_label):
@@ -171,7 +163,7 @@ class Window(pyglet.window.Window):
         elif self.exclusive:
             if (button == mouse.RIGHT) or ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
                 self.model.handle_secondary_action()
-                
+
             elif button == pyglet.window.mouse.LEFT:
                 self.model.handle_primary_action()
 
@@ -195,8 +187,7 @@ class Window(pyglet.window.Window):
     @staticmethod
     def within_label(x: int, y: int, label: pyglet.text.Label) -> bool:
         """!
-        @brief Returns True if the given (x, y) coordinates are within 
-            the given label.
+        @brief Returns True if the given (x, y) coordinates are within the given label.
         @param x The x-coordinates of the mouse click.
         @param y The y-coordinates of the mouse click.
         @param label The label to check against.
@@ -210,17 +201,16 @@ class Window(pyglet.window.Window):
     def on_mouse_motion(self, x: int, y: int, dx: int, dy: int) -> None:
         """!
         @brief Called when the player moves the mouse.
-        @param x The x-coordinates of the mouse click. Always center of 
-            the screen if the mouse is captured.
-        @param y The y-coordinates of the mouse click. Always center of 
-            the screen if the mouse is captured.
-        @parma dx The movement of the mouse.
+        @param x The x-coordinates of the mouse click. Always center of the screen if the mouse is captured.
+        @param y The y-coordinates of the mouse click. Always center of the screen if the mouse is captured.
+        @param dx The movement of the mouse.
         @param dy The movement of the mouse.
+        @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
         if self.paused:
             if self.within_label(x, y, self.resume_label) or self.within_label(x, y, self.quit_label):
                 self.set_mouse_cursor(self.get_system_mouse_cursor(self.CURSOR_HAND))
-            
+
             else:
                 self.set_mouse_cursor(self.get_system_mouse_cursor(self.CURSOR_DEFAULT))
 
@@ -238,11 +228,9 @@ class Window(pyglet.window.Window):
 
     def on_key_press(self, symbol: int, modifiers: int) -> None:
         """!
-        @brief Called when the player presses a key. See pyglet docs for 
-            key mappings.
+        @brief Called when the player presses a key. See pyglet docs for key mappings.
         @param symbol Number representing the key that was pressed.
-        @param modifiers Number representing any modifying keys that 
-            were pressed.
+        @param modifiers Number representing any modifying keys that were pressed.
         """
         if symbol == key.ESCAPE:
             if self.paused:
@@ -260,7 +248,9 @@ class Window(pyglet.window.Window):
 
         if symbol in [key.Q, key.E]:
             increase_speed = symbol == key.Q
+            increase_jump_speed = symbol == key.Q
             self.model.handle_speed_change(increase_speed)
+            self.model.handle_jump_change(increase_jump_speed)
             return
 
         if symbol == key.TAB:
@@ -293,22 +283,18 @@ class Window(pyglet.window.Window):
 
     def resume_game(self) -> None:
         """!
-        @brief Resumes the game by restoring the game window to its 
-            original state.
+        @brief Resumes the game by restoring the game window to its original state.
         @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
         self.paused = False
         self.set_exclusive_mouse(True)
         self.shaders.enable_lighting()
 
-    #issue 82
     def on_key_release(self, symbol: int, modifiers: int) -> None:
         """!
-        @brief Called when the player releases a key. See pyglet docs 
-            for key mappings.
+        @brief Called when the player releases a key. See pyglet docs for key mappings.
         @param symbol Number representing the key that was pressed.
-        @param modifiers Number representing any modifying keys that 
-            were pressed.
+        @param modifiers Number representing any modifying keys that were pressed.
         @see [Issue82](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/82)
         """
         forward = -1 if symbol == key.W else 0
@@ -326,8 +312,7 @@ class Window(pyglet.window.Window):
 
     def on_resize(self, width: int, height: int) -> None:
         """!
-        @brief Called when the window is resized to a new `width` 
-            and `height`.
+        @brief Called when the window is resized to a new `width` and `height`.
         @param width The new width of the window.
         @param height The new height of the window.
         """
@@ -356,9 +341,11 @@ class Window(pyglet.window.Window):
         self.resume_label.y = height // 2 - 45
         self.quit_label.y = height // 2 - 90
 
+    
     def set_2d(self) -> None:
         """!
         @brief Configure OpenGL to draw in 2d.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         width, height = self.get_size()
         glDisable(GL_DEPTH_TEST)
@@ -373,6 +360,7 @@ class Window(pyglet.window.Window):
     def set_3d(self) -> None:
         """!
         @brief Configure OpenGL to draw in 3d.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         width, height = self.get_size()
         glEnable(GL_DEPTH_TEST)
@@ -392,6 +380,7 @@ class Window(pyglet.window.Window):
     def on_draw(self):
         """!
         @brief Called by pyglet to draw the canvas.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.clear()
         self.set_3d()
@@ -407,10 +396,11 @@ class Window(pyglet.window.Window):
 
     def draw_pause_menu(self) -> None:
         """!
-        @brief Draws the components of the pause menu, including the 
-            background, the pause text, and the resume and quit buttons.
+        @brief Draws the components of the pause menu, including the background, the pause text, and the resume and
+            quit buttons.
         @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
+    def draw_pause_menu(self) -> None:
         glPushMatrix()
         glLoadIdentity()
         glMatrixMode(GL_PROJECTION)
@@ -444,8 +434,8 @@ class Window(pyglet.window.Window):
 
     def draw_focused_block(self) -> None:
         """!
-        @brief Draw black edges around the block that is currently under 
-            the crosshairs.
+        @brief Draw black edges around the block that is currently under the crosshair.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.model.player.get_sight_vector()
         block, _ = self.model.hit_test(self.model.player.position, vector)
@@ -460,6 +450,7 @@ class Window(pyglet.window.Window):
     def draw_label(self) -> None:
         """!
         @brief Draw the label in the top left of the screen.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         x, y, z = self.model.player.position
         self.label.text = '%02d (%.2f, %.2f, %.2f) %d / %d' % (
@@ -469,17 +460,18 @@ class Window(pyglet.window.Window):
 
     def draw_reticle(self) -> None:
         """!
-        @brief Draw the crosshairs in the center of the screen.
+        @brief Draw the crosshair in the center of the screen.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
 
-    def update_day_night(self, dt: float) -> None:
+    def update_day_night(self, dt: float) -> float:
         """!
         @brief Updates the environments lights. When time elapses, the lighting will change.
-            from the ingame time between 0-11 light decreases while from 12-23 light increases
-        @param dt the amount of time that has elapsed since the last 
-            update to environment lights.
+            From the in game time between 0-11 light decreases while from 12-23 light increases
+        @param dt the amount of time that has elapsed since the last update to environment lights.
+        @return dt the amount of time that has elapsed since the last update to environment lights.
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
         @see [Issue#18](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/18)
         """

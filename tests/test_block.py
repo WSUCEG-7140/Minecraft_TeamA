@@ -2,14 +2,14 @@ from tempus_fugit_minecraft.block import *
 
 
 class TestBlock:
-    #issue47; #issue80
+    # issue#47 #issue#80
     def test_specified_blocks_are_breakable(self):
         blocks = [GRASS, SAND, BRICK, TREE_LEAVES, TREE_TRUNK]
 
         for block in blocks:
             assert block.is_breakable
 
-    #issue47
+     # issue#47 #issue#80 
     def test_specified_blocks_not_breakable(self):
         blocks = [STONE, LIGHT_CLOUD, DARK_CLOUD]
 
