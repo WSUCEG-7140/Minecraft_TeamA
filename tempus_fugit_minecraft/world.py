@@ -4,7 +4,6 @@ from typing import Dict, TypeAlias
 
 from tempus_fugit_minecraft.block import (BRICK, DARK_CLOUD, GRASS, LIGHT_CLOUD, SAND, STONE, TREE_LEAVES, TREE_TRUNK, 
                                           Block)
-from tempus_fugit_minecraft.utilities import WORLD_SIZE
 
 Position: TypeAlias = tuple[int, int, int]
 Map: TypeAlias = Dict[Position, Block]
@@ -41,6 +40,9 @@ class World:
     """!
     @brief A collection of functions to generate the structure of a 3D world
     """
+    WIDTH_IN_BLOCKS = 320
+    WIDTH_FROM_ORIGIN_IN_BLOCKS = WIDTH_IN_BLOCKS // 2
+
     @staticmethod
     def generate_base_layer() -> list[tuple[Block, Position]]:
         """!
@@ -51,19 +53,19 @@ class World:
         blockList = []
         s = 1  # step size
         y = 0  # initial y height
-        for x in xrange(-WORLD_SIZE, WORLD_SIZE + 1, s):
-            for z in xrange(-WORLD_SIZE, WORLD_SIZE + 1, s):
+        for x in xrange(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS + 1, s):
+            for z in xrange(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS + 1, s):
                 # create a layer stone and grass everywhere.
                 blockList.append((GRASS, (x, y - 2, z)))
                 blockList.append((STONE, (x, y - 3, z)))
-                if x in (-WORLD_SIZE, WORLD_SIZE) or z in (-WORLD_SIZE, WORLD_SIZE):
+                if x in (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS) or z in (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
                     # create outer walls.
                     for dy in xrange(-2, 3):
                         blockList.append((STONE, (x, y + dy, z)))
         return blockList
 
     @staticmethod
-    def generate_hills(world_size=WORLD_SIZE, num_hills=int(WORLD_SIZE * 1.5)) -> list[list[tuple[Block, Position]]]:
+    def generate_hills(world_size=WIDTH_FROM_ORIGIN_IN_BLOCKS, num_hills=int(WIDTH_FROM_ORIGIN_IN_BLOCKS * 1.5)) -> list[list[tuple[Block, Position]]]:
         """!
         @brief this function generates a group of randomly positioned hills strewn around the world
         @param world_size : The world size (default: WORLD_SIZE)
@@ -107,7 +109,7 @@ class World:
         return hill
 
     @staticmethod
-    def generate_trees(model, num_trees=int((WORLD_SIZE * 3.125))) -> list[list[tuple[Block, Position]]]:
+    def generate_trees(model, num_trees=int((WIDTH_FROM_ORIGIN_IN_BLOCKS * 3.125))) -> list[list[tuple[Block, Position]]]:
         """!
         @brief Generate trees' (trunks and leaves) positions.
         @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
@@ -171,7 +173,7 @@ class World:
         return tree
 
     @staticmethod
-    def generate_clouds(world_size: int = WORLD_SIZE, num_of_clouds=int((WORLD_SIZE * 3.75))) -> list[list[tuple[Block, Position]]]:
+    def generate_clouds(world_size:int=WIDTH_FROM_ORIGIN_IN_BLOCKS, num_of_clouds=int((WIDTH_FROM_ORIGIN_IN_BLOCKS * 3.75))) -> list[list[tuple[Block, Position]]]:
         """!
         @brief Generate sky cloud positions.
         @param world_size Half the world's size.

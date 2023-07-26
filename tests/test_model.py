@@ -6,7 +6,6 @@ from tempus_fugit_minecraft.model import Model
 from tempus_fugit_minecraft.player import Player
 from tempus_fugit_minecraft.world import World
 from tempus_fugit_minecraft.block import DARK_CLOUD, LIGHT_CLOUD, STONE, BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
-from tempus_fugit_minecraft.utilities import WORLD_SIZE
 import random
 
 
@@ -60,7 +59,7 @@ class TestModel:
 
     #issue42
     def test_click_mouse_to_add_block_to_clouds(self, model):
-        clouds = World.generate_clouds(WORLD_SIZE, 150)
+        clouds = World.generate_clouds(World.WIDTH_FROM_ORIGIN_IN_BLOCKS, 150)
         block, position = clouds[0][0]
 
         with patch.object(model, 'add_block', return_value=None) as add_block_method:

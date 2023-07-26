@@ -2,11 +2,9 @@ import random
 
 import pytest
 
-from tempus_fugit_minecraft.block import (BRICK, DARK_CLOUD, GRASS,
-                                          LIGHT_CLOUD, SAND, STONE,
-                                          TREE_LEAVES, TREE_TRUNK, Block)
+from tempus_fugit_minecraft.block import (BRICK, DARK_CLOUD, GRASS, LIGHT_CLOUD, SAND, STONE, TREE_LEAVES, TREE_TRUNK, 
+                                          Block)
 from tempus_fugit_minecraft.model import Model
-from tempus_fugit_minecraft.utilities import WORLD_SIZE
 from tempus_fugit_minecraft.world import World
 
 
@@ -23,7 +21,7 @@ class TestWorld:
 
     #issue20; #issue28
     def test_cloud_height(self):
-        clouds = World.generate_clouds(WORLD_SIZE, 100)
+        clouds = World.generate_clouds(World.WIDTH_FROM_ORIGIN_IN_BLOCKS, 100)
         for cloud in clouds:
             for _, (_, y, _) in cloud:
                 assert y >= 18
@@ -43,15 +41,15 @@ class TestWorld:
 
     #issue20, issue28
     def test_clouds_created_dynamically(self):
-        clouds = World.generate_clouds(WORLD_SIZE, 100)
+        clouds = World.generate_clouds(World.WIDTH_FROM_ORIGIN_IN_BLOCKS, 100)
         unique_cloud_types = set([ block for cloud in clouds for block, _ in cloud ])
         assert LIGHT_CLOUD in unique_cloud_types
         assert DARK_CLOUD in unique_cloud_types
 
     #issue20; #issue28
     def test_cloud_positions(self):
-        clouds = World.generate_clouds(WORLD_SIZE, 100)
-        clouds_limitations = WORLD_SIZE + 2 * 6  # + 2*6 to ensure that the test will cover cloud block outside the world
+        clouds = World.generate_clouds(World.WIDTH_FROM_ORIGIN_IN_BLOCKS, 100)
+        clouds_limitations = World.WIDTH_FROM_ORIGIN_IN_BLOCKS + 2 * 6  # + 2*6 to ensure that the test will cover cloud block outside the world
         cloud_blocks = [ position for cloud in clouds for _, position in cloud ]
         for x, _, z in cloud_blocks:
             assert -clouds_limitations <= x <= clouds_limitations
@@ -59,7 +57,7 @@ class TestWorld:
 
     #issue20; #issue28
     def test_draw_clouds_in_the_sky_and_count_blocks(self, model):
-        clouds = World.generate_clouds(WORLD_SIZE, 150)
+        clouds = World.generate_clouds(World.WIDTH_FROM_ORIGIN_IN_BLOCKS, 150)
         for cloud in clouds:
             for block, position in cloud:
                 model.add_block(position, block, immediate=False)
@@ -69,14 +67,14 @@ class TestWorld:
 
     #issue44; #issue84
     def test_generate_clouds_in_one_of_different_layers_in_the_sky(self):
-        clouds = World.generate_clouds(WORLD_SIZE)
+        clouds = World.generate_clouds(World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
         for cloud in clouds:
             _, (_, y, _) = cloud[0]
             assert y in [18, 20, 22, 24, 26]
 
     #issue44; #issue84
     def test_generate_clouds_appear_in_different_layers_of_sky(self):
-        clouds = World.generate_clouds(WORLD_SIZE)
+        clouds = World.generate_clouds(World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
         cloud_layers = set([ y for cloud in clouds for _, (_, y, _) in cloud ])
         assert cloud_layers == { 18, 20, 22, 24, 26 } 
 
@@ -211,8 +209,8 @@ class TestWorld:
         _, (_, y, _) = hill[0] 
         assert y == -1
 
-    def test_generate_hills_with_default_params_get_one_half_x_world_size_hills(self):
-        numberOfHills = int(1.5 * WORLD_SIZE)
+    def test_generate_hills_with_default_params_get_one_half_x_world_width_from_origin_hills(self):
+        numberOfHills = int(1.5 * World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
         hills = World.generate_hills()
         assert len(hills) == numberOfHills
 
@@ -221,14 +219,14 @@ class TestWorld:
         hills = World.generate_hills(num_hills=1)
         assert len(hills) == numberOfHills
 
-    def test_generate_hills_with_default_params_all_hills_between_minus_world_size_and_world_size(self):
+    def test_generate_hills_with_default_params_all_hills_between_minus_world_width_from_origin_and_world_width_from_origin(self):
         hills = World.generate_hills()
         for hill in hills:
             for _, (x, _, z) in hill:
-                assert -WORLD_SIZE <= x <= WORLD_SIZE
-                assert -WORLD_SIZE <= z <= WORLD_SIZE
+                assert -World.WIDTH_FROM_ORIGIN_IN_BLOCKS <= x <= World.WIDTH_FROM_ORIGIN_IN_BLOCKS
+                assert -World.WIDTH_FROM_ORIGIN_IN_BLOCKS <= z <= World.WIDTH_FROM_ORIGIN_IN_BLOCKS
 
-    def test_generate_hills_with_custom_world_size_all_hills_between_minus_specified_and_positive_specified(self):
+    def test_generate_hills_with_custom_world_width_from_origin_all_hills_between_minus_specified_and_positive_specified(self):
         hills = World.generate_hills(world_size=50)
         for hill in hills:
             for _, (x, _, z) in hill:
@@ -238,9 +236,9 @@ class TestWorld:
     def test_generate_base_layer(self):
         base_layer = World.generate_base_layer()
         grass = [position for block, position in base_layer if block == GRASS]
-        assert len(grass) == (1 + 2 * WORLD_SIZE) ** 2
+        assert len(grass) == (1 + 2 * World.WIDTH_FROM_ORIGIN_IN_BLOCKS) ** 2
         stone = [position for block, position in base_layer if block == STONE]
-        assert len(stone) > (1 + 2 * WORLD_SIZE) ** 2
+        assert len(stone) > (1 + 2 * World.WIDTH_FROM_ORIGIN_IN_BLOCKS) ** 2
         for (_, y, _) in grass:
             assert y == -2
         for (_, y, _) in stone:
@@ -248,6 +246,6 @@ class TestWorld:
 
     # issue86
     def __generate_test_terrain(self, model:Model):
-        for x in range(-WORLD_SIZE, WORLD_SIZE):
-            for z in range(-WORLD_SIZE, WORLD_SIZE):
+        for x in range(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
+            for z in range(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
                 model.add_block((x, 0, z), random.choice([GRASS,SAND]), immediate=False)
