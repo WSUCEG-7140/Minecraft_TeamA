@@ -3,20 +3,20 @@ import random
 import pytest
 
 from tempus_fugit_minecraft.block import Block
-from tempus_fugit_minecraft.model import Model
+from tempus_fugit_minecraft.game_model import GameModel
 from tempus_fugit_minecraft.world import World
 
 
 @pytest.fixture(scope='class')
-def model():
-    model = Model()
-    model.world.clear()
-    yield model
+def game_model():
+    game_model = GameModel()
+    game_model.world.clear()
+    yield game_model
 
 class TestWorld:
     @pytest.fixture(autouse=True)
-    def teardown(self, model):
-        model.world.clear()
+    def teardown(self, game_model):
+        game_model.world.clear()
 
     #issue20; #issue28
     def test_cloud_height(self):
@@ -26,15 +26,15 @@ class TestWorld:
                 assert y >= 18
 
     #issue20; #issue28
-    def test_non_overlapping_clouds(self, model: Model):
+    def test_non_overlapping_clouds(self, game_model: GameModel):
         clouds = World.generate_clouds(80, 100)
         assert len(clouds) == 100
 
         for cloud in clouds:
             for block, position in cloud:
-                model.add_block(position, block, immediate=False)
+                game_model.add_block(position, block, immediate=False)
 
-        positions_of_all_cloud_blocks = [ position for position in model.world ]
+        positions_of_all_cloud_blocks = [ position for position in game_model.world ]
         unique_clouds_positions = set(positions_of_all_cloud_blocks)
         assert len(positions_of_all_cloud_blocks) == len(unique_clouds_positions)
 
@@ -55,13 +55,13 @@ class TestWorld:
             assert -clouds_limitations <= z <= clouds_limitations
 
     #issue20; #issue28
-    def test_draw_clouds_in_the_sky_and_count_blocks(self, model):
+    def test_draw_clouds_in_the_sky_and_count_blocks(self, game_model):
         clouds = World.generate_clouds(World.WIDTH_FROM_ORIGIN_IN_BLOCKS, 150)
         for cloud in clouds:
             for block, position in cloud:
-                model.add_block(position, block, immediate=False)
+                game_model.add_block(position, block, immediate=False)
 
-        cloud_blocks = [ coordinates for coordinates in model.world ]
+        cloud_blocks = [ coordinates for coordinates in game_model.world ]
         assert len(cloud_blocks) <= sum(len(cloud) for cloud in clouds)
 
     #issue44; #issue84
@@ -116,75 +116,75 @@ class TestWorld:
             assert isinstance(position, tuple) and len(position) == 3
 
     #issue80
-    def test_generate_trees_default_values(self, model):
-        self.__generate_test_terrain(model)
+    def test_generate_trees_default_values(self, game_model):
+        self.__generate_test_terrain(game_model)
 
-        trees = World.generate_trees(model)
+        trees = World.generate_trees(game_model)
         assert 350 <= len(trees) <= 500
         
         for tree in trees:
             for block, position in tree:
-                model.add_block(position, block, immediate=False)
+                game_model.add_block(position, block, immediate=False)
 
         for tree in trees:
             block, (x, y, z) = tree[0]
             assert block == Block.TREE_TRUNK
 
             grass_pos = (x, y - 1, z)
-            assert model.world[grass_pos] in [Block.GRASS, Block.SAND]
+            assert game_model.world[grass_pos] in [Block.GRASS, Block.SAND]
 
             trunks = [ position for block, position in tree if block == Block.TREE_TRUNK ]
             leaves = [ position for block, position in tree if block == Block.TREE_LEAVES ]
 
-            assert all([ model.world[position] == Block.TREE_TRUNK for position in trunks ])
-            assert all([ model.world[position] == Block.TREE_LEAVES for position in leaves ])
+            assert all([ game_model.world[position] == Block.TREE_TRUNK for position in trunks ])
+            assert all([ game_model.world[position] == Block.TREE_LEAVES for position in leaves ])
 
     # issue80
-    def test_generate_trees_custom_values(self, model):
-        self.__generate_test_terrain(model)
+    def test_generate_trees_custom_values(self, game_model):
+        self.__generate_test_terrain(game_model)
 
-        trees = World.generate_trees(model, 250)
+        trees = World.generate_trees(game_model, 250)
         assert len(trees) == 250
 
         for tree in trees:
             for block, position in tree:
-                model.add_block(position, block, immediate=False)
+                game_model.add_block(position, block, immediate=False)
 
         for tree in trees:
             block, (x, y, z) = tree[0]
             assert block == Block.TREE_TRUNK
 
             grass_pos = (x, y - 1, z)
-            assert model.world[grass_pos] in [Block.GRASS, Block.SAND]
+            assert game_model.world[grass_pos] in [Block.GRASS, Block.SAND]
 
             trunks = [ position for block, position in tree if block == Block.TREE_TRUNK ]
             leaves = [ position for block, position in tree if block == Block.TREE_LEAVES ]
 
-            assert all([ model.world[position] == Block.TREE_TRUNK for position in trunks ])
-            assert all([ model.world[position] == Block.TREE_LEAVES for position in leaves ])
+            assert all([ game_model.world[position] == Block.TREE_TRUNK for position in trunks ])
+            assert all([ game_model.world[position] == Block.TREE_LEAVES for position in leaves ])
 
     # issue80
-    def test_check_tree_built_on_grass_or_sand(self, model):
-        self.__generate_test_terrain(model)
+    def test_check_tree_built_on_grass_or_sand(self, game_model):
+        self.__generate_test_terrain(game_model)
 
-        trees = World.generate_trees(model, 50)
+        trees = World.generate_trees(game_model, 50)
         assert len(trees) == 50
 
         for tree in trees:
-            block, (x, y, z) = tree[0]
+            block, (x, y, z) = tree[0]  
             assert block == Block.TREE_TRUNK
 
             grass_pos = (x, y - 1, z)
-            assert model.world[grass_pos] in [Block.GRASS, Block.SAND]
+            assert game_model.world[grass_pos] in [Block.GRASS, Block.SAND]
 
     # issue80
-    def test_tree_built_on_top_of_ground_level_grass_or_sand(self, model):
-        self.__generate_test_terrain(model)
+    def test_tree_built_on_top_of_ground_level_grass_or_sand(self, game_model):
+        self.__generate_test_terrain(game_model)
 
-        trees = World.generate_trees(model, 50)
+        trees = World.generate_trees(game_model, 50)
         for single_tree in trees:
             _, (x, y, z) = single_tree[0]
-            assert model.world[(x, y - 1, z)] in [Block.GRASS,Block.SAND]
+            assert game_model.world[(x, y - 1, z)] in [Block.GRASS,Block.SAND]
 
     def test_generate_hill_blocks_are_either_grass_sand_brick(self):
         hill = World.generate_hill(0, 0)
@@ -244,7 +244,7 @@ class TestWorld:
             assert -3 <= y <= 3
 
     # issue86
-    def __generate_test_terrain(self, model:Model):
+    def __generate_test_terrain(self, game_model:GameModel):
         for x in range(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
             for z in range(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
-                model.add_block((x, 0, z), random.choice([Block.GRASS,Block.SAND]), immediate=False)
+                game_model.add_block((x, 0, z), random.choice([Block.GRASS,Block.SAND]), immediate=False)

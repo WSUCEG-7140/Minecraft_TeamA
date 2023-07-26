@@ -17,7 +17,7 @@ if sys.version_info[0] >= 3:
     xrange = range
 
 
-class Model(object):
+class GameModel(object):
     """!
     @brief A 3D world model for block-based rendering.
     @return model an instance of Model class.
