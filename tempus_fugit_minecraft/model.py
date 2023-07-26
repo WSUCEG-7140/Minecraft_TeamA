@@ -391,6 +391,7 @@ class Model(object):
         @brief Handles the player's secondary action, adding a block.
         @see [Issue#42](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/42)
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
+        @see [Issue#42](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/42)
         """
         vector = self.player.get_sight_vector()
         position, previous = self.hit_test(self.player.position, vector)
@@ -437,6 +438,7 @@ class Model(object):
         @return position : tuple of len 3 The new position of the player taking into account collisions.
         @see [Issue#57](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/57) 
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
+        @see [Issue#57](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/57)
         """
         # How much overlap with a dimension of a surrounding block you
         # need to have to count as a collision. If 0, touching terrain
@@ -492,15 +494,29 @@ class Model(object):
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         if increase:
-            self.player.speed_up()
+            self.player.increase_speed()
         else:
-            self.player.speed_down()
+            self.player.decrease_speed()
 
     def handle_jump(self) -> None:
         """!
         @brief Handles the jump event
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
+     
+    def handle_jump_change(self, increase: bool) -> None:
+        """!
+        @brief Handles the jump speed change event
+        @param increase A boolean indicator of whether we increase or decrease the jump speed
+        @see [issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
+        """
+        if increase:
+            self.player.increase_jump_speed()
+        else:
+            self.player.decrease_jump_speed()
+
+    #Issue 68
+    def handle_jump(self):
         self.player.jump()
 
     def handle_flight_toggle(self) -> None:

@@ -14,7 +14,8 @@ class TestSpeed:
     def teardown(self, window):
         window.model.player.walking_speed = 5
 
-    def test_Q_key(self, window): # Test Q key down to increase speed
+    #Issue #61 Test Q key down to increase speed
+    def test_Q_key(self, window): 
         assert window.model.player.walking_speed == 5
 
         window.on_key_press(pyglet.window.key.Q, Mock())
@@ -27,7 +28,8 @@ class TestSpeed:
             window.on_key_press(pyglet.window.key.Q, Mock())
         assert window.model.player.walking_speed == 20
 
-    def test_E_key(self, window): # Test E key down to Decrease speed
+    #Issue #61 Test E key down to decrease speed
+    def test_E_key(self, window):
         window.model.player.walking_speed = 20
         assert window.model.player.walking_speed == 20
 

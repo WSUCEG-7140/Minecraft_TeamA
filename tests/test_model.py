@@ -153,7 +153,7 @@ class TestModel:
     def test_handle_jump_while_player_not_airborne(self, model):
         model.player.dy = 0
         model.handle_jump()
-        assert model.player.dy == model.player.JUMP_SPEED
+        assert model.player.dy == model.player.jump_speed
 
     #issue 68
     def test_handle_jump_while_player_airborne(self, model):
@@ -171,6 +171,22 @@ class TestModel:
         model.player.walking_speed = 2 * model.player.WALK_SPEED_INCREMENT
         model.handle_speed_change(False)
         assert model.player.walking_speed == model.player.WALK_SPEED_INCREMENT
+   
+    def test_handle_jump_change_increasing(self, model):
+        """!
+        @see [issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
+        """
+        model.handle_jump_change(True)
+        assert int(model.player.jump_speed) == int(model.player.MIN_JUMP_SPEED) + 5
+
+    
+    def test_handle_jump_change_decreasing(self, model):
+        """!
+        @see [issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
+        """
+        model.player.jump_speed = model.player.MIN_JUMP_SPEED
+        model.handle_jump_change(False)
+        assert int(model.player.jump_speed) == int(model.player.MIN_JUMP_SPEED)
 
     #issue 68
     def test_handle_secondary_action_no_previous_or_block(self, model: Model):

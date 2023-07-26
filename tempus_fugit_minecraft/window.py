@@ -31,18 +31,18 @@ class Window(pyglet.window.Window):
         """
         super(Window, self).__init__(*args, **kwargs)
 
-        # Whether the window exclusively captures the mouse.
+        #Issue 68 Whether the window exclusively captures the mouse.
         self.exclusive = False
 
         # The crosshair at the center of the screen.
         self.reticle = None
 
-        # Convenience list of num keys.
+        #Issue 68 Convenience list of num keys.
         self.num_keys = [
             key._1, key._2, key._3, key._4, key._5,
             key._6, key._7, key._8, key._9, key._0]
 
-        # Instance of the model that handles the world.
+        #Issue 68 Instance of the model that handles the world.
         self.model = Model()
 
         # Instance of the shaders in the world
@@ -58,7 +58,7 @@ class Window(pyglet.window.Window):
 
         self.paused = False
 
-        # The label that is displayed in the top left of the canvas.
+        # Issue 68 The label that is displayed in the top left of the canvas.
         self.label = pyglet.text.Label(
             text='',
             font_name='Arial',
@@ -130,7 +130,6 @@ class Window(pyglet.window.Window):
         @param button Number representing mouse button that was clicked. 1 = left button, 4 = right button.
         @param modifiers Number representing any modifying keys that were pressed when the mouse button was clicked.
         @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
-        """
         if self.paused:
             if self.within_label(x, y, self.resume_label):
                 self.resume_game()
@@ -207,7 +206,9 @@ class Window(pyglet.window.Window):
 
         if symbol in [key.Q, key.E]:
             increase_speed = symbol == key.Q
+            increase_jump_speed = symbol == key.Q
             self.model.handle_speed_change(increase_speed)
+            self.model.handle_jump_change(increase_jump_speed)
             return
 
         if symbol == key.TAB:
@@ -298,9 +299,11 @@ class Window(pyglet.window.Window):
         self.resume_label.y = height // 2 - 45
         self.quit_label.y = height // 2 - 90
 
+    
     def set_2d(self) -> None:
         """!
         @brief Configure OpenGL to draw in 2d.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         width, height = self.get_size()
         glDisable(GL_DEPTH_TEST)
@@ -315,6 +318,7 @@ class Window(pyglet.window.Window):
     def set_3d(self) -> None:
         """!
         @brief Configure OpenGL to draw in 3d.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         width, height = self.get_size()
         glEnable(GL_DEPTH_TEST)
@@ -334,6 +338,7 @@ class Window(pyglet.window.Window):
     def on_draw(self):
         """!
         @brief Called by pyglet to draw the canvas.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         self.clear()
         self.set_3d()
@@ -353,6 +358,7 @@ class Window(pyglet.window.Window):
             quit buttons.
         @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
+    def draw_pause_menu(self) -> None:
         glPushMatrix()
         glLoadIdentity()
         glMatrixMode(GL_PROJECTION)
@@ -386,6 +392,7 @@ class Window(pyglet.window.Window):
     def draw_focused_block(self) -> None:
         """!
         @brief Draw black edges around the block that is currently under the crosshair.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         vector = self.model.player.get_sight_vector()
         block, _ = self.model.hit_test(self.model.player.position, vector)
@@ -400,6 +407,7 @@ class Window(pyglet.window.Window):
     def draw_label(self) -> None:
         """!
         @brief Draw the label in the top left of the screen.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         x, y, z = self.model.player.position
         self.label.text = '%02d (%.2f, %.2f, %.2f) %d / %d' % (
@@ -410,6 +418,7 @@ class Window(pyglet.window.Window):
     def draw_reticle(self) -> None:
         """!
         @brief Draw the crosshair in the center of the screen.
+        @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
