@@ -130,6 +130,7 @@ class Window(pyglet.window.Window):
         @param button Number representing mouse button that was clicked. 1 = left button, 4 = right button.
         @param modifiers Number representing any modifying keys that were pressed when the mouse button was clicked.
         @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
+        """
         if self.paused:
             if self.within_label(x, y, self.resume_label):
                 self.resume_game()
