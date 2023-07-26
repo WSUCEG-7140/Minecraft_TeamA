@@ -109,7 +109,7 @@ class Player:
         """!
         @brief Increases the walking speed of the player.
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
-        @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
+        @see [Issue#37](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/37)
         """
         if self.walking_speed <= 15:
             self.walking_speed += self.WALK_SPEED_INCREMENT
