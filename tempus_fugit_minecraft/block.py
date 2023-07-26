@@ -70,6 +70,6 @@ while issue#80 used keys
 @w1158mxs uses another key to build clouds
 @see README.md to know how to play it
 """
-DARK_CLOUD = Block("DARK_CLOUD", ((3, 1), (3, 1), (3, 1)), is_breakable=False, is_collidable=False, can_build_on=False)
+DARK_CLOUD = Block("DARK_CLOUD", ((3, 1), (3, 1), (3, 1)), is_breakable=True, is_collidable=False, can_build_on=True)
 TREE_TRUNK = Block("TREE_TRUNK", ((1, 2), (1, 2), (2, 2)), is_breakable=True, is_collidable=True, can_build_on=True)
 TREE_LEAVES = Block("TREE_LEAVES", ((0, 2), (0, 2), (0, 2)), is_breakable=True, is_collidable=False, can_build_on=True)
