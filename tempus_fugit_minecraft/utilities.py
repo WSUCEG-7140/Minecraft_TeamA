@@ -18,7 +18,6 @@ def cube_vertices(x: float, y: float, z: float, n: float) -> list:
     ]
 
 
-WORLD_SIZE = 160
 TICKS_PER_SEC = 60
 
 FACES = [
