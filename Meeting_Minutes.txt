@@ -67,7 +67,8 @@ Next: Refactor block class
 Mohammad: organizing comments for speed up and down
 Next: work on jump higher
 
-Today meeting on Tuesday Jul18,2023
+7/18/2023
+Today meeting on Tuesday
 ALL: Work on Documentation; follow Doxygen guideline 
 Mahmoud:
 current: Editing pull request
@@ -85,17 +86,19 @@ Mohammad:
 Current: work on relation between speed and jump
 Next: Work on Doxygen
 
-20/7/2023 5th standered meeting
-mass: I finished def higher jump and lower jump and test that, link issue numbers with comments, change def name to be more clear for speed up and speed down.
+7/20/2023 
+5th standered meeting
+Mass: I finished def higher jump and lower jump and test that, link issue numbers with comments, change def name to be more clear for speed up and speed down.
 Next: Doxygen
-mark: finish lighting, make it darker to look like night.
+Mark: finish lighting, make it darker to look like night.
 Next Doxygen
 Abu bakur: finished increase the worlds size, split method generate clouds.
 Waiting Rebeca to merge to add my work , Next Doxygen.
 Mahmoud: I just merged my pull request #83, and next : Doxygen
 Rebecca: going to do more work on pr #85, and going to work on one last code split (isolating the world from the model)
 
-Agenda 7/22/2023
+7/22/2023
+Agenda 
 Everyone: Doxygen comments
 Next: Literate programming, Doxygen comment editing
 Mark: Work on Doxygen Editing, Literate programming, and Volume control
@@ -109,7 +112,13 @@ Next: Review pull requests and editing
 Rebecca: Working on splitting on a world file, work on inventory file
 Next: Review pull requests and editing
 
-Agenda 7/25/2023
+7/25/2023
+New Agenda
+Self documenting code: Add units in the variable names
+and make functions more specific
+reduce scope of variables when possible
+Friday, no new pull requests.
+Friday, all pull requests need to be reviewed and finished
 Mark: Finished Doxygen
 Next: Volume Control and pull request review
 Mahmoud: Formatting the code, implmenting sprinting and slow walk
@@ -120,10 +129,3 @@ Mass: Jump speed
 Next: Pull request review
 Rebecca: Finished world.py, finished up Doxygen comments, working on literate programming
 Next: Pull request review
-New Agenda
-Self documenting code: Add units in the variable names
-and make functions more specific
-reduce scope of variables when possible
-Friday, no new pull requests.
-Friday, all pull requests need to be reviewed and finished
-
