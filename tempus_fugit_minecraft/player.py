@@ -328,7 +328,9 @@ class Player:
         @brief Slows the player's walking speed
         @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
         """
+        assert self.walking_speed == 5
         self.walking_speed = self.walking_speed / 3
+        assert self.walking_speed == 5 / 3
 
     def reset_walking_speed(self) -> None:
         """!
@@ -343,4 +345,6 @@ class Player:
         @brief Increases the player's walking speed
         @see [Issue#98](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/98)
         """
+        assert self.walking_speed == 5
         self.walking_speed = self.walking_speed * 2
+        assert self.walking_speed == 10

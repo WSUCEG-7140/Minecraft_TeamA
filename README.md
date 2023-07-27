@@ -116,3 +116,7 @@ While flying:
 ### Quitting
 
 - ESC: pause menu, then click "quit" button or close the window
+
+### Programming by Contract
+
+- Example in `player.py` in the `start_sprinting()` and `slow_walking_speed()` functions.
