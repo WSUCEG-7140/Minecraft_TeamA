@@ -1,5 +1,5 @@
 from typing import Callable
-from tempus_fugit_minecraft.utilities import WORLD_SIZE
+from tempus_fugit_minecraft.world import World
 from tempus_fugit_minecraft.block import BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES, LIGHT_CLOUD, DARK_CLOUD
 import math
 
@@ -120,7 +120,9 @@ class Player:
         @see [Issue#37](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/37)
         @see [Issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
+        @see [Issue#37](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/37)
         @see [Issue#71](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/71)
+
         """
         if self.walking_speed <= self.MAX_SPEAD:
             self.walking_speed += self.WALK_SPEED_INCREMENT
@@ -300,12 +302,12 @@ class Player:
         """
         x, y, z = self.position
 
-        x = self.keep_player_within_coordinates(x, boundary_size=WORLD_SIZE)
-        z = self.keep_player_within_coordinates(z, boundary_size=WORLD_SIZE)
+        x = self.keep_player_within_coordinates(x, boundary_size=World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
+        z = self.keep_player_within_coordinates(z, boundary_size=World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
         self.position = (x, y, z)
 
     @staticmethod
-    def keep_player_within_coordinates(dimension, boundary_size=WORLD_SIZE):
+    def keep_player_within_coordinates(dimension, boundary_size=World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
         """!
         @brief check whether the dimension (usually x or z) is within the boundary size.
         @param dimension represent a player dimension (x,y, or z)
