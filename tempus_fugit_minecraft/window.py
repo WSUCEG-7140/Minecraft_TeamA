@@ -1,5 +1,6 @@
 import math
 import sys
+import time
 
 from pyglet.gl import *
 from pyglet.window import key, mouse
@@ -103,6 +104,8 @@ class Window(pyglet.window.Window):
         # This call schedules the `update()` method to be called
         # TICKS_PER_SEC. This is the main game event loop.
         pyglet.clock.schedule_interval(self.update, 1.0 / TICKS_PER_SEC)
+
+        self.key_last_pressed_time = None
 
     def set_exclusive_mouse(self, exclusive: bool) -> None:
         """!
@@ -218,6 +221,8 @@ class Window(pyglet.window.Window):
         elif symbol == key.LSHIFT:
             if self.model.player.flying:
                 self.model.handle_flight(0, 1)
+            else:
+                self.model.player.slow_walking_speed()
 
         if symbol == key.SPACE:
             if self.model.player.flying:
@@ -230,6 +235,9 @@ class Window(pyglet.window.Window):
         left = 1 if symbol == key.A else 0
         right = 1 if symbol == key.D else 0
         self.model.handle_movement(forward, backward, left, right)
+
+        if symbol == key.W and self.is_double_click():  # Double click W to sprint
+            self.model.player.start_sprinting()
 
     def pause_game(self) -> None:
         """!
@@ -268,6 +276,30 @@ class Window(pyglet.window.Window):
                 self.model.handle_flight(-1, 0)
             elif symbol == key.LSHIFT:
                 self.model.handle_flight(0, -1)
+        else:
+            if symbol == key.LSHIFT or symbol == key.W:
+                self.model.player.reset_walking_speed()
+
+    def is_double_click(self) -> bool:
+        """!
+        @brief Returns True if the time between the last key press and the current key press is less than 0.5 seconds.
+        @return bool
+        @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
+        @see [Issue#98](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/98)
+        """
+        current_time = time.time()
+
+        if self.key_last_pressed_time is None:
+            self.key_last_pressed_time = current_time
+            return False
+
+        time_since_last_click = current_time - self.key_last_pressed_time
+        self.key_last_pressed_time = current_time  # Reset the last pressed time
+
+        if time_since_last_click <= 0.5:
+            return True
+        else:
+            return False
 
     def on_resize(self, width: int, height: int) -> None:
         """!

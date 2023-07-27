@@ -234,8 +234,8 @@ class TestPlayer:
 
     def test_jump_no_vertical_velocity(self, player):
         player.jump()
-        assert player.dy == player.jump_speed 
-        
+        assert player.dy == player.jump_speed
+
     def test_jump_with_vertical_velocity(self, player):
         player.dy = 5
         player.jump()
@@ -403,3 +403,21 @@ class TestPlayer:
         player.position = (79 , (World.WIDTH_FROM_ORIGIN_IN_BLOCKS+1000) , 0)
         player.check_player_within_world_boundaries()
         assert player.position == (79 , (World.WIDTH_FROM_ORIGIN_IN_BLOCKS+1000) , 0)
+
+    #issue97
+    def test_slow_walk(self, player):
+        assert player.walking_speed == 5
+        player.slow_walking_speed()
+        assert player.walking_speed == 5/3
+
+    #issue98
+    def test_sprint(self, player):
+        assert player.walking_speed == 5
+        player.start_sprinting()
+        assert player.walking_speed == 10
+
+    #issue97; #issue98
+    def test_reset_walk_speed(self, player):
+        player.walking_speed = 10
+        player.reset_walking_speed()
+        assert player.walking_speed == 5

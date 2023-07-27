@@ -9,7 +9,7 @@ def window():
     yield Window()
 
 
-class TestPauseMenu:
+class TestWindow:
     @pytest.fixture(autouse=True)
     def teardown(self, window):
         window.paused = False
@@ -109,3 +109,9 @@ class TestPauseMenu:
         window.on_mouse_motion(window.resume_label.x, window.resume_label.y, 1, 0)
         assert window.resume_label.color == (150, 150, 150, 255)
         assert isinstance(window._mouse_cursor, type(window.get_system_mouse_cursor(window.CURSOR_HAND)))
+
+    def test_is_double_click(self, window):
+        assert not window.is_double_click()
+        window.on_key_press(pyglet.window.key.W, Mock())
+        window.on_key_press(pyglet.window.key.W, Mock())
+        assert window.is_double_click()
