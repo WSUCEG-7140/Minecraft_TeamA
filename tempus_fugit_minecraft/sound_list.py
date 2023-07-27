@@ -4,10 +4,12 @@
 from tempus_fugit_minecraft import sound
 
 class SoundList():
+    """!
+        @brief The SoundList class will be used to group different types of sounds so that they can all be modified 
+        at the same time.
+    """
     def __init__(self):
         """!
-         @brief The SoundList class will be used to group different types of sounds so that they can all be modified 
-        at the same time.
         @param dictionary   A dict class object that uses the name of sounds as keys and refers to a Sound class object
             as the value.
         @param default_volume   A float between 0 and 1 that determines the initial volume for all sounds in the sound_list
@@ -31,35 +33,35 @@ class SoundList():
             self.dictionary[sound_name] = sound
             return sound
         
-    def change_all_sound_volume_in_dictionary(self, volume_increment):
+    def change_all_sound_volume_in_dictionary(self, volume_change_by_value_between_0_and_1:float):
         """!
             @brief The adjust_volume function allows for the adjustment of all sounds contained in the class
                 If the sum of the current volume of the sound object plus the volume adjustment is less than 0 or
                 greater than 1, it will default to 0 or 1.
-            @param volume_increment A float value that determines how much to adjust the volume.
+            @param volume_change_by_value_between_0_and_1 A float value that determines how much to adjust the volume.
             @see [Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
         """
         for sound in self.dictionary.values():
-            if sound.player.volume + volume_increment > 1:
+            if sound.player.volume + volume_change_by_value_between_0_and_1 > 1:
                 sound.player.volume = 1
-            elif sound.player.volume + volume_increment < 0:
+            elif sound.player.volume + volume_change_by_value_between_0_and_1 < 0:
                 sound.player.volume = 0
             else:
-                sound.player.volume += volume_increment
+                sound.player.volume += volume_change_by_value_between_0_and_1
     
-    def set_all_sound_volume_in_dictionary(self, volume):
+    def set_all_sound_volume_in_dictionary(self, set_volume_by_value_between_0_and_1:float):
         """!
             @brief The adjust_volume function allows a direct setting of the volume of all sounds in the class.
             @param volume A float value that determines the volume
             @see [Issue#99](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/99)
         """
         for sound in self.dictionary.values():
-            if volume > 1:
+            if set_volume_by_value_between_0_and_1 > 1:
                 sound.player.volume = 1
-            elif volume < 0:
+            elif set_volume_by_value_between_0_and_1 < 0:
                 sound.player.volume = 0
             else:
-                sound.player.volume = volume
+                sound.player.volume = set_volume_by_value_between_0_and_1
 
     def get_sound(self, sound_name:str):
         """!
