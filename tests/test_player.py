@@ -27,11 +27,12 @@ class TestPlayer:
         assert player.position == (0, 0, 0)
         assert player.rotation == (0, 0)
         assert player.dy == 0
-        assert len(player.inventory) == 6
+        assert len(player.inventory) == 7
         assert BRICK in player.inventory
         assert GRASS in player.inventory
         assert SAND in player.inventory
         assert LIGHT_CLOUD in player.inventory
+        assert DARK_CLOUD in player.inventory
         assert TREE_TRUNK in player.inventory
         assert TREE_LEAVES in player.inventory
         assert BRICK == player.block
