@@ -58,7 +58,6 @@ class Model(object):
         self.player = Player()
         self.generate()
 
-        self._initialize()
         self.sound_effects = sound_list.sound_effects_list
         self.background_noise = sound_list.background_sound_list
         self.current_background_noise = self.background_noise.get_sound('wind_blowing')
