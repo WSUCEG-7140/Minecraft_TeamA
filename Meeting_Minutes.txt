@@ -105,7 +105,7 @@ Mark: Work on Doxygen Editing, Literate programming, and Volume control
 Assigned: Model, Shader, Lighting, Sound, Sound_list, Main
 Mahmoud: Work on Doxygen Editing, Literate programming
 Assigned: Window, Player, Blocks, Utilities 
-Mass: Finish up the jump speed issue
+Mohammad: Finish up the jump speed issue
 Next: Cleaning up
 Bakursait: Help with Literate programming
 Next: Review pull requests and editing
@@ -119,13 +119,14 @@ and make functions more specific
 reduce scope of variables when possible
 Friday, no new pull requests.
 Friday, all pull requests need to be reviewed and finished
+
 Mark: Finished Doxygen
 Next: Volume Control and pull request review
 Mahmoud: Formatting the code, implmenting sprinting and slow walk
 Next: Pull request review
 Bakursait: Working on literate programming, checking over redundancies
 Next: Pull request review
-Mass: Jump speed
+Mohammad: Jump speed
 Next: Pull request review
 Rebecca: Finished world.py, finished up Doxygen comments, working on literate programming
 Next: Pull request review
