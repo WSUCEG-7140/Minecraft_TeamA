@@ -1,6 +1,6 @@
 from typing import Callable
 from tempus_fugit_minecraft.world import World
-from tempus_fugit_minecraft.block import BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
+from tempus_fugit_minecraft.block import BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES, LIGHT_CLOUD, DARK_CLOUD
 import math
 
 
@@ -59,7 +59,7 @@ class Player:
         # Velocity in the y (upward) direction.
         self.dy = 0
         # A list of blocks the player can place. Hit num keys to cycle.
-        self.inventory = [BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES]
+        self.inventory = [BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES, LIGHT_CLOUD, DARK_CLOUD]
         # The current block the user can place. Hit num keys to cycle.
         self.block = self.inventory[0]
 
