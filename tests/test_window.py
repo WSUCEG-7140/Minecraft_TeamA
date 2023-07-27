@@ -2,13 +2,15 @@ import pyglet
 import pytest
 from unittest.mock import Mock
 from tempus_fugit_minecraft.window import Window
+from tempus_fugit_minecraft.player import Player
 
 
 @pytest.fixture(scope="class")
 def window():
     yield Window()
 
-class TestPauseMenu:
+    
+class TestWindow:
     @pytest.fixture(autouse=True)
     def teardown(self, window):
         window.paused = False
@@ -33,9 +35,9 @@ class TestPauseMenu:
 
     def test_update(self, window):
         self.mock_pause(window)
-        before = window.model.process_queue()
+        before = window.game_model.process_queue()
         window.update(0)
-        after = window.model.process_queue()
+        after = window.game_model.process_queue()
 
         assert before == after
 
@@ -114,3 +116,9 @@ class TestPauseMenu:
         window.pause_game()
         window.on_mouse_drag(window.volume_knob_sprite.x + 3, window.volume_knob_sprite.y + 5, 100, 0, pyglet.window.mouse.LEFT, None)
         assert window.volume_knob_sprite.x > window.max_volume_position
+
+    def test_is_double_click(self, window):
+        assert not window.is_double_click()
+        window.on_key_press(pyglet.window.key.W, Mock())
+        window.on_key_press(pyglet.window.key.W, Mock())
+        assert window.is_double_click()
