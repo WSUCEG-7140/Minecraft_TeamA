@@ -184,8 +184,8 @@ class Window(pyglet.window.Window):
         if self.max_volume_position < x < self.max_volume_position + self.volume_slider_sprite.width:
             if self.volume_knob_sprite.y < y < self.volume_knob_sprite.y + self.volume_knob_sprite.height:
                 self.volume_knob_sprite.x += dx
-                self.model.background_noise.change_all_sound_volume_in_dictionary(-dx/self.volume_slider_image.width)
-                self.model.sound_effects.change_all_sound_volume_in_dictionary(-dx/self.volume_slider_image.width)
+                self.game_model.background_noise.change_all_sound_volume_in_dictionary(-dx/self.volume_slider_image.width)
+                self.game_model.sound_effects.change_all_sound_volume_in_dictionary(-dx/self.volume_slider_image.width)
 
     @staticmethod
     def within_label(x: int, y: int, label: pyglet.text.Label) -> bool:
