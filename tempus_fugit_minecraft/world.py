@@ -50,47 +50,49 @@ class World:
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
         blockList = []
-        s = 1  # step size
-        y = 0  # initial y height
-        for x in xrange(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS + 1, s):
-            for z in xrange(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS + 1, s):
+        step_size_in_block = 1
+        y_hight_in_block = 0
+        for x in xrange(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS + 1, step_size_in_block):
+            for z in xrange(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS + 1, step_size_in_block):
                 # create a layer stone and grass everywhere.
-                blockList.append((Block.GRASS, (x, y - 2, z)))
-                blockList.append((Block.STONE, (x, y - 3, z)))
+                blockList.append((Block.GRASS, (x, y_hight_in_block - 2, z)))
+                blockList.append((Block.STONE, (x, y_hight_in_block - 3, z)))
                 if x in (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS) or z in (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
                     # create outer walls.
                     for dy in xrange(-2, 3):
-                        blockList.append((Block.STONE, (x, y + dy, z)))
+                        blockList.append((Block.STONE, (x, y_hight_in_block + dy, z)))
         return blockList
 
     # is responsible for generating a number of hills within the world. We start by setting up a list to hold all of the hills, and a value 'game_margin' which represents the 
     # maximum possible distance a hill can be from the center of the world in the x and z directions.
     @staticmethod
-    def generate_hills(world_size=WIDTH_FROM_ORIGIN_IN_BLOCKS, num_hills=int(WIDTH_FROM_ORIGIN_IN_BLOCKS * 1.5)) -> list[list[tuple[Block, Position]]]:
+    def generate_hills(world_size_in_blocks=WIDTH_FROM_ORIGIN_IN_BLOCKS, num_hills=int(WIDTH_FROM_ORIGIN_IN_BLOCKS * 1.5)) -> list[list[tuple[Block, Position]]]:
         """!
         @brief this function generates a group of randomly positioned hills strewn around the world
-        @param world_size : The world size (default: WORLD_SIZE)
-        @param num_hills : The number of hills generated (default: 1.5x WORLD_SIZE)
+        @param world_size_in_blocks : The world size (default: world_size_in_blocks)
+        @param num_hills : The number of hills generated (default: 1.5x world_size_in_blocks)
         @return :  a list of lists of pairs of blocks and positions that represent a collection of hills
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
         hills = []
-        o = world_size - 10
+        
+        # game_margin is used to set the limit for where clouds can be placed in the x and z directions.
+        game_margin = world_size_in_blocks - 10
         
         # for the number of hills we want to create, we generate a hill at a random x and z position within our world bounds, and then add that hill to our list of hills.
         for _ in xrange(num_hills):
-            center_x = random.randint(-o, o)  # x position of the hill
-            center_z = random.randint(-o, o)  # z position of the hill
-            hill = World.generate_hill(center_x, center_z)
+            hill_center_x_coordinate_in_model = random.randint(-game_margin, game_margin)
+            hill_center_z_coordinate_in_model = random.randint(-game_margin, game_margin)
+            hill = World.generate_hill(hill_center_x_coordinate_in_model, hill_center_z_coordinate_in_model)
             hills.append(hill)
         return hills
 
     @staticmethod
-    def generate_hill(center_x: int, center_z: int) -> list[tuple[Block, Position]]:
+    def generate_hill(hill_center_x_coordinate_in_model: int, hill_center_z_coordinate_in_model: int) -> list[tuple[Block, Position]]:
         """!
         @brief this function generates a single hill
-        @param center_x Represents the x coordinate center of the hill
-        @param center_z Represents the z coordinate center of the hill
+        @param hill_center_x_coordinate_in_model Represents the x coordinate center of the hill
+        @param hill_center_z_coordinate_in_model Represents the z coordinate center of the hill
         @return a list of pairs of blocks and positions that represent a hill
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
@@ -101,9 +103,9 @@ class World:
         block = random.choice([Block.GRASS, Block.SAND, Block.BRICK])
         hill = []
         for y in xrange(base, base + height):
-            for x in xrange(center_x - sideLength, center_x + sideLength + 1):
-                for z in xrange(center_z - sideLength, center_z + sideLength + 1):
-                    if (x - center_x) ** 2 + (z - center_z) ** 2 > (sideLength + 1) ** 2:
+            for x in xrange(hill_center_x_coordinate_in_model - sideLength, hill_center_x_coordinate_in_model + sideLength + 1):
+                for z in xrange(hill_center_z_coordinate_in_model - sideLength, hill_center_z_coordinate_in_model + sideLength + 1):
+                    if (x - hill_center_x_coordinate_in_model) ** 2 + (z - hill_center_z_coordinate_in_model) ** 2 > (sideLength + 1) ** 2:
                         continue
                     if (x - 0) ** 2 + (z - 0) ** 2 < 5 ** 2:
                         continue
@@ -120,7 +122,7 @@ class World:
         @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
         @details list trees appends each single_tree list.
         @details the trees are set to be built on Block.SAND and Block.GRASS only.
-        @param num_trees Number of clouds (default is "WORLD_SIZE * 3.125").
+        @param num_trees Number of clouds (default is "world_size_in_blocks * 3.125").
         @return a list of lists of pairs of block type and positions that represent a collection of trees
         @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/80)
         @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
@@ -188,11 +190,11 @@ class World:
         return tree
 
     @staticmethod
-    def generate_clouds(world_size:int=WIDTH_FROM_ORIGIN_IN_BLOCKS, num_of_clouds=int((WIDTH_FROM_ORIGIN_IN_BLOCKS * 3.75))) -> list[list[tuple[Block, Position]]]:
+    def generate_clouds(world_size_in_blocks:int=WIDTH_FROM_ORIGIN_IN_BLOCKS, num_of_clouds=int((WIDTH_FROM_ORIGIN_IN_BLOCKS * 3.75))) -> list[list[tuple[Block, Position]]]:
         """!
         @brief Generate sky cloud positions.
-        @param world_size Half the world's size.
-        @param num_of_clouds Number of clouds (default is "WORLD_SIZE * 3.75").
+        @param world_size_in_blocks Half the world's size.
+        @param num_of_clouds Number of clouds (default is "world_size_in_blocks * 3.75").
         @return clouds list of lists representing cloud block types and positions.
         @see [Issue#20](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/20)
         @see [Issue#28](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/28)
@@ -201,7 +203,7 @@ class World:
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
         # game_margin is used to set the limit for where clouds can be placed in the x and z directions.
-        game_margin = world_size
+        game_margin = world_size_in_blocks
         
         # clouds list will be storing generated clouds coordinates (x, y, z)
         clouds = list()

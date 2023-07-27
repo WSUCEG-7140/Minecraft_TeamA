@@ -226,7 +226,7 @@ class TestWorld:
                 assert -World.WIDTH_FROM_ORIGIN_IN_BLOCKS <= z <= World.WIDTH_FROM_ORIGIN_IN_BLOCKS
 
     def test_generate_hills_with_custom_world_width_from_origin_all_hills_between_minus_specified_and_positive_specified(self):
-        hills = World.generate_hills(world_size=50)
+        hills = World.generate_hills(world_size_in_blocks=50)
         for hill in hills:
             for _, (x, _, z) in hill:
                 assert -50 <= x <= 50
