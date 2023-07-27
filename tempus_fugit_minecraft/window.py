@@ -218,7 +218,7 @@ class Window(pyglet.window.Window):
             if self.model.player.flying:
                 self.model.handle_flight(0, 1)
             else:
-                self.model.player.slow_walk()
+                self.model.player.slow_walking_speed()
 
         if symbol == key.SPACE:
             if self.model.player.flying:
@@ -233,7 +233,7 @@ class Window(pyglet.window.Window):
         self.model.handle_movement(forward, backward, left, right)
 
         if symbol == key.W and self.is_double_click():  # Double click W to sprint
-            self.model.player.sprint()
+            self.model.player.start_sprinting()
 
     def pause_game(self) -> None:
         """!
@@ -274,7 +274,7 @@ class Window(pyglet.window.Window):
                 self.model.handle_flight(0, -1)
         else:
             if symbol == key.LSHIFT or symbol == key.W:
-                self.model.player.reset_walk_speed()
+                self.model.player.reset_walking_speed()
 
     def is_double_click(self) -> bool:
         """!
