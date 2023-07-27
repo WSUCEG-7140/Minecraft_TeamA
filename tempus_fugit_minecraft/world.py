@@ -194,7 +194,7 @@ class World:
         """!
         @brief Generate sky cloud positions.
         @param world_size_in_blocks Half the world's size.
-        @param num_of_clouds Number of clouds (default is "world_size_in_blocks * 3.75").
+        @param num_of_clouds Number of clouds (default is "WIDTH_FROM_ORIGIN_IN_BLOCKS * 3.75").
         @return clouds list of lists representing cloud block types and positions.
         @see [Issue#20](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/20)
         @see [Issue#28](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/28)
@@ -211,7 +211,7 @@ class World:
         # creating positions for clouds based on the specified value in num_of_clouds
         for _ in xrange(num_of_clouds):
             # The cloud's position in the x and z dimensions are randomly chosen within the game_margin.
-            cloud_center_x = random.randint(-game_margin, game_margin)
+            cloud_center_x_coordinate_in_model = random.randint(-game_margin, game_margin)
             cloud_center_z = random.randint(-game_margin, game_margin)
             
             # while the y coordinate is randomly chosen between range of predefined values.
@@ -221,20 +221,20 @@ class World:
             s = random.randint(3, 6)
 
             # A single_cloud is a tuple of (cloud_color,position)
-            single_cloud = World.generate_single_cloud(cloud_center_x, cloud_center_y, cloud_center_z, s)
+            single_cloud = World.generate_single_cloud(cloud_center_x_coordinate_in_model, cloud_center_y, cloud_center_z, s)
 
             clouds.append(single_cloud)
         return clouds
 
     # This function's goal is to generate the coordinates of all the blocks in a single cloud
     @staticmethod
-    def generate_single_cloud(cloud_center_x, cloud_center_y, cloud_center_z,s) -> list[tuple[Block, Position]]:
+    def generate_single_cloud(cloud_center_x_coordinate_in_model:int, cloud_center_y_coordinate_in_model:int, cloud_center_z_coordinate_in_model:int,blocks_from_center_of_clouds_to_end_in_one_direction) -> list[tuple[Block, Position]]:
         """!
         @brief generate a single cloud (list of cloud blocks).
-        @param cloud_center_x Represents the x-coordinate center of the cloud.
-        @param cloud_center_y Represents the y-coordinate (height) center of the cloud.
+        @param cloud_center_x_coordinate_in_model Represents the x-coordinate center of the cloud.
+        @param cloud_center_y_coordinate_in_model Represents the y-coordinate (height) center of the cloud.
         @param cloud_center_z Represents the z-coordinate center of the cloud.
-        @param s represent number of blocks drawn from center - goes in each direction around the center.
+        @param blocks_from_center_of_clouds_to_end_in_one_direction represent number of blocks drawn from center - goes in each direction around the center.
         @return single_cloud A list that contains pairs of blocks and positions that represent a cloud. 
         @see [Issue#20](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/20)
         @see [Issue#28](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/28)
@@ -245,10 +245,10 @@ class World:
         
         # Iterate over the x and z coordinates around the cloud's center (s)
         cloud_color = random.choice([Block.LIGHT_CLOUD, Block.DARK_CLOUD])
-        for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
-                for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
-                    if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:
+        for x in xrange(cloud_center_x_coordinate_in_model - blocks_from_center_of_clouds_to_end_in_one_direction, cloud_center_x_coordinate_in_model + blocks_from_center_of_clouds_to_end_in_one_direction + 1):
+                for z in xrange(cloud_center_z_coordinate_in_model - blocks_from_center_of_clouds_to_end_in_one_direction, cloud_center_z_coordinate_in_model + blocks_from_center_of_clouds_to_end_in_one_direction + 1):
+                    if (x - cloud_center_x_coordinate_in_model) ** 2 + (z - cloud_center_z_coordinate_in_model) ** 2 > (blocks_from_center_of_clouds_to_end_in_one_direction + 1) ** 2:
                         continue
-                    position = (x, cloud_center_y, z)
+                    position = (x, cloud_center_y_coordinate_in_model, z)
                     single_cloud.append((cloud_color, position))
         return single_cloud
