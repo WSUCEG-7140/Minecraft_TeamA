@@ -8,7 +8,6 @@ from tempus_fugit_minecraft.window import Window
 def window():
     yield Window()
 
-
 class TestPauseMenu:
     @pytest.fixture(autouse=True)
     def teardown(self, window):
