@@ -107,8 +107,8 @@ While flying:
     - 3: sand
     - 4: tree trunk
     - 5: tree leaf
-    - 6: Light clouds
-    - 7: Dark clouds
+    - 6: light clouds
+    - 7: dark clouds
 
 - Mouse left-click: remove block
 - Mouse right-click: create block
@@ -119,4 +119,4 @@ While flying:
 
 ### Programming by Contract
 
-- Example in `player.py` in the `slow_walking_speed()` function.
+- Example in [`player.py`](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/blob/master/tempus_fugit_minecraft/player.py) in the `slow_walking_speed()` function.
