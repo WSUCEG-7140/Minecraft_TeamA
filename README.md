@@ -120,3 +120,9 @@ While flying:
 ### Programming by Contract
 
 - Example in [`player.py`](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/blob/master/tempus_fugit_minecraft/player.py) in the `slow_walking_speed()` function.
+
+- Example in [`world.py`](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/blob/master/tempus_fugit_minecraft/world.py) in the `generate_hills()` function.
+
+### Literate Programming
+
+- Example in [`world.py`](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/blob/master/tempus_fugit_minecraft/world.py) in class `World` and its functions.

@@ -330,8 +330,10 @@ class Player:
         @see [Issue#97](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/97)
         @see [Issue#115](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/115)
         """
+        # Preconditions: make sure the initial speed = 5
         assert self.walking_speed_in_blocks_per_second == 5
         self.walking_speed_in_blocks_per_second = self.walking_speed_in_blocks_per_second / 3
+        # Postconditions: make sure the speed decreased and it is = 5/3
         assert self.walking_speed_in_blocks_per_second == 5 / 3
 
     def reset_walking_speed(self) -> None:

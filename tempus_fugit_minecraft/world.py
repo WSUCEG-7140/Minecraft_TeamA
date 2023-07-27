@@ -37,7 +37,9 @@ def sectorize(position: tuple) -> tuple:
 
 class World:
     """!
-    @brief A collection of functions to generate the structure of a 3D world
+    @brief A collection of functions to generate the structure of a 3D world.
+    This class is responsible for generating the Base Layer of the game, Hills,
+    Trees, and Clouds.
     """
     WIDTH_IN_BLOCKS = 320
     WIDTH_FROM_ORIGIN_IN_BLOCKS = WIDTH_IN_BLOCKS // 2
@@ -63,8 +65,7 @@ class World:
                         blockList.append((Block.STONE, (x, y_hight_in_block + dy, z)))
         return blockList
 
-    # is responsible for generating a number of hills within the world. We start by setting up a list to hold all of the hills, and a value 'game_margin' which represents the 
-    # maximum possible distance a hill can be from the center of the world in the x and z directions.
+    # generate_hills() function is responsible for creating a specified number of hills of different type of blocks in the game.
     @staticmethod
     def generate_hills(world_size_in_blocks=WIDTH_FROM_ORIGIN_IN_BLOCKS, num_hills=int(WIDTH_FROM_ORIGIN_IN_BLOCKS * 1.5)) -> list[list[tuple[Block, Position]]]:
         """!
@@ -74,8 +75,11 @@ class World:
         @return :  a list of lists of pairs of blocks and positions that represent a collection of hills
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
-        hills = []
+        # Precondition: world_size_in_blocks and num_hills MUST be positive integers
+        assert isinstance(world_size_in_blocks,int) and world_size_in_blocks > 0
+        assert isinstance(num_hills,int) and num_hills > 0
         
+        hills = []
         # game_margin is used to set the limit for where clouds can be placed in the x and z directions.
         game_margin = world_size_in_blocks - 10
         
@@ -85,6 +89,9 @@ class World:
             hill_center_z_coordinate_in_model = random.randint(-game_margin, game_margin)
             hill = World.generate_hill(hill_center_x_coordinate_in_model, hill_center_z_coordinate_in_model)
             hills.append(hill)
+            
+        # Postconditions: make sure number of hills were generated and equals to num_hills:
+        assert len(hills) > 0 and len(hills) == num_hills
         return hills
 
     @staticmethod
@@ -189,6 +196,8 @@ class World:
                     tree.append((Block.TREE_LEAVES, position))
         return tree
 
+    # generate_clouds() function is responsible for creating a specified 
+    # number of clouds in different layers in the game.
     @staticmethod
     def generate_clouds(world_size_in_blocks:int=WIDTH_FROM_ORIGIN_IN_BLOCKS, num_of_clouds=int((WIDTH_FROM_ORIGIN_IN_BLOCKS * 3.75))) -> list[list[tuple[Block, Position]]]:
         """!
