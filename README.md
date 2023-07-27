@@ -119,4 +119,4 @@ While flying:
 
 ### Programming by Contract
 
-- Example in `player.py` in the `start_sprinting()` and `slow_walking_speed()` functions.
+- Example in `player.py` in the `slow_walking_speed()` function.
