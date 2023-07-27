@@ -28,10 +28,10 @@ def sectorize(position: tuple) -> tuple:
     @param position : tuple of len 3
     @return sector : tuple of len 3
     """
-    SECTOR_SIZE = 16  # Size of sectors used to ease block loading.
+    SECTOR_SIZE_IN_BLOCKS = 16  # Size of sectors used to ease block loading.
 
     x, y, z = normalize(position)
-    x, y, z = x // SECTOR_SIZE, y // SECTOR_SIZE, z // SECTOR_SIZE
+    x, y, z = x // SECTOR_SIZE_IN_BLOCKS, y // SECTOR_SIZE_IN_BLOCKS, z // SECTOR_SIZE_IN_BLOCKS
     return x, 0, z
 
 
@@ -63,6 +63,8 @@ class World:
                         blockList.append((Block.STONE, (x, y + dy, z)))
         return blockList
 
+    # is responsible for generating a number of hills within the world. We start by setting up a list to hold all of the hills, and a value 'game_margin' which represents the 
+    # maximum possible distance a hill can be from the center of the world in the x and z directions.
     @staticmethod
     def generate_hills(world_size=WIDTH_FROM_ORIGIN_IN_BLOCKS, num_hills=int(WIDTH_FROM_ORIGIN_IN_BLOCKS * 1.5)) -> list[list[tuple[Block, Position]]]:
         """!
@@ -74,6 +76,8 @@ class World:
         """
         hills = []
         o = world_size - 10
+        
+        # for the number of hills we want to create, we generate a hill at a random x and z position within our world bounds, and then add that hill to our list of hills.
         for _ in xrange(num_hills):
             center_x = random.randint(-o, o)  # x position of the hill
             center_z = random.randint(-o, o)  # z position of the hill
@@ -107,6 +111,8 @@ class World:
             sideLength -= taperRate  # decrement side length so hills taper off
         return hill
 
+    # generate_trees() function is responsible for creating a specified 
+    # number of trees in the game.
     @staticmethod
     def generate_trees(model, num_trees=int((WIDTH_FROM_ORIGIN_IN_BLOCKS * 3.125))) -> list[list[tuple[Block, Position]]]:
         """!
@@ -120,18 +126,25 @@ class World:
         @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
+        # The function first defines a list of possible locations for 
+        # trees to grow.
+        # First, it lists all the grass blocks in the ground level.
         suggested_places_for_trees = []
         trees = []
         grass_list = [coords for coords , block in model.world.items() if block == Block.GRASS and coords[1]<=0]
         min_grass_level = min(ground[1] for ground in grass_list)
         ground_grass_list = [ground for ground in grass_list if ground[1] == min_grass_level]
 
+        # Then, Among this list, it finds all the grass blocks that do not have any blocks above them. add those items to a different list.
+        # The item in the list is a tuple of (x, y, z) coordinate of the grass blocks located at the ground level, with nothing above them.
         for coords in ground_grass_list:
             x,y,z = coords
             does_not_grass_have_block_above_it = all([(x, y+j, z) not in model.world for j in range(1,10)])
             if does_not_grass_have_block_above_it:
                 suggested_places_for_trees.append(coords)
 
+        # The function then randomly selects a location from this list and removes it so that no two trees are created at the same location. 
+        # It then calls generate_single_tree() to create a tree at this location.
         for _ in range(num_trees):
             if suggested_places_for_trees:
                 base_x, base_y, base_z = random.choice(suggested_places_for_trees)
@@ -142,6 +155,7 @@ class World:
                 break
         return trees
     
+    # generate_single_tree() function creates a single tree at a specified location.
     @staticmethod
     def generate_single_tree(x, y, z, trunk_height=4) -> list[tuple[Block, Position]]:
         """!
@@ -156,6 +170,8 @@ class World:
         @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/80)
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
+        # The tree consists of a trunk and leaves. The trunk is a block that leaves are built on it, (default number of trunks = 4).
+        # The leaves are leaves blocks on top of the trunk.
         tree = []
 
         # Create trunks
@@ -184,19 +200,31 @@ class World:
         @see [Issue#84](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/84)
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
+        # game_margin is used to set the limit for where clouds can be placed in the x and z directions.
         game_margin = world_size
+        
+        # clouds list will be storing generated clouds coordinates (x, y, z)
         clouds = list()
+        
+        # creating positions for clouds based on the specified value in num_of_clouds
         for _ in xrange(num_of_clouds):
+            # The cloud's position in the x and z dimensions are randomly chosen within the game_margin.
             cloud_center_x = random.randint(-game_margin, game_margin)
             cloud_center_z = random.randint(-game_margin, game_margin)
+            
+            # while the y coordinate is randomly chosen between range of predefined values.
             cloud_center_y = random.choice([18,20,22,24,26])
-            s = random.randint(3, 6) # 2 * s is the side length of the cloud
+            
+            # 2*s is the side length of the cloud from the center. It is randomly chosen to provide different size of clouds.
+            s = random.randint(3, 6)
 
+            # A single_cloud is a tuple of (cloud_color,position)
             single_cloud = World.generate_single_cloud(cloud_center_x, cloud_center_y, cloud_center_z, s)
 
             clouds.append(single_cloud)
         return clouds
 
+    # This function's goal is to generate the coordinates of all the blocks in a single cloud
     @staticmethod
     def generate_single_cloud(cloud_center_x, cloud_center_y, cloud_center_z,s) -> list[tuple[Block, Position]]:
         """!
@@ -212,6 +240,8 @@ class World:
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
         single_cloud = []
+        
+        # Iterate over the x and z coordinates around the cloud's center (s)
         cloud_color = random.choice([Block.LIGHT_CLOUD, Block.DARK_CLOUD])
         for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
                 for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
