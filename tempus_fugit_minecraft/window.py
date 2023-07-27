@@ -65,19 +65,19 @@ class Window(pyglet.window.Window):
         self.volume_slider_image = load('assets/volume_slider.png')
         self.volume_knob_image = load('assets/volume_knob.png')
         self.volume_control_batch = pyglet.graphics.Batch()
-        self.volume_back = pyglet.graphics.OrderedGroup(1)
-        self.volume_front = pyglet.graphics.OrderedGroup(0)
+        self.volume_control_back = pyglet.graphics.OrderedGroup(1)
+        self.volume_control_front = pyglet.graphics.OrderedGroup(0)
         self.volume_slider_sprite = Sprite(self.volume_slider_image, 
                                            x=WINDOW_WIDTH // 16, 
                                            y=WINDOW_HEIGHT // 8 * 7, 
                                            batch=self.volume_control_batch, 
-                                           group=self.volume_back)
+                                           group=self.volume_control_back)
         self.volume_knob_sprite = Sprite(self.volume_knob_image, 
                                          x=WINDOW_WIDTH // 16, 
                                          y=WINDOW_HEIGHT // 8 * 7, 
                                          batch=self.volume_control_batch, 
-                                         group=self.volume_front)
-        self.full_volume_position = self.volume_knob_sprite.x
+                                         group=self.volume_control_front)
+        self.max_volume_position = self.volume_knob_sprite.x
 
 
         # The label that is displayed in the top left of the canvas.
@@ -174,15 +174,15 @@ class Window(pyglet.window.Window):
             @params x   int value that determines the initial mouse press position on the x axis
             @params y   int value that determines the initial mouse press position on the y axis
             @params dx  int value that represents the change in position from inital x position
-            @params dy  int value that represents the change in positoin from inital y position
+            @params dy  int value that represents the change in position from inital y position
             @params buttons The button being pressed on the mouse to activate event conditions
             @params modifiers   The keyboard key being pressed to activate event conditions
         """
-        if self.full_volume_position < x < self.full_volume_position + self.volume_slider_sprite.width:
+        if self.max_volume_position < x < self.max_volume_position + self.volume_slider_sprite.width:
             if self.volume_knob_sprite.y < y < self.volume_knob_sprite.y + self.volume_knob_sprite.height:
                 self.volume_knob_sprite.x += dx
-                self.model.background_noise.adjust_all_volume(-dx/self.volume_slider_image.width)
-                self.model.sound_effects.adjust_all_volume(-dx/self.volume_slider_image.width)
+                self.model.background_noise.change_all_sound_volume_in_dictionary(-dx/self.volume_slider_image.width)
+                self.model.sound_effects.change_all_sound_volume_in_dictionary(-dx/self.volume_slider_image.width)
 
     @staticmethod
     def within_label(x: int, y: int, label: pyglet.text.Label) -> bool:

@@ -16,7 +16,7 @@ class SoundList():
         """
         self.default_volume = 1
         self.dictionary = dict()
-    def add_sound_to_dictionary(self, sound_name:str, sound):
+    def add_sound_to_dictionary(self, sound_name:str, sound:sound.Sound):
         """!
             @brief The add_sound_to_dictionary function adds the name of of a sound as the key and the Sound class object
                 as the value. If the sound already exists, it will return 0. If it does not, it will return sound
@@ -31,7 +31,7 @@ class SoundList():
             self.dictionary[sound_name] = sound
             return sound
         
-    def adjust_all_volume(self, volume_increment):
+    def change_all_sound_volume_in_dictionary(self, volume_increment):
         """!
             @brief The adjust_volume function allows for the adjustment of all sounds contained in the class
                 If the sum of the current volume of the sound object plus the volume adjustment is less than 0 or
@@ -47,7 +47,7 @@ class SoundList():
             else:
                 sound.player.volume += volume_increment
     
-    def set_all_volume(self, volume):
+    def set_all_sound_volume_in_dictionary(self, volume):
         """!
             @brief The adjust_volume function allows a direct setting of the volume of all sounds in the class.
             @param volume A float value that determines the volume
