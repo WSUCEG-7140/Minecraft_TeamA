@@ -391,7 +391,6 @@ class Window(pyglet.window.Window):
             quit buttons.
         @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
-    def draw_pause_menu(self) -> None:
         glPushMatrix()
         glLoadIdentity()
         glMatrixMode(GL_PROJECTION)
