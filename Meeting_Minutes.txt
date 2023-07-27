@@ -1,0 +1,129 @@
+6/21/23
+Attendees: Mahmoud, Abu Bakur, Mohammad, Rebecca, Mark
+
+Mahmoud
+Prev: Poetry management system and game pause feature
+Next: Flying improvements (ascend/descend), discord rich presence
+Blocks: None
+
+Abu Bakur
+Prev: Light clouds
+Next: Dark clouds, ability to pass through clouds
+Blocks: None
+
+Mohammad
+Prev: Learning Python, walking speed up
+Next: Walking speed down, user building cloud blocks
+Blocks: Merging branches, pull requests
+
+Rebecca
+Prev: Refactoring code to support blocks
+Next: Finish refactoring, adding item drops
+Blocks: None
+
+Mark
+Prev: Figuring out environmental lighting and implementation
+Next: Implementing brightness/basic lights
+Blocks: Implementing a lighting system
+
+7/11/23
+Review of the rubric
+Team Goals
+4 More Meetings to meet Meeting Minutes requirement
+Mahmoud
+Prev: Poetry management system and game pause feature
+Next: Flying improvements (ascend/descend), discord rich presence, Block Perimeter Line bug
+Blocks: Discord rich presence documentation is complicated 
+Abu Bakur
+Prev: Moving Clouds
+Next:  Prevent user from deleting clouds, putting blocks on clouds
+Blocks: Number of clouds decrease when running
+Mohammad
+Prev: walking speed up and down controlled by q and e
+Next: Jump affected by speed
+Blocks: Rebase and Merging 
+Mark
+Prev: Figuring out environmental lighting and implementation, auto testing
+Next: Adding sound effects, create a sun
+Blocks: Give up on implementing proper lighting 
+snom the arsonist — 07/11/2023 2:17 PM
+Rebecca:
+Prev: Split most the player logic out out of the Window class
+Next: Moving the remaining player logic and model logic out of Window and into Model
+Blocks: Waiting on PR #69 to be approved
+
+7/15/23
+Agenda
+Splitting embedded documentation between members
+Mahmoud: Finished ascent/descent while flying
+Next: Rich discord presence
+Mark: Sound effects for tools
+Next: Working on shaders
+Abubakur: Finished the world boundary
+Next: building a tree, textures
+Fix clouds issue
+Rebecca: Finished refactoring the world, player and model classes
+Next: Refactor block class
+Mohammad: organizing comments for speed up and down
+Next: work on jump higher
+
+Today meeting on Tuesday Jul18,2023
+ALL: Work on Documentation; follow Doxygen guideline 
+Mahmoud:
+current: Editing pull request
+next: Work on Doxygen; turn sprint feature.
+Mark:
+current: Day_night cycle
+next: Work on Doxygen
+Rebecca:
+current: Finish Blocks
+Next: Work on Doxygen
+Abubakur:
+Current: Update small parts in the code.
+Next: Work on Doxygen
+Mohammad:
+Current: work on relation between speed and jump
+Next: Work on Doxygen
+
+20/7/2023 5th standered meeting
+mass: I finished def higher jump and lower jump and test that, link issue numbers with comments, change def name to be more clear for speed up and speed down.
+Next: Doxygen
+mark: finish lighting, make it darker to look like night.
+Next Doxygen
+Abu bakur: finished increase the worlds size, split method generate clouds.
+Waiting Rebeca to merge to add my work , Next Doxygen.
+Mahmoud: I just merged my pull request #83, and next : Doxygen
+Rebecca: going to do more work on pr #85, and going to work on one last code split (isolating the world from the model)
+
+Agenda 7/22/2023
+Everyone: Doxygen comments
+Next: Literate programming, Doxygen comment editing
+Mark: Work on Doxygen Editing, Literate programming, and Volume control
+Assigned: Model, Shader, Lighting, Sound, Sound_list, Main
+Mahmoud: Work on Doxygen Editing, Literate programming
+Assigned: Window, Player, Blocks, Utilities 
+Mass: Finish up the jump speed issue
+Next: Cleaning up
+Bakursait: Help with Literate programming
+Next: Review pull requests and editing
+Rebecca: Working on splitting on a world file, work on inventory file
+Next: Review pull requests and editing
+
+Agenda 7/25/2023
+Mark: Finished Doxygen
+Next: Volume Control and pull request review
+Mahmoud: Formatting the code, implmenting sprinting and slow walk
+Next: Pull request review
+Bakursait: Working on literate programming, checking over redundancies
+Next: Pull request review
+Mass: Jump speed
+Next: Pull request review
+Rebecca: Finished world.py, finished up Doxygen comments, working on literate programming
+Next: Pull request review
+New Agenda
+Self documenting code: Add units in the variable names
+and make functions more specific
+reduce scope of variables when possible
+Friday, no new pull requests.
+Friday, all pull requests need to be reviewed and finished
+
