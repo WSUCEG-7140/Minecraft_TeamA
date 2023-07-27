@@ -88,7 +88,7 @@ Next: Work on Doxygen
 
 7/20/2023 
 5th standered meeting
-Mass: I finished def higher jump and lower jump and test that, link issue numbers with comments, change def name to be more clear for speed up and speed down.
+Mohammod: I finished def higher jump and lower jump and test that, link issue numbers with comments, change def name to be more clear for speed up and speed down.
 Next: Doxygen
 Mark: finish lighting, make it darker to look like night.
 Next Doxygen
