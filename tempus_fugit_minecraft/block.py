@@ -3,6 +3,111 @@ class Block:
     @brief A class to represent a block in the game.
     @return An instance of the Block object.
     """
+    __GRASS__ = None
+    __SAND__ = None
+    __BRICK__ = None
+    __STONE__ = None
+    __LIGHT_CLOUD__ = None
+    __DARK_CLOUD__ = None
+    __TREE_LEAVES__ = None
+    __TREE_TRUNK__ = None
+
+    @classmethod
+    @property
+    def GRASS(cls):
+        """!
+        @brief Returns a grass block
+        @return The grass block
+        @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        """
+        if cls.__GRASS__ is None:
+            cls.__GRASS__ = Block("GRASS", ((1, 0), (0, 1), (0, 0)))
+        return cls.__GRASS__
+    
+    @classmethod 
+    @property
+    def SAND(cls):
+        """!
+        @brief Returns a sand block
+        @return The sand block
+        @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        """
+        if cls.__SAND__ is None:
+            cls.__SAND__ = Block("SAND", ((1, 1), (1, 1), (1, 1)))
+        return cls.__SAND__
+
+    @classmethod 
+    @property
+    def BRICK(cls):
+        """!
+        @brief Returns a brick block
+        @return The brick block
+        @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        """
+        if cls.__BRICK__ is None:
+            cls.__BRICK__ = Block("BRICK", ((2, 0), (2, 0), (2, 0)))
+        return cls.__BRICK__
+    
+    @classmethod 
+    @property
+    def STONE(cls):
+        """!
+        @brief Returns a stone block
+        @return The stone block
+        @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        """
+        if cls.__STONE__ is None: 
+            cls.__STONE__ = Block("STONE", ((2, 1), (2, 1), (2, 1)), is_breakable=False, can_build_on=True)
+        return cls.__STONE__
+            
+    @classmethod 
+    @property
+    def LIGHT_CLOUD(cls):
+        """!
+        @brief Returns a light cloud block
+        @return The light cloud block
+        @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        """
+        if cls.__LIGHT_CLOUD__ is None:
+            cls.__LIGHT_CLOUD__ = Block("LIGHT_CLOUD", ((3, 0), (3, 0), (3, 0)), is_breakable=True, is_collidable=False, can_build_on=True)
+        return cls.__LIGHT_CLOUD__
+
+    @classmethod 
+    @property
+    def DARK_CLOUD(cls):
+        """!
+        @brief Returns a dark cloud block
+        @return The dark cloud block
+        @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        """
+        if cls.__DARK_CLOUD__ is None:
+            cls.__DARK_CLOUD__ = Block("DARK_CLOUD", ((3, 1), (3, 1), (3, 1)), is_breakable=True, is_collidable=False, can_build_on=True)
+        return cls.__DARK_CLOUD__
+        
+    @classmethod 
+    @property
+    def TREE_TRUNK(cls):
+        """!
+        @brief Returns a tree trunk block
+        @return The tree trunk block
+        @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        """
+        if cls.__TREE_TRUNK__ is None:
+            cls.__TREE_TRUNK__ = Block("TREE_TRUNK", ((1, 2), (1, 2), (2, 2)), is_breakable=True, is_collidable=True, can_build_on=True)
+        return cls.__TREE_TRUNK__
+
+    @classmethod 
+    @property
+    def TREE_LEAVES(cls):
+        """!
+        @brief Returns a tree leaves block
+        @return The tree leaves block
+        @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        """
+        if cls.__TREE_LEAVES__ is None:
+            cls.__TREE_LEAVES__ = Block("TREE_LEAVES", ((0, 2), (0, 2), (0, 2)), is_breakable=True, is_collidable=False, can_build_on=True)
+        return cls.__TREE_LEAVES__    
+
     def __init__(self, name: str, texture_coordinates: tuple, is_breakable: bool = True, is_collidable: bool = True,
                  can_build_on: bool = True) -> None:
         """!
@@ -21,7 +126,6 @@ class Block:
         self.is_breakable = is_breakable
         self.is_collidable = is_collidable
         self.can_build_on = can_build_on
-
 
 def tex_coord(x: int, y: int, n=4) -> tuple:
     """!
@@ -55,13 +159,3 @@ def tex_coords(top: tuple, bottom: tuple, side: tuple) -> list:
     result.extend(bottom)
     result.extend(side * 4)
     return result
-
-
-GRASS = Block("GRASS", ((1, 0), (0, 1), (0, 0)))
-SAND = Block("SAND", ((1, 1), (1, 1), (1, 1)))
-BRICK = Block("BRICK", ((2, 0), (2, 0), (2, 0)))
-STONE = Block("STONE", ((2, 1), (2, 1), (2, 1)), is_breakable=False, can_build_on=True)
-LIGHT_CLOUD = Block("LIGHT_CLOUD", ((3, 0), (3, 0), (3, 0)), is_breakable=True, is_collidable=False, can_build_on=True)
-DARK_CLOUD = Block("DARK_CLOUD", ((3, 1), (3, 1), (3, 1)), is_breakable=True, is_collidable=False, can_build_on=True)
-TREE_TRUNK = Block("TREE_TRUNK", ((1, 2), (1, 2), (2, 2)), is_breakable=True, is_collidable=True, can_build_on=True)
-TREE_LEAVES = Block("TREE_LEAVES", ((0, 2), (0, 2), (0, 2)), is_breakable=True, is_collidable=False, can_build_on=True)

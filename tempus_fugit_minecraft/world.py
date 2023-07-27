@@ -2,8 +2,7 @@ import random
 import sys
 from typing import Dict, TypeAlias
 
-from tempus_fugit_minecraft.block import (BRICK, DARK_CLOUD, GRASS, LIGHT_CLOUD, SAND, STONE, TREE_LEAVES, TREE_TRUNK, 
-                                          Block)
+from tempus_fugit_minecraft.block import Block
 
 Position: TypeAlias = tuple[int, int, int]
 Map: TypeAlias = Dict[Position, Block]
@@ -56,12 +55,12 @@ class World:
         for x in xrange(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS + 1, s):
             for z in xrange(-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS + 1, s):
                 # create a layer stone and grass everywhere.
-                blockList.append((GRASS, (x, y - 2, z)))
-                blockList.append((STONE, (x, y - 3, z)))
+                blockList.append((Block.GRASS, (x, y - 2, z)))
+                blockList.append((Block.STONE, (x, y - 3, z)))
                 if x in (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS) or z in (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS, World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
                     # create outer walls.
                     for dy in xrange(-2, 3):
-                        blockList.append((STONE, (x, y + dy, z)))
+                        blockList.append((Block.STONE, (x, y + dy, z)))
         return blockList
 
     @staticmethod
@@ -95,7 +94,7 @@ class World:
         taperRate = 1  # how quickly to taper off the hills
         height = random.randint(1, 6)  # height of the hill
         sideLength = random.randint(4, 8)  # 2 * s is the side length of the hill
-        block = random.choice([GRASS, SAND, BRICK])
+        block = random.choice([Block.GRASS, Block.SAND, Block.BRICK])
         hill = []
         for y in xrange(base, base + height):
             for x in xrange(center_x - sideLength, center_x + sideLength + 1):
@@ -114,7 +113,7 @@ class World:
         @brief Generate trees' (trunks and leaves) positions.
         @details single_tree is a list contains 2 lists of coordinates: list of trunks, and list of leaves.
         @details list trees appends each single_tree list.
-        @details the trees are set to be built on SAND and GRASS only.
+        @details the trees are set to be built on Block.SAND and Block.GRASS only.
         @param num_trees Number of clouds (default is "WORLD_SIZE * 3.125").
         @return a list of lists of pairs of block type and positions that represent a collection of trees
         @see [Issue#80](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/80)
@@ -123,7 +122,7 @@ class World:
         """
         suggested_places_for_trees = []
         trees = []
-        grass_list = [coords for coords , block in model.world.items() if block == GRASS and coords[1]<=0]
+        grass_list = [coords for coords , block in model.world.items() if block == Block.GRASS and coords[1]<=0]
         min_grass_level = min(ground[1] for ground in grass_list)
         ground_grass_list = [ground for ground in grass_list if ground[1] == min_grass_level]
 
@@ -162,14 +161,14 @@ class World:
         # Create trunks
         for stem in range(trunk_height):
             position = (x, y + stem, z)
-            tree.append((TREE_TRUNK, position))
+            tree.append((Block.TREE_TRUNK, position))
 
         # Create leaves
         for dx in range(-2,3):
             for dy in range(0,3):
                 for dz in range(-2,3):
                     position = (x + dx, y + trunk_height + dy, z + dz)
-                    tree.append((TREE_LEAVES, position))
+                    tree.append((Block.TREE_LEAVES, position))
         return tree
 
     @staticmethod
@@ -213,7 +212,7 @@ class World:
         @see [Issue#86](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/86)
         """
         single_cloud = []
-        cloud_color = random.choice([LIGHT_CLOUD, DARK_CLOUD])
+        cloud_color = random.choice([Block.LIGHT_CLOUD, Block.DARK_CLOUD])
         for x in xrange(cloud_center_x - s, cloud_center_x + s + 1):
                 for z in xrange(cloud_center_z - s, cloud_center_z + s + 1):
                     if (x - cloud_center_x) ** 2 + (z - cloud_center_z) ** 2 > (s + 1) ** 2:

@@ -35,9 +35,9 @@ class TestWindow:
 
     def test_update(self, window):
         self.mock_pause(window)
-        before = window.model.process_queue()
+        before = window.game_model.process_queue()
         window.update(0)
-        after = window.model.process_queue()
+        after = window.game_model.process_queue()
 
         assert before == after
 

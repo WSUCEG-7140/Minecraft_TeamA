@@ -5,7 +5,7 @@ import time
 from pyglet.gl import *
 from pyglet.window import key, mouse
 from tempus_fugit_minecraft.utilities import *
-from tempus_fugit_minecraft.model import Model
+from tempus_fugit_minecraft.game_model import GameModel
 from tempus_fugit_minecraft.shaders import Shaders
 
 WINDOW_WIDTH = 800
@@ -44,11 +44,11 @@ class Window(pyglet.window.Window):
             key._6, key._7, key._8, key._9, key._0]
 
         #Issue 68 Instance of the model that handles the world.
-        self.model = Model()
+        self.game_model = GameModel()
 
         # Instance of the shaders in the world
         """Placed in Windows for being a OpenGL related Class. Solves issue #7"""
-        self.shaders = Shaders(self.model)
+        self.shaders = Shaders(self.game_model)
         self.shaders.turn_on_environment_light()
 
         """Solves issue #12. Properties that are related to day night cycle"""
@@ -115,13 +115,13 @@ class Window(pyglet.window.Window):
         super(Window, self).set_exclusive_mouse(exclusive)
         self.exclusive = exclusive
 
-    def update(self, dt: float) -> None:
+    def update(self, delta_time_in_seconds: float) -> None:
         """!
         @brief This method is scheduled to be called repeatedly by the pyglet clock.
-        @param dt The change in time since the last call.
+        @param delta_time_in_seconds The change in time since the last call.
         """
         if not self.paused:
-            self.model.update(dt)
+            self.game_model.update(delta_time_in_seconds)
 
     def on_mouse_press(self, x: int, y: int, button: int, modifiers: int) -> None:
         """!
@@ -141,10 +141,10 @@ class Window(pyglet.window.Window):
                 self.close()
         elif self.exclusive:
             if (button == mouse.RIGHT) or ((button == mouse.LEFT) and (modifiers & key.MOD_CTRL)):
-                self.model.handle_secondary_action()
+                self.game_model.handle_secondary_action()
 
             elif button == pyglet.window.mouse.LEFT:
-                self.model.handle_primary_action()
+                self.game_model.handle_primary_action()
 
     @staticmethod
     def within_label(x: int, y: int, label: pyglet.text.Label) -> bool:
@@ -186,7 +186,7 @@ class Window(pyglet.window.Window):
         # Only rotate the camera if the mouse is captured.
         if not self.exclusive or self.paused:
             return
-        self.model.handle_adjust_vision(dx, dy)
+        self.game_model.handle_adjust_vision(dx, dy)
 
     def on_key_press(self, symbol: int, modifiers: int) -> None:
         """!
@@ -204,40 +204,40 @@ class Window(pyglet.window.Window):
             return
 
         if symbol in self.num_keys:
-            index = (symbol - self.num_keys[0]) % len(self.model.player.inventory)
-            self.model.handle_change_active_block(index)
+            index = (symbol - self.num_keys[0]) % len(self.game_model.player.inventory)
+            self.game_model.handle_change_active_block(index)
             return
 
         if symbol in [key.Q, key.E]:
-            increase_speed = symbol == key.Q
+            increase_walk_speed = symbol == key.Q
             increase_jump_speed = symbol == key.Q
-            self.model.handle_speed_change(increase_speed)
-            self.model.handle_jump_change(increase_jump_speed)
+            self.game_model.handle_walk_speed_change(increase_walk_speed)
+            self.game_model.handle_jump_change(increase_jump_speed)
             return
 
         if symbol == key.TAB:
-            self.model.handle_flight_toggle()
+            self.game_model.handle_flight_toggle()
 
         elif symbol == key.LSHIFT:
-            if self.model.player.flying:
-                self.model.handle_flight(0, 1)
+            if self.game_model.player.flying:
+                self.game_model.handle_flight(0, 1)
             else:
-                self.model.player.slow_walking_speed()
+                self.game_model.player.slow_walking_speed()
 
         if symbol == key.SPACE:
-            if self.model.player.flying:
-                self.model.handle_flight(1, 0)
+            if self.game_model.player.flying:
+                self.game_model.handle_flight(1, 0)
             else:
-                self.model.handle_jump()
+                self.game_model.handle_jump()
 
         forward = 1 if symbol == key.W else 0
         backward = 1 if symbol == key.S else 0
         left = 1 if symbol == key.A else 0
         right = 1 if symbol == key.D else 0
-        self.model.handle_movement(forward, backward, left, right)
+        self.game_model.handle_movement(forward, backward, left, right)
 
         if symbol == key.W and self.is_double_click():  # Double click W to sprint
-            self.model.player.start_sprinting()
+            self.game_model.player.start_sprinting()
 
     def pause_game(self) -> None:
         """!
@@ -269,16 +269,16 @@ class Window(pyglet.window.Window):
         left = -1 if symbol == key.A else 0
         right = -1 if symbol == key.D else 0
 
-        self.model.handle_movement(forward, backward, left, right)
+        self.game_model.handle_movement(forward, backward, left, right)
 
-        if self.model.player.flying:
+        if self.game_model.player.flying:
             if symbol == key.SPACE:
-                self.model.handle_flight(-1, 0)
+                self.game_model.handle_flight(-1, 0)
             elif symbol == key.LSHIFT:
-                self.model.handle_flight(0, -1)
+                self.game_model.handle_flight(0, -1)
         else:
             if symbol == key.LSHIFT or symbol == key.W:
-                self.model.player.reset_walking_speed()
+                self.game_model.player.reset_walking_speed()
 
     def is_double_click(self) -> bool:
         """!
@@ -362,10 +362,10 @@ class Window(pyglet.window.Window):
         gluPerspective(65.0, width / float(height), 0.1, 60.0)
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
-        x, y = self.model.player.rotation
+        x, y = self.game_model.player.rotation_in_degrees
         glRotatef(x, 0, 1, 0)
         glRotatef(-y, math.cos(math.radians(x)), 0, math.sin(math.radians(x)))
-        x, y, z = self.model.player.position
+        x, y, z = self.game_model.player.position_in_blocks_from_origin
         glTranslatef(-x, -y, -z)
 
     def on_draw(self):
@@ -376,7 +376,7 @@ class Window(pyglet.window.Window):
         self.clear()
         self.set_3d()
         glColor3d(1, 1, 1)
-        self.model.batch.draw()
+        self.game_model.batch.draw()
         self.draw_focused_block()
         self.set_2d()
         self.draw_label()
@@ -391,7 +391,6 @@ class Window(pyglet.window.Window):
             quit buttons.
         @see [Issue#22](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/22)
         """
-    def draw_pause_menu(self) -> None:
         glPushMatrix()
         glLoadIdentity()
         glMatrixMode(GL_PROJECTION)
@@ -427,8 +426,8 @@ class Window(pyglet.window.Window):
         @brief Draw black edges around the block that is currently under the crosshair.
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
-        vector = self.model.player.get_sight_vector()
-        block, _ = self.model.hit_test(self.model.player.position, vector)
+        vector = self.game_model.player.get_sight_vector()
+        block, _ = self.game_model.hit_test(self.game_model.player.position_in_blocks_from_origin, vector)
         if block:
             x, y, z = block
             vertex_data = cube_vertices(x, y, z, 0.51)
@@ -442,10 +441,10 @@ class Window(pyglet.window.Window):
         @brief Draw the label in the top left of the screen.
         @see [Issue#68](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/68)
         """
-        x, y, z = self.model.player.position
+        x, y, z = self.game_model.player.position_in_blocks_from_origin
         self.label.text = '%02d (%.2f, %.2f, %.2f) %d / %d' % (
             pyglet.clock.get_fps(), x, y, z,
-            len(self.model._shown), len(self.model.world))
+            len(self.game_model._shown), len(self.game_model.world))
         self.label.draw()
 
     def draw_reticle(self) -> None:
@@ -456,12 +455,12 @@ class Window(pyglet.window.Window):
         glColor3d(0, 0, 0)
         self.reticle.draw(GL_LINES)
 
-    def update_day_night(self, dt: float) -> float:
+    def update_day_night(self, delta_time_in_seconds: float) -> float:
         """!
         @brief Updates the environments lights. When time elapses, the lighting will change.
             From the in game time between 0-11 light decreases while from 12-23 light increases
-        @param dt the amount of time that has elapsed since the last update to environment lights.
-        @return dt the amount of time that has elapsed since the last update to environment lights.
+        @param delta_time_in_seconds the amount of time that has elapsed since the last update to environment lights.
+        @return delta_time_in_seconds the amount of time that has elapsed since the last update to environment lights.
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
         """
         self.game_time = self.game_time + 1
@@ -471,4 +470,4 @@ class Window(pyglet.window.Window):
             self.shaders.decrease_light_intensity(increase_decrease_value)
         else:
             self.shaders.increase_light_intensity(increase_decrease_value)
-        return dt
+        return delta_time_in_seconds
