@@ -92,8 +92,8 @@ See the [wiki](https://github.com/fogleman/Minecraft/wiki) for this project to i
 - Mouse: look around
 - Space: jump
 - Tab: toggle flying mode
-- Q: Increase speed
-- E: Decrease speed
+- Q: Increase (speed & jump)
+- E: Decrease (speed & jump)
 
 While flying:
 - Left Shift: move down
@@ -107,6 +107,7 @@ While flying:
     - 3: sand
     - 4: tree_trunk
     - 5: tree_leaf
+
 - Mouse left-click: remove block
 - Mouse right-click: create block
 

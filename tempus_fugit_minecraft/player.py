@@ -1,5 +1,5 @@
 from typing import Callable
-from tempus_fugit_minecraft.utilities import WORLD_SIZE
+from tempus_fugit_minecraft.world import World
 from tempus_fugit_minecraft.block import BRICK, GRASS, SAND, TREE_TRUNK, TREE_LEAVES
 import math
 
@@ -20,14 +20,23 @@ class Player:
         self.MAX_FALL_SPEED = 50
         self.FLYING_SPEED = 15
         self.GRAVITY = 20.0
-        # To derive the formula for calculating jump speed, first solve v_t = v_0 + a * t for the time at which you
-        # achieve maximum height, where a is the acceleration due to gravity and v_t = 0. This gives: t = - v_0 / a
-        # Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in s = s_0 + v_0 * t + (a * t^2) / 2
-        self.JUMP_SPEED = math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT)
+        self.MAX_SPEAD = 15
+        self.MIN_SPEAD = 5
+
+        # To derive the formula for calculating jump speed, first solve
+        #    v_t = v_0 + a * t
+        # for the time at which you achieve maximum height, where a is the acceleration
+        # due to gravity and v_t = 0. This gives:
+        #    t = - v_0 / a
+        # Use t and the desired MAX_JUMP_HEIGHT to solve for v_0 (jump speed) in
+        #    s = s_0 + v_0 * t + (a * t^2) / 2
+        self.jump_speed = int(math.sqrt(2 * self.GRAVITY * self.MAX_JUMP_HEIGHT))
+        self.MAX_JUMP_SPEED = self.jump_speed + 10
+        self.MIN_JUMP_SPEED = self.jump_speed
         self.PLAYER_HEIGHT = 2
         self.WALK_SPEED_INCREMENT = 5
-
         self.walking_speed = self.WALK_SPEED_INCREMENT
+       
         # When flying gravity has no effect and speed is increased.
         self.flying = False
         self.ascend = False
@@ -104,24 +113,46 @@ class Player:
             dx = 0.0
             dz = 0.0
         return dx, dy, dz
-
-    def speed_up(self) -> None:
+ 
+    def increase_speed(self) -> None:
         """!
         @brief Increases the walking speed of the player.
+        @see [Issue#37](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/37)
+        @see [Issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
-        @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
-        """
-        if self.walking_speed <= 15:
-            self.walking_speed += self.WALK_SPEED_INCREMENT
+        @see [Issue#37](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/37)
+        @see [Issue#71](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/71)
 
-    def speed_down(self) -> None:
+        """
+        if self.walking_speed <= self.MAX_SPEAD:
+            self.walking_speed += self.WALK_SPEED_INCREMENT
+    
+    def decrease_speed(self) -> None:
         """!
         @brief Decreases the walking speed of the player
-        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         @see [Issue#38](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/38)
+        @see [Issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
+        @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
+        @see [Issue#71](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/71)
         """
-        if self.walking_speed > 5:
+        if self.walking_speed > self.MIN_SPEAD:
             self.walking_speed -= self.WALK_SPEED_INCREMENT
+   
+    def increase_jump_speed(self) -> None:  
+        """!
+        @brief increase the jump speed of the player
+        @see [issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
+        """     
+        if self.jump_speed <= self.MAX_JUMP_SPEED: 
+                self.jump_speed = self.jump_speed + 5
+            
+    def decrease_jump_speed(self) -> None:
+        """!
+        @brief decreases the jump speed of the player
+        @see [issue#39](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/39)
+        """
+        if self.jump_speed > self.MIN_JUMP_SPEED:       
+            self.jump_speed = self.jump_speed - 5
 
     def move_forward(self) -> None:
         """!
@@ -157,7 +188,7 @@ class Player:
         @see [Issue#67](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/67)
         """
         if self.dy == 0:
-            self.dy = self.JUMP_SPEED
+            self.dy = self.jump_speed
 
     def select_active_item(self, index: int) -> None:
         """!
@@ -271,12 +302,12 @@ class Player:
         """
         x, y, z = self.position
 
-        x = self.keep_player_within_coordinates(x, boundary_size=WORLD_SIZE)
-        z = self.keep_player_within_coordinates(z, boundary_size=WORLD_SIZE)
+        x = self.keep_player_within_coordinates(x, boundary_size=World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
+        z = self.keep_player_within_coordinates(z, boundary_size=World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
         self.position = (x, y, z)
 
     @staticmethod
-    def keep_player_within_coordinates(dimension, boundary_size=WORLD_SIZE):
+    def keep_player_within_coordinates(dimension, boundary_size=World.WIDTH_FROM_ORIGIN_IN_BLOCKS):
         """!
         @brief check whether the dimension (usually x or z) is within the boundary size.
         @param dimension represent a player dimension (x,y, or z)

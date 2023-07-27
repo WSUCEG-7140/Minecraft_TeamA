@@ -1,8 +1,8 @@
 import pytest
 import math
 from tempus_fugit_minecraft.player import Player
-from tempus_fugit_minecraft.utilities import WORLD_SIZE
-from tempus_fugit_minecraft.block import BRICK, GRASS, SAND
+from tempus_fugit_minecraft.world import World
+from tempus_fugit_minecraft.block import BRICK, GRASS, SAND, LIGHT_CLOUD, DARK_CLOUD, TREE_TRUNK, TREE_LEAVES
 
 
 @pytest.fixture(scope = "class")
@@ -31,6 +31,8 @@ class TestPlayer:
         assert BRICK in player.inventory
         assert GRASS in player.inventory
         assert SAND in player.inventory
+        assert TREE_TRUNK in player.inventory
+        assert TREE_LEAVES in player.inventory
         assert BRICK == player.block
         assert player.walking_speed == 5
 
@@ -177,60 +179,60 @@ class TestPlayer:
         assert dy == 0
         assert math.isclose(dz, 1e-15, abs_tol=1e-15)
 
-    def test_speed_up_no_call_should_be_default_speed(self, player):
+    def test_increase_speed_no_call_should_be_default_speed(self, player):
         assert player.walking_speed == player.WALK_SPEED_INCREMENT
 
-    def test_speed_up_called_one_time_should_be_double_initial_speed(self, player):
-        player.speed_up()
+    def test_increase_speed_called_one_time_should_be_double_initial_speed(self, player):
+        player.increase_speed()
         assert player.walking_speed == 2 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_up_called_two_times_should_be_triple_initial_speed(self, player):
-        player.speed_up()
-        player.speed_up()
+    def test_increase_speed_called_two_times_should_be_triple_initial_speed(self, player):
+        player.increase_speed()
+        player.increase_speed()
         assert player.walking_speed == 3 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_up_called_three_times_should_be_quadruple_initial_speed(self, player):
-        player.speed_up()
-        player.speed_up()
-        player.speed_up()
+    def test_increase_speed_called_three_times_should_be_quadruple_initial_speed(self, player):
+        player.increase_speed()
+        player.increase_speed()
+        player.increase_speed()
         assert player.walking_speed == 4 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_up_called_four_times_should_be_maxed_at_twenty(self, player):
-        player.speed_up()
-        player.speed_up()
-        player.speed_up()
-        player.speed_up()
+    def test_increase_speed_called_four_times_should_be_maxed_at_twenty(self, player):
+        player.increase_speed()
+        player.increase_speed()
+        player.increase_speed()
+        player.increase_speed()
         assert player.walking_speed == 4 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_down_called_one_time_should_be_triple_initial_speed(self, player):
+    def test_decrease_speed_called_one_time_should_be_triple_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.speed_down()
+        player.decrease_speed()
         assert player.walking_speed == 3 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_down_called_two_times_should_be_double_initial_speed(self, player):
+    def test_decrease_speed_called_two_times_should_be_double_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.speed_down()
-        player.speed_down()
+        player.decrease_speed()
+        player.decrease_speed()
         assert player.walking_speed == 2 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_down_called_three_times_should_be_initial_speed(self, player):
+    def test_decrease_speed_called_three_times_should_be_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.speed_down()
-        player.speed_down()
-        player.speed_down()
+        player.decrease_speed()
+        player.decrease_speed()
+        player.decrease_speed()
         assert player.walking_speed == 1 * player.WALK_SPEED_INCREMENT
 
-    def test_speed_down_called_four_times_should_be_initial_speed(self, player):
+    def test_decrease_speed_called_four_times_should_be_initial_speed(self, player):
         player.walking_speed = 4 * player.WALK_SPEED_INCREMENT
-        player.speed_down()
-        player.speed_down()
-        player.speed_down()
-        player.speed_down()
+        player.decrease_speed()
+        player.decrease_speed()
+        player.decrease_speed()
+        player.decrease_speed()
         assert player.walking_speed == 1 * player.WALK_SPEED_INCREMENT
 
     def test_jump_no_vertical_velocity(self, player):
         player.jump()
-        assert player.dy == player.JUMP_SPEED
+        assert player.dy == player.jump_speed
 
     def test_jump_with_vertical_velocity(self, player):
         player.dy = 5
@@ -323,7 +325,6 @@ class TestPlayer:
         player.toggle_flight()
         assert not player.flying
 
-    #issue 68
     def test_update_with_no_flying(self, player: Player):
         for x in [-1, 0, 1]:
             for z in [-1, 0, 1]:
@@ -343,7 +344,6 @@ class TestPlayer:
                 assert p_y == -player.GRAVITY
                 assert player.dy == -player.GRAVITY
 
-    #issue 68
     def test_update_with_flying(self, player: Player):
         player.flying = True
         for x in [-1, 0, 1]:
@@ -360,53 +360,47 @@ class TestPlayer:
                     assert p_y == m_y * player.current_speed()
                     assert p_z == m_z * player.current_speed()
 
-    #issue25
     def test_player_within_world_boundaries(self, player: Player):
         player.position = (10,5,15)
         player.check_player_within_world_boundaries()
         assert player.position == (10,5,15)
 
-    # #issue25; #issue84
     def test_check_player_at_boundaries(self, player: Player):
-        player.position = (WORLD_SIZE , 20, WORLD_SIZE)
+        player.position = (World.WIDTH_FROM_ORIGIN_IN_BLOCKS , 20, World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
         player.check_player_within_world_boundaries()
-        assert player.position == (WORLD_SIZE , 20, WORLD_SIZE)
+        assert player.position == (World.WIDTH_FROM_ORIGIN_IN_BLOCKS , 20, World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
 
-    #issue25; #issue84
     def test_player_out_of_world_boundaries(self, player: Player):
-        player.position = ((-WORLD_SIZE-100) , 25 , (WORLD_SIZE+120))
+        player.position = ((-World.WIDTH_FROM_ORIGIN_IN_BLOCKS-100) , 25 , (World.WIDTH_FROM_ORIGIN_IN_BLOCKS+120))
         player.check_player_within_world_boundaries()
-        assert player.position == (-WORLD_SIZE , 25 , WORLD_SIZE)
+        assert player.position == (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS , 25 , World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
 
-        player.position = ((WORLD_SIZE+25) , 25 , (-WORLD_SIZE-5))
+        player.position = ((World.WIDTH_FROM_ORIGIN_IN_BLOCKS+25) , 25 , (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS-5))
         player.check_player_within_world_boundaries()
-        assert player.position == (WORLD_SIZE , 25 , -WORLD_SIZE)
+        assert player.position == (World.WIDTH_FROM_ORIGIN_IN_BLOCKS , 25 , -World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
 
-    #issue25; #issue84
     def test_player_out_of_world_in_x_coordinate(self, player: Player):
-        player.position = ((WORLD_SIZE+2) , 125 , 15)
+        player.position = ((World.WIDTH_FROM_ORIGIN_IN_BLOCKS+2) , 125 , 15)
         player.check_player_within_world_boundaries()
-        assert player.position == (WORLD_SIZE , 125 , 15)
+        assert player.position == (World.WIDTH_FROM_ORIGIN_IN_BLOCKS , 125 , 15)
 
-        player.position = ((-WORLD_SIZE-200) , 125 , 15)
+        player.position = ((-World.WIDTH_FROM_ORIGIN_IN_BLOCKS-200) , 125 , 15)
         player.check_player_within_world_boundaries()
-        assert player.position == (-WORLD_SIZE , 125 , 15)
+        assert player.position == (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS , 125 , 15)
 
-    #issue25; #issue84
     def test_player_out_of_world_in_z_coordinate(self, player: Player):
-        player.position = (79 , 125 , (WORLD_SIZE+2))
+        player.position = (79 , 125 , (World.WIDTH_FROM_ORIGIN_IN_BLOCKS+2))
         player.check_player_within_world_boundaries()
-        assert player.position == (79 , 125 , WORLD_SIZE)
+        assert player.position == (79 , 125 , World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
 
-        player.position = (79 , 125 , (-WORLD_SIZE-120))
+        player.position = (79 , 125 , (-World.WIDTH_FROM_ORIGIN_IN_BLOCKS-120))
         player.check_player_within_world_boundaries()
-        assert player.position == (79 , 125 , -WORLD_SIZE)
+        assert player.position == (79 , 125 , -World.WIDTH_FROM_ORIGIN_IN_BLOCKS)
 
-    #issue25; #issue84
     def test_player_in_y_coordinate(self, player: Player):
-        player.position = (79 , (WORLD_SIZE+1000) , 0)
+        player.position = (79 , (World.WIDTH_FROM_ORIGIN_IN_BLOCKS+1000) , 0)
         player.check_player_within_world_boundaries()
-        assert player.position == (79 , (WORLD_SIZE+1000) , 0)
+        assert player.position == (79 , (World.WIDTH_FROM_ORIGIN_IN_BLOCKS+1000) , 0)
 
     #issue97
     def test_slow_walk(self, player):
