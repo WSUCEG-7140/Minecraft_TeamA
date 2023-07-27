@@ -114,4 +114,4 @@ class TestPauseMenu:
     def test_on_mouse_drag(self, window):
         window.pause_game()
         window.on_mouse_drag(window.volume_knob_sprite.x + 3, window.volume_knob_sprite.y + 5, 100, 0, pyglet.window.mouse.LEFT, None)
-        assert window.volume_knob_sprite.x > window.full_volume_position
+        assert window.volume_knob_sprite.x > window.max_volume_position
