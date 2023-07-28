@@ -3,6 +3,9 @@ import sys
 import time
 
 from pyglet.gl import *
+from pyglet.gui import Slider
+from pyglet.image import load
+from pyglet.sprite import Sprite
 from pyglet.window import key, mouse
 from tempus_fugit_minecraft.utilities import *
 from tempus_fugit_minecraft.game_model import GameModel
@@ -58,8 +61,29 @@ class Window(pyglet.window.Window):
         self.game_clock.schedule_interval(self.update_day_night, self.schedule_time)
 
         self.paused = False
+        
+        """Solves issue #99. Properties that are related to volume adjustments"""
+        self.volume_slider_image = load('assets/volume_slider.png')
+        self.volume_knob_image = load('assets/volume_knob.png')
+        self.volume_control_batch = pyglet.graphics.Batch()
+        self.volume_control_back = pyglet.graphics.OrderedGroup(1)
+        self.volume_control_front = pyglet.graphics.OrderedGroup(0)
+        self.volume_slider_sprite = Sprite(self.volume_slider_image, 
+                                           x=WINDOW_WIDTH // 16, 
+                                           y=WINDOW_HEIGHT // 8 * 7, 
+                                           batch=self.volume_control_batch, 
+                                           group=self.volume_control_back)
+        self.volume_knob_sprite = Sprite(self.volume_knob_image, 
+                                         x=WINDOW_WIDTH // 16, 
+                                         y=WINDOW_HEIGHT // 8 * 7, 
+                                         batch=self.volume_control_batch, 
+                                         group=self.volume_control_front)
+        self.max_volume_position = self.volume_knob_sprite.x
 
+
+        # The label that is displayed in the top left of the canvas.
         # Issue 68 The label that is displayed in the top left of the canvas.
+
         self.label = pyglet.text.Label(
             text='',
             font_name='Arial',
@@ -145,6 +169,23 @@ class Window(pyglet.window.Window):
 
             elif button == pyglet.window.mouse.LEFT:
                 self.game_model.handle_primary_action()
+
+    def on_mouse_drag(self, x, y, dx, dy, buttons=pyglet.window.mouse.LEFT, modifiers=None):
+        """!
+            @brief Mouse drag event for the volume slider, when moving the slider
+            to the right, volume decreases and to the left volume increases.
+            @params x   int value that determines the initial mouse press position on the x axis
+            @params y   int value that determines the initial mouse press position on the y axis
+            @params dx  int value that represents the change in position from inital x position
+            @params dy  int value that represents the change in position from inital y position
+            @params buttons The button being pressed on the mouse to activate event conditions
+            @params modifiers   The keyboard key being pressed to activate event conditions
+        """
+        if self.max_volume_position < x < self.max_volume_position + self.volume_slider_sprite.width:
+            if self.volume_knob_sprite.y < y < self.volume_knob_sprite.y + self.volume_knob_sprite.height:
+                self.volume_knob_sprite.x += dx
+                self.game_model.background_noise.change_all_sound_volume_in_dictionary(-dx/self.volume_slider_image.width)
+                self.game_model.sound_effects.change_all_sound_volume_in_dictionary(-dx/self.volume_slider_image.width)
 
     @staticmethod
     def within_label(x: int, y: int, label: pyglet.text.Label) -> bool:
@@ -420,6 +461,7 @@ class Window(pyglet.window.Window):
         self.pause_label.draw()
         self.resume_label.draw()
         self.quit_label.draw()
+        self.volume_control_batch.draw()
 
     def draw_focused_block(self) -> None:
         """!
@@ -462,6 +504,7 @@ class Window(pyglet.window.Window):
         @param delta_time_in_seconds the amount of time that has elapsed since the last update to environment lights.
         @return delta_time_in_seconds the amount of time that has elapsed since the last update to environment lights.
         @see [Issue#12](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/12)
+        @see [Issue#18](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/18)
         """
         self.game_time = self.game_time + 1
         hour = math.fmod(self.game_time, 24)
