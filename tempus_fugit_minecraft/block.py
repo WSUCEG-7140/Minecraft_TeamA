@@ -2,6 +2,9 @@ class Block:
     """!
     @brief A class to represent a block in the game.
     @return An instance of the Block object.
+    @see [trunk_texture](https://stock.adobe.com/au/images/texture-for-platformers-pixel-art-vector-brown-tree-trunk/91706199)
+    @see [leaves_texture](https://www.planetminecraft.com/texture-pack/colored-spruce-leaves/)
+    
     """
     __GRASS__ = None
     __SAND__ = None
