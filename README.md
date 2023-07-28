@@ -126,3 +126,16 @@ While flying:
 ### Literate Programming
 
 - Example in [`world.py`](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/blob/master/tempus_fugit_minecraft/world.py) in class `World` and its functions.
+
+
+
+============================================================================================================
+
+**Contributors names:**
+Student Name in Pilot           GitHub username
+
+Mohammad Shalash                W1158mxs
+Lynphone Xie                    xieWright
+Rebecca McCullough              criticalglitch
+Abubakur Abdulgader S Sait      bakursait2
+Mahmoud Elbasiouny              Lurk390
