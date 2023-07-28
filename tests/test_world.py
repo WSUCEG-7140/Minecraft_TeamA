@@ -103,13 +103,14 @@ class TestWorld:
     #issue84
     def test_generate_single_cloud_blocks_at_a_specific_height(self):
         y = 100
-        cloud = World.generate_single_cloud(cloud_center_x=0,cloud_center_y=y,cloud_center_z=0,s=3)
+        cloud = World.generate_single_cloud(cloud_center_x_coordinate_in_model=0,cloud_center_y_coordinate_in_model=y,cloud_center_z_coordinate_in_model=0,\
+            blocks_from_center_of_clouds_to_end_in_one_direction=3)
         for _, (_, block_y, _) in cloud:
             assert block_y == y
 
     def test_generate_cloud_returns_list_of_tuples(self):
         x,y,z = 4,5,3
-        cloud = World.generate_single_cloud(x, y, z, s=3)
+        cloud = World.generate_single_cloud(x, y, z, blocks_from_center_of_clouds_to_end_in_one_direction=3)
         assert isinstance(cloud,list)
         for block, position in cloud:
             assert isinstance(block, Block)
@@ -226,7 +227,7 @@ class TestWorld:
                 assert -World.WIDTH_FROM_ORIGIN_IN_BLOCKS <= z <= World.WIDTH_FROM_ORIGIN_IN_BLOCKS
 
     def test_generate_hills_with_custom_world_width_from_origin_all_hills_between_minus_specified_and_positive_specified(self):
-        hills = World.generate_hills(world_size=50)
+        hills = World.generate_hills(world_size_in_blocks=50)
         for hill in hills:
             for _, (x, _, z) in hill:
                 assert -50 <= x <= 50

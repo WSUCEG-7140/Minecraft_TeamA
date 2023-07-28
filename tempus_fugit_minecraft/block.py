@@ -2,6 +2,7 @@ class Block:
     """!
     @brief A class to represent a block in the game.
     @return An instance of the Block object.
+    
     """
     __GRASS__ = None
     __SAND__ = None
@@ -91,6 +92,7 @@ class Block:
         @brief Returns a tree trunk block
         @return The tree trunk block
         @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        @see [trunk_texture](https://stock.adobe.com/au/images/texture-for-platformers-pixel-art-vector-brown-tree-trunk/91706199)
         """
         if cls.__TREE_TRUNK__ is None:
             cls.__TREE_TRUNK__ = Block("TREE_TRUNK", ((1, 2), (1, 2), (2, 2)), is_breakable=True, is_collidable=True, can_build_on=True)
@@ -103,6 +105,7 @@ class Block:
         @brief Returns a tree leaves block
         @return The tree leaves block
         @see [Issue#47](https://github.com/WSUCEG-7140/Tempus_Fugit_Minecraft/issues/47)
+        @see [leaves_texture](https://www.planetminecraft.com/texture-pack/colored-spruce-leaves/)
         """
         if cls.__TREE_LEAVES__ is None:
             cls.__TREE_LEAVES__ = Block("TREE_LEAVES", ((0, 2), (0, 2), (0, 2)), is_breakable=True, is_collidable=False, can_build_on=True)
